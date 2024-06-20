@@ -9,7 +9,9 @@ int main (int argc, char *argv[]) {
 
   try {
     ServerManager serverManager(5001);
-  } catch (ServerManager::ServerManagerException &e) {
+    int listenfd = serverManager.getListenFd();
+    serverManager._runServer(listenfd);
+  } catch (std::exception &e) {
     std::cerr << "ServerManagerException caught" << std::endl;
   }
 
