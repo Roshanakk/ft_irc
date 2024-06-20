@@ -3,10 +3,10 @@
 // Constructors , Copy Constructor, Destructor
 ServerManager::ServerManager(int portno_val) : _portno(portno_val){
   //std::cout << "Constructor called for ServerManager" << std::endl;
-  int listenfd = _setupServSock();
-  if( -1 == listenfd )
+  _listenfd = _setupServSock();
+  if( -1 == _listenfd )
       throw ServerManagerException();
-  _runServer(listenfd);
+  // _runServer(listenfd);
 };
 
 ServerManager::ServerManager(ServerManager const &source) { *this = source; };
@@ -14,6 +14,7 @@ ServerManager::ServerManager(ServerManager const &source) { *this = source; };
 ServerManager::~ServerManager(void){
   //std::cout << "Destructor called for ServerManager" << std::endl;
   _closefds(_clientfds);
+  
 };
 
 // Overloaded Operators
@@ -23,6 +24,11 @@ ServerManager &ServerManager::operator=(ServerManager const &rhs) {
   // Additional code here if you need a deep copy.
   return (*this);
 };
+
+int ServerManager::getListenFd()
+{
+  return (_listenfd);
+}
 
 int ServerManager::_setupServSock() {
   // Setup the listening socket
@@ -54,6 +60,27 @@ int ServerManager::_closefds(std::vector<int> &fds) {
   return 0;
 }
 
+
+static void	recv_signal(int signal)
+{
+  if (signal == SIGINT)
+  {
+    // std::cout << "YOOOOOOOOOOOOOOOOOOO" << std::endl;
+    throw std::exception();
+
+  }
+
+}
+
+void setAsSignalHandler()
+{
+  if (signal(SIGINT, recv_signal) == SIG_ERR)
+  {
+    perror("signal");
+    return ;
+  }            
+}
+
 void ServerManager::_runServer(int listenfd) {
   fd_set master_fds, read_fds;
   FD_ZERO(&master_fds);
@@ -61,7 +88,10 @@ void ServerManager::_runServer(int listenfd) {
   FD_SET(listenfd, &master_fds);
   int fdmax = listenfd;
 
-  while (1) {
+  setAsSignalHandler();
+
+  int i = 0;
+  while (i < 10) {
 
     read_fds = master_fds; // copy it
     if (select(fdmax+1, &read_fds, NULL, NULL, NULL) == -1) {
@@ -86,6 +116,7 @@ void ServerManager::_runServer(int listenfd) {
             if (newfd > fdmax) {    // keep track of the max
               fdmax = newfd;
             }
+            _clientfds.push_back(newfd);
             std::cout << "selectserver: new connection from " << newfd << std::endl;
           }
         } else {
@@ -118,6 +149,7 @@ void ServerManager::_runServer(int listenfd) {
         }
       }
     }
+    i++;
   }
 }
 

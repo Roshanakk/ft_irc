@@ -7,6 +7,8 @@
 #include <vector>
 #include <unistd.h>
 #include <sys/select.h>
+#include <sys/wait.h>
+#include <stdio.h>
 
 class ServerManager {
 public:
@@ -25,15 +27,18 @@ public:
     virtual const char *what() const throw();
   };
 
+  int getListenFd();
+
+  void _runServer(int listenfd);
+  
 private:
   ServerManager(void);
-
   // Private Methods
   int _setupServSock();
   int _closefds(std::vector<int> &fds);
-  void _runServer(int listenfd);
 
   // Private Attributes
+  int _listenfd;
   int _portno;
   std::vector<int> _clientfds;
 };
