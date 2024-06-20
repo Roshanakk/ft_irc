@@ -4,7 +4,7 @@ NAME = ircsrv
 CXX := c++
 SRC_DIR := srcs/
 OBJ_DIR := objs/
-H_DIR := .
+H_DIR := includes/
 FLAGS := -g -std=c++98 -Wall -Wextra -Werror
 
 ### PRETTY COLORS ###
@@ -15,7 +15,8 @@ NOCOLOR:=\033[0m
 
 ### FILES ###
 
-SRCS = main.cpp \
+SRCS = 	main.cpp \
+		ServerManager.cpp \
 
 OBJS := $(patsubst %.cpp,$(OBJ_DIR)%.o,$(SRCS))
 
