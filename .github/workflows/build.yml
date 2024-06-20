@@ -1,0 +1,13 @@
+name: Build
+
+on: [pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Make IRC
+      run: make
