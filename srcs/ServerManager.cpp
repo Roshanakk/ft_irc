@@ -3,10 +3,9 @@
 // Constructors , Copy Constructor, Destructor
 ServerManager::ServerManager(int portno_val) : _portno(portno_val){
   //std::cout << "Constructor called for ServerManager" << std::endl;
-  _listenfd = _setupServSock();
+  _setupServSock();
   if( -1 == _listenfd )
       throw ServerManagerException();
-  // _runServer(listenfd);
 };
 
 ServerManager::ServerManager(ServerManager const &source) { *this = source; };
@@ -30,7 +29,7 @@ int ServerManager::getListenFd()
   return (_listenfd);
 }
 
-int ServerManager::_setupServSock() {
+void ServerManager::_setupServSock() {
   // Setup the listening socket
   int sockfd;
   struct sockaddr_in serv_addr;
@@ -38,7 +37,7 @@ int ServerManager::_setupServSock() {
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) {
-    std::cerr << "Error opening socket" << std::endl;
+    throw ServerManagerException("Error: failed to open socket.");
   }
   bzero((char *) &serv_addr, sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
@@ -46,11 +45,11 @@ int ServerManager::_setupServSock() {
   serv_addr.sin_port = htons(_portno);
   setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
   if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
-    std::cerr << "Error on binding" << std::endl;
+    throw ServerManagerException("Error: failed to bind.");
   }
   listen(sockfd, 1024);
   _clientfds.push_back(sockfd);
-  return sockfd;
+  _listenfd = sockfd;
 }
 
 int ServerManager::_closefds(std::vector<int> &fds) {
@@ -60,28 +59,9 @@ int ServerManager::_closefds(std::vector<int> &fds) {
   return 0;
 }
 
+// Run server //
 
-static void	recv_signal(int signal)
-{
-  if (signal == SIGINT)
-  {
-    // std::cout << "YOOOOOOOOOOOOOOOOOOO" << std::endl;
-    throw std::exception();
-
-  }
-
-}
-
-void setAsSignalHandler()
-{
-  if (signal(SIGINT, recv_signal) == SIG_ERR)
-  {
-    perror("signal");
-    return ;
-  }            
-}
-
-void ServerManager::_runServer(int listenfd) {
+void ServerManager::runServer(int listenfd) {
   fd_set master_fds, read_fds;
   FD_ZERO(&master_fds);
   FD_ZERO(&read_fds);
@@ -90,27 +70,24 @@ void ServerManager::_runServer(int listenfd) {
 
   setAsSignalHandler();
 
-  int i = 0;
-  while (i < 10) {
+  while (1) {
 
-    read_fds = master_fds; // copy it
+    read_fds = master_fds;
     if (select(fdmax+1, &read_fds, NULL, NULL, NULL) == -1) {
-      throw ServerManagerException();
-      //perror("select");
+      throw ServerManagerException("Error: failed to select.");
       //exit(4);
     }
 
     // run through the existing connections looking for data to read
     for(int i = 0; i <= fdmax; i++) {
-      if (FD_ISSET(i, &read_fds)) { // we got one!!
+      if (FD_ISSET(i, &read_fds)) {
         if (i == listenfd) {
           // handle new connections
           struct sockaddr_storage remoteaddr; // client address
           socklen_t addrlen = sizeof remoteaddr;
           int newfd = accept(listenfd, (struct sockaddr *)&remoteaddr, &addrlen);
           if (newfd == -1) {
-            throw ServerManagerException();
-            //perror("accept");
+            throw ServerManagerException("Error: failed to accept.");
           } else {
             FD_SET(newfd, &master_fds); // add to master set
             if (newfd > fdmax) {    // keep track of the max
@@ -128,12 +105,10 @@ void ServerManager::_runServer(int listenfd) {
             if (nbytes == 0) {
               // connection closed
               std::cout << "selectserver: socket " << i << " hung up" << std::endl;
-              //printf("selectserver: socket %d hung up\n", i);
             } else {
-              throw ServerManagerException();
-              //perror("recv");
+              throw ServerManagerException("Error: failed to receive.");
             }
-            close(i); // bye!
+            close(i); // close fd of closed connection
             FD_CLR(i, &master_fds); // remove from master set
           } else {
             // we got some data from a client
@@ -142,19 +117,34 @@ void ServerManager::_runServer(int listenfd) {
             // send a response back to the client
             const char *response = "Your message was received.\n";
             if (send(i, response, strlen(response), 0) == -1) {
-              throw ServerManagerException();
-              //perror("send");
+              throw ServerManagerException("Error: failed to send.");
             }
           }
         }
       }
     }
-    i++;
   }
 }
 
-ServerManager::ServerManagerException::ServerManagerException(){};
+ServerManager::ServerManagerException::ServerManagerException() 
+  : _message("Error: error not defined.") {};
+ServerManager::ServerManagerException::ServerManagerException(std::string const &message_val) 
+  : _message(message_val) {};
 ServerManager::ServerManagerException::~ServerManagerException() throw(){};
 const char *ServerManager::ServerManagerException::what() const throw() {
-  return ("Error: failed to initialize server socket.");
+  return (_message.c_str());
+}
+
+// Signal handler //
+
+void ServerManager::recv_signal(int signal) {
+  if (signal == SIGINT) {}
+}
+
+void ServerManager::setAsSignalHandler() {
+  if (signal(SIGINT, recv_signal) == SIG_ERR)
+  {
+    perror("signal");
+    return ;
+  }            
 }

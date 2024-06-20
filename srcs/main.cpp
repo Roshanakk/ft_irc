@@ -5,14 +5,12 @@ int main (int argc, char *argv[]) {
   (void)argc;
   (void)argv;
 
-
-
   try {
     ServerManager serverManager(5001);
     int listenfd = serverManager.getListenFd();
-    serverManager._runServer(listenfd);
+    serverManager.runServer(listenfd);
   } catch (std::exception &e) {
-    std::cerr << "ServerManagerException caught" << std::endl;
+    std::cerr << e.what() << std::endl;
   }
 
   return 0;
