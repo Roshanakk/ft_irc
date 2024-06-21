@@ -4,12 +4,12 @@
 /*                CONSTRUCTORS & DESTRUCTOR               */
 /**********************************************************/
 
-UserRegular::UserRegular() : AUser()
+UserRegular::UserRegular(std::string nickname) : AUser(nickname)
 {
 
 }
 
-UserRegular::UserRegular(const UserRegular & src)
+UserRegular::UserRegular(const UserRegular & src) : AUser(src)
 {
     _isOperator = src._isOperator;
     _nickname = src._nickname;
