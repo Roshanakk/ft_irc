@@ -7,6 +7,7 @@
 #include <vector>
 #include <unistd.h>
 #include <sys/select.h>
+#include <string>
 #include <sys/wait.h>
 #include <stdio.h>
 
@@ -23,22 +24,31 @@ public:
   class ServerManagerException : public std::exception {
   public:
     ServerManagerException();
+    ServerManagerException(std::string const &message_val);
     virtual ~ServerManagerException() throw();
     virtual const char *what() const throw();
+  private:
+    std::string _message;
   };
 
   int getListenFd();
-
-  void _runServer(int listenfd);
+  void runServer();
+  void setAsSignalHandler();
+  static void recv_signal(int signal);
   
 private:
   ServerManager(void);
+
   // Private Methods
-  int _setupServSock();
+  void _setupServSock();
   int _closefds(std::vector<int> &fds);
+  void _readFromClient(int clientfd, fd_set &master_fds);
+  void _acceptNewClient(fd_set &master_fds);
+  void _sendToClient(int clientfd, std::string message);
 
   // Private Attributes
   int _listenfd;
   int _portno;
+  int _fdmax;
   std::vector<int> _clientfds;
 };
