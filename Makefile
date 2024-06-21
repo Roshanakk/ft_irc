@@ -17,6 +17,10 @@ NOCOLOR:=\033[0m
 
 SRCS = 	main.cpp \
 		ServerManager.cpp \
+		AUser.cpp \
+		Channel.cpp \
+		UserOperator.cpp \
+		UserRegular.cpp \
 
 OBJS := $(patsubst %.cpp,$(OBJ_DIR)%.o,$(SRCS))
 

@@ -17,8 +17,11 @@ class AUser
 {
 	public:
 		AUser();
+		AUser(const AUser & src);
 		AUser(std::string nickname);
 		virtual ~AUser();
+
+		AUser & operator=(const AUser & src);
 
 		virtual std::string getNickname() const = 0;
 		
