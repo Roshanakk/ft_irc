@@ -31,7 +31,6 @@ public:
     std::string _message;
   };
 
-  int getListenFd();
   void runServer();
   void setAsSignalHandler();
   static void recv_signal(int signal);

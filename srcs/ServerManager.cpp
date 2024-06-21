@@ -25,11 +25,6 @@ ServerManager &ServerManager::operator=(ServerManager const &rhs) {
   return (*this);
 };
 
-int ServerManager::getListenFd()
-{
-  return (_listenfd);
-}
-
 void ServerManager::_setupServSock() {
   // Setup the listening socket
   int sockfd;
