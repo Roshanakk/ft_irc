@@ -44,6 +44,7 @@ private:
   int _closefds(std::vector<int> &fds);
   void _readFromClient(int clientfd, fd_set &master_fds);
   void _acceptNewClient(fd_set &master_fds);
+  void _sendToClient(int clientfd, std::string message);
 
   // Private Attributes
   int _listenfd;

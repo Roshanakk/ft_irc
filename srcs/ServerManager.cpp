@@ -4,6 +4,7 @@
 ServerManager::ServerManager(int portno_val) : _portno(portno_val){
   //std::cout << "Constructor called for ServerManager" << std::endl;
   _setupServSock();
+  setAsSignalHandler();
   if( -1 == _listenfd )
       throw ServerManagerException();
 };
@@ -62,13 +63,12 @@ int ServerManager::_closefds(std::vector<int> &fds) {
 // Run server //
 
 void ServerManager::runServer() {
-  fd_set master_fds, read_fds;
+  fd_set master_fds, read_fds, write_fds;
   FD_ZERO(&master_fds);
   FD_ZERO(&read_fds);
+  FD_ZERO(&write_fds);
   FD_SET(_listenfd, &master_fds);
   _fdmax = _listenfd;
-
-  setAsSignalHandler();
 
   while (1) {
 
@@ -85,7 +85,12 @@ void ServerManager::runServer() {
           _acceptNewClient(master_fds);
         } else {
           _readFromClient(i, master_fds);
+          FD_SET(i, &write_fds);
         }
+      }
+      if (FD_ISSET(i, &write_fds) && FD_ISSET(i, &master_fds)) {
+        _sendToClient(i, "Your message was received.\n");
+        FD_CLR(i, &write_fds);
       }
     }
   }
@@ -125,11 +130,14 @@ void ServerManager::_readFromClient(int clientfd, fd_set &master_fds) {
     // we got some data from a client
     buf[nbytes] = '\0';
     std::cout << "Received message (" << clientfd << "): " << buf << std::endl;
-    // send a response back to the client
-    const char *response = "Your message was received.\n";
-    if (send(clientfd, response, strlen(response), 0) == -1) {
-      throw ServerManagerException("Error: failed to send.");
-    }
+
+  }
+}
+
+void ServerManager::_sendToClient(int clientfd, std::string message) {
+  const char *response = message.c_str();
+  if (send(clientfd, response, strlen(response), 0) == -1) {
+    throw ServerManagerException("Error: failed to send.");
   }
 }
 
