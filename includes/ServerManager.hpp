@@ -32,7 +32,7 @@ public:
   };
 
   int getListenFd();
-  void runServer(int listenfd);
+  void runServer();
   void setAsSignalHandler();
   static void recv_signal(int signal);
   
@@ -42,9 +42,12 @@ private:
   // Private Methods
   void _setupServSock();
   int _closefds(std::vector<int> &fds);
+  void _readFromClient(int clientfd, fd_set &master_fds);
+  void _acceptNewClient(fd_set &master_fds);
 
   // Private Attributes
   int _listenfd;
   int _portno;
+  int _fdmax;
   std::vector<int> _clientfds;
 };

@@ -61,70 +61,79 @@ int ServerManager::_closefds(std::vector<int> &fds) {
 
 // Run server //
 
-void ServerManager::runServer(int listenfd) {
+void ServerManager::runServer() {
   fd_set master_fds, read_fds;
   FD_ZERO(&master_fds);
   FD_ZERO(&read_fds);
-  FD_SET(listenfd, &master_fds);
-  int fdmax = listenfd;
+  FD_SET(_listenfd, &master_fds);
+  _fdmax = _listenfd;
 
   setAsSignalHandler();
 
   while (1) {
 
     read_fds = master_fds;
-    if (select(fdmax+1, &read_fds, NULL, NULL, NULL) == -1) {
+    if (select(_fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
       throw ServerManagerException("Error: failed to select.");
       //exit(4);
     }
 
     // run through the existing connections looking for data to read
-    for(int i = 0; i <= fdmax; i++) {
+    for(int i = 0; i <= _fdmax; i++) {
       if (FD_ISSET(i, &read_fds)) {
-        if (i == listenfd) {
-          // handle new connections
-          struct sockaddr_storage remoteaddr; // client address
-          socklen_t addrlen = sizeof remoteaddr;
-          int newfd = accept(listenfd, (struct sockaddr *)&remoteaddr, &addrlen);
-          if (newfd == -1) {
-            throw ServerManagerException("Error: failed to accept.");
-          } else {
-            FD_SET(newfd, &master_fds); // add to master set
-            if (newfd > fdmax) {    // keep track of the max
-              fdmax = newfd;
-            }
-            _clientfds.push_back(newfd);
-            std::cout << "selectserver: new connection from " << newfd << std::endl;
-          }
+        if (i == _listenfd) {
+          _acceptNewClient(master_fds);
         } else {
-          // handle data from a client
-          char buf[256];
-          int nbytes = recv(i, buf, sizeof buf, 0);
-          if (nbytes <= 0) {
-            // got error or connection closed by client
-            if (nbytes == 0) {
-              // connection closed
-              std::cout << "selectserver: socket " << i << " hung up" << std::endl;
-            } else {
-              throw ServerManagerException("Error: failed to receive.");
-            }
-            close(i); // close fd of closed connection
-            FD_CLR(i, &master_fds); // remove from master set
-          } else {
-            // we got some data from a client
-            buf[nbytes] = '\0';
-            std::cout << "Received message (" << i << "): " << buf << std::endl;
-            // send a response back to the client
-            const char *response = "Your message was received.\n";
-            if (send(i, response, strlen(response), 0) == -1) {
-              throw ServerManagerException("Error: failed to send.");
-            }
-          }
+          _readFromClient(i, master_fds);
         }
       }
     }
   }
 }
+
+void ServerManager::_acceptNewClient(fd_set &master_fds) {
+  struct sockaddr_storage remoteaddr; // client address
+  socklen_t addrlen = sizeof remoteaddr;
+  int newfd = accept(_listenfd, (struct sockaddr *)&remoteaddr, &addrlen);
+  if (newfd == -1) {
+    throw ServerManagerException("Error: failed to accept.");
+  } else {
+    FD_SET(newfd, &master_fds); // add to master set
+    if (newfd > _fdmax) {    // keep track of the max
+      _fdmax = newfd;
+    }
+    _clientfds.push_back(newfd);
+    std::cout << "selectserver: new connection from " << newfd << std::endl;
+  }
+}
+
+void ServerManager::_readFromClient(int clientfd, fd_set &master_fds) {
+  // read from client
+  char buf[256];
+  int nbytes = recv(clientfd, buf, sizeof buf, 0);
+  if (nbytes <= 0) {
+    // got error or connection closed by client
+    if (nbytes == 0) {
+      // connection closed
+      std::cout << "selectserver: socket " << clientfd << " hung up" << std::endl;
+    } else {
+      throw ServerManagerException("Error: failed to receive.");
+    }
+    close(clientfd); // close fd of closed connection
+    FD_CLR(clientfd, &master_fds); // remove from master set
+  } else {
+    // we got some data from a client
+    buf[nbytes] = '\0';
+    std::cout << "Received message (" << clientfd << "): " << buf << std::endl;
+    // send a response back to the client
+    const char *response = "Your message was received.\n";
+    if (send(clientfd, response, strlen(response), 0) == -1) {
+      throw ServerManagerException("Error: failed to send.");
+    }
+  }
+}
+
+// ServerManagerException //
 
 ServerManager::ServerManagerException::ServerManagerException() 
   : _message("Error: error not defined.") {};

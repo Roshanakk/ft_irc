@@ -7,8 +7,8 @@ int main (int argc, char *argv[]) {
 
   try {
     ServerManager serverManager(5001);
-    int listenfd = serverManager.getListenFd();
-    serverManager.runServer(listenfd);
+    serverManager.getListenFd();
+    serverManager.runServer();
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
