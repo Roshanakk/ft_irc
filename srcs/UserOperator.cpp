@@ -9,7 +9,7 @@ UserOperator::UserOperator(std::string nickname) : AUser(nickname)
 
 }
 
-UserOperator::UserOperator(const UserOperator & src)
+UserOperator::UserOperator(const UserOperator & src) : AUser(src)
 {
     _isOperator = src._isOperator;
     _nickname = src._nickname;

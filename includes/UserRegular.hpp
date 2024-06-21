@@ -17,7 +17,7 @@
 class UserRegular : public AUser
 {
 	public:
-		UserRegular();
+		UserRegular(std::string nickname);
 		UserRegular(const UserRegular & src);
 
 		UserRegular & operator=(const UserRegular & src);

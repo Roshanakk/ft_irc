@@ -14,6 +14,7 @@ Channel::Channel(std::string name)
 
 Channel::Channel(const Channel & src)
 {
+    _name = src._name;
 }
 
 
