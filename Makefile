@@ -16,6 +16,7 @@ NOCOLOR:=\033[0m
 ### FILES ###
 
 SRCS = 	main.cpp \
+		ServerException.cpp \
 		AUser.cpp \
 		Channel.cpp \
 		UserOperator.cpp \
