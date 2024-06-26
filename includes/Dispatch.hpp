@@ -1,8 +1,10 @@
+#include "ServerException.hpp"
+#include <sys/epoll.h>
 
-
-class Dispatch {
+class dispatch {
   public:
 
+    dispatch(void);
     ~dispatch(void) {};
 
     void add(io_event& event) {
