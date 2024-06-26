@@ -7,6 +7,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <cstdio>
+#include "ServerException.hpp"
 
 
 #define MAX_EVENTS 8
@@ -14,22 +15,6 @@
 class dispatch;
 class client;
 class server;
-
-class serverException : public std::exception {
-  public:
-
-    serverException(void) {};
-    serverException(const std::string& msg) : _msg(msg) {};
-    ~serverException(void) throw() {};
-    const char *what(void) const throw() {
-      return _msg.c_str();
-    }
-
-  private:
-    std::string _msg;
-
-};
-
 
 
 class dispatch {
