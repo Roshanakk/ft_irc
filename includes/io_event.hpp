@@ -21,6 +21,6 @@ class io_event {
     virtual int socket_func(void) const = 0;
     virtual std::string getType(void) = 0;
 
-  private:
+    private:
 
 };

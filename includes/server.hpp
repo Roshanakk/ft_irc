@@ -11,30 +11,33 @@
 #include <sys/wait.h>
 #include <stdio.h>
 
+#include "client.hpp"
+#include "ServerException.hpp"
+
 class server : public io_event 
 {
-    public:
-    //CONSTRUCTORS & DESTRUCTOR
-    server(void);
-    server(dispatch& d);
-    ~server(void);
+	public:
+		//CONSTRUCTORS & DESTRUCTOR
+		server(void);
+		server(dispatch& d);
+		~server(void);
 
-    //METHODS
-    void send_message(void) {}
-    void receive_message(void);
-    int socket_func(void) const;
+		//METHODS
+		void send_message(void) {}
+		void receive_message(void);
+		int socket_func(void) const;
 
-    //GETTERS
-    std::string getType(void);
+		//GETTERS
+		std::string getType(void);
 
-    private:
 
-    // shared_socket
-    int _socket;
-    std::string _type;
-    struct sockaddr_in _addr;
-    socklen_t _client_addr_len;
-    dispatch& _d;
-    std::vector<client *> _clients;
+	private:
+		// shared_socket
+		int _socket;
+		std::string _type;
+		struct sockaddr_in _addr;
+		socklen_t _client_addr_len;
+		dispatch& _d;
+		std::vector<client *> _clients;
 
 };
