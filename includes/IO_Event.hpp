@@ -10,7 +10,6 @@ class IO_Event {
     virtual void send_message(void) = 0;
     virtual void receive_message(void) = 0;
     virtual int getSocket(void) const = 0;
-    virtual std::string getType(void) = 0;
 
     private:
 

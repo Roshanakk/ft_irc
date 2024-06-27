@@ -38,7 +38,7 @@ void Dispatch::run(void) {
   int nfds = epoll_wait(_epollfd, _events, MAX_EVENTS, -1);
   if (nfds == -1) {
     _sigint_received = true;
-    throw ServerException("Error: failed to wait for events.");
+    // throw ServerException("Error: failed to wait for events.");
   }
   for (int i = 0; i < nfds; ++i) {
     IO_Event *event = static_cast<IO_Event *>(_events[i].data.ptr);

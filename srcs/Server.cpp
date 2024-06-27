@@ -7,7 +7,7 @@
 
 // server::server() {}
 
-Server::Server(Dispatch& d) : _type("server"), _d(d)
+Server::Server(Dispatch& d) : _d(d)
 {
     //Creating server socket
     _socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -83,14 +83,3 @@ int Server::getSocket(void) const
 {
     return _socket;
 };
-
-
-
-/****************************************/
-/*                GETTERS               */
-/****************************************/
-
-std::string Server::getType(void)
-{
-    return _type;
-}

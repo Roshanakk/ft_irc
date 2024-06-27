@@ -31,7 +31,6 @@ class Server : public IO_Event
 
 		// shared_socket
 		int _socket;
-		std::string _type;
 		struct sockaddr_in _addr;
 		socklen_t _client_addr_len;
 		Dispatch& _d;

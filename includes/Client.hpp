@@ -32,7 +32,6 @@ class Client : public IO_Event
 		// shared_socket
 		int _socket;
 		char buf[1024];
-		std::string _type;
 		Dispatch& _d;
 
 };
