@@ -3,6 +3,7 @@
 #include <netinet/in.h>
 #include <vector>
 #include <cstdio>
+#include <sstream>
 
 #include "ServerException.hpp"
 #include "IO_Event.hpp"

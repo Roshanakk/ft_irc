@@ -1,5 +1,6 @@
 #include "Client.hpp"
 #include "IO_Event.hpp"
+#include "ServerReplies.hpp"
 
 /**********************************************************/
 /*                CONSTRUCTORS & DESTRUCTOR               */
@@ -25,7 +26,8 @@ Client::~Client(void) {
 
 void Client::send_message(void)
 {
-    send(_socket, buf, sizeof buf, 0);
+    std::string response = "Message Received\n";
+    send(_socket, response.c_str(), response.size(), 0);
 }
 
 void Client::receive_message(void)
@@ -43,8 +45,7 @@ void Client::receive_message(void)
         return ;
     }
     std::cout << "Received(" << _socket << "): " << buf;
-    std::string response = "Message received\n";
-    send(_socket, response.c_str(), response.size(), 0);
+    send_message();
 }
 
 int Client::getSocket(void) const
