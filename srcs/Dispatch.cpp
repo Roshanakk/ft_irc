@@ -14,7 +14,7 @@ Dispatch::Dispatch(void)
 Dispatch::~Dispatch(void) {};
 
 // Member Functions //
-void Dispatch::add(IO_Event& event) {
+void Dispatch::add(AIO_Event& event) {
   struct epoll_event ev;
 
   // ev.events = EPOLLIN | EPOLLOUT;
@@ -27,7 +27,7 @@ void Dispatch::add(IO_Event& event) {
 
 }
 
-void Dispatch::remove(const IO_Event& event) {
+void Dispatch::remove(const AIO_Event& event) {
   if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, event.getSocket(), NULL) == -1) {
     perror("epoll_ctl");
     throw ServerException("Error: failed to remove event from epoll instance.");
@@ -41,7 +41,7 @@ void Dispatch::run(void) {
     // throw ServerException("Error: failed to wait for events.");
   }
   for (int i = 0; i < nfds; ++i) {
-    IO_Event *event = static_cast<IO_Event *>(_events[i].data.ptr);
+    AIO_Event *event = static_cast<AIO_Event *>(_events[i].data.ptr);
     if (_events[i].events & EPOLLIN) {
       event->receive_message();
     }

@@ -6,11 +6,11 @@
 #include <sstream>
 
 #include "ServerException.hpp"
-#include "IO_Event.hpp"
+#include "AIO_Event.hpp"
 #include "Client.hpp"
 #include "Dispatch.hpp"
 
-class Server : public IO_Event
+class Server : public AIO_Event
 {
 	public:
 		//CONSTRUCTORS & DESTRUCTOR

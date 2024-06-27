@@ -5,13 +5,13 @@
 #include <cstring>
 
 #include "ServerException.hpp"
-#include "IO_Event.hpp"
+#include "AIO_Event.hpp"
 #include "Dispatch.hpp"
 #include "ServerReplies.hpp"
 
 class Dispatch;
 
-class Client : public IO_Event 
+class Client : public AIO_Event 
 {
 	public:
 		//CONSTRUCTORS & DESTRUCTOR
