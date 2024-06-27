@@ -1,6 +1,4 @@
 #include "Client.hpp"
-#include "IO_Event.hpp"
-#include "ServerReplies.hpp"
 
 /**********************************************************/
 /*                CONSTRUCTORS & DESTRUCTOR               */

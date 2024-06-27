@@ -7,6 +7,7 @@
 #include "ServerException.hpp"
 #include "IO_Event.hpp"
 #include "Dispatch.hpp"
+#include "ServerReplies.hpp"
 
 class Dispatch;
 

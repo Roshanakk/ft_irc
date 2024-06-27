@@ -14,7 +14,6 @@ class Server : public IO_Event
 {
 	public:
 		//CONSTRUCTORS & DESTRUCTOR
-		Server(void);
 		Server(Dispatch& d);
 		~Server(void);
 
@@ -28,6 +27,8 @@ class Server : public IO_Event
 
 
 	private:
+		Server(void);
+
 		// shared_socket
 		int _socket;
 		std::string _type;
