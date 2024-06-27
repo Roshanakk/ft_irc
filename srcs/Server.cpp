@@ -42,6 +42,7 @@ Server::Server(Dispatch& d) : _type("server"), _d(d)
 
 Server::~Server(void)
 {
+    std::cout << "Server destructor called" << std::endl;
     for (size_t i = 0; i < _clients.size(); ++i)
         delete _clients[i];
 };
