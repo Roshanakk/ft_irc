@@ -28,16 +28,18 @@ void Client::send_message(void)
 void Client::receive_message(void)
 {
     //Receiving client's message
+    memset(buf, 0, sizeof buf);
     int numbytes = recv(_socket, buf, sizeof buf, 0);
     if (numbytes < 0)
         throw ServerException("Error: failed to receive.");
     else if (numbytes == 0) //If client disconnected
     {
+        std::cout << "Client (" << _socket << ") disconnected" << std::endl;
         _d.remove(*this);
         close(_socket);
         return ;
     }
-    std::cout << "Received: " << buf << std::endl;
+    std::cout << "Received(" << _socket << "): " << buf;
     std::string response = "Message received\n";
     send(_socket, response.c_str(), response.size(), 0);
 }
