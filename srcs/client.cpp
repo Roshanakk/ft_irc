@@ -13,10 +13,7 @@ client::client(int sock_val, dispatch& d) : _socket(sock_val), _type("client"), 
     }
 }
 
-client::~client(void)
-{
-    std::cout << "client destructor" << std::endl;
-};
+client::~client(void) {};
 
 
 /****************************************/
@@ -25,21 +22,20 @@ client::~client(void)
 
 void client::send_message(void)
 {
-    std::cout << "client send_message" << std::endl;
     send(_socket, buf, sizeof buf, 0);
 }
 
 void client::receive_message(void)
 {
-    std::cout << "client receive_message" << std::endl;
+    //Receiving client's message
     int numbytes = recv(_socket, buf, sizeof buf, 0);
     if (numbytes < 0)
-    throw serverException("Error: failed to receive.");
-    else if (numbytes == 0) {
-    std::cout << "client disconnected" << std::endl;
-    _d.remove(*this);
-    close(_socket);
-    return ;
+        throw serverException("Error: failed to receive.");
+    else if (numbytes == 0) //If client disconnected
+    {
+        _d.remove(*this);
+        close(_socket);
+        return ;
     }
     std::cout << "Received: " << buf << std::endl;
 }
