@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "ServerReplies.hpp"
 
 /**********************************************************/
 /*                CONSTRUCTORS & DESTRUCTOR               */
@@ -70,6 +71,8 @@ void Server::receive_message(void)
     _clients.push_back(newClient);
     _d.add(*newClient);
     std::cout << "New client connected: (" << sockfd << ")" << std::endl;
+    std::string response = (RPL_WELCOME("host", "nick", "prefix"));
+    send(sockfd, response.c_str(), response.size(), 0);
 }
 
 
