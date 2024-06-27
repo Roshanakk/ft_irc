@@ -2,10 +2,12 @@
 
 // Constructors //
 Dispatch::Dispatch(void)
-: _epollfd(epoll_create1(0)) {
+: _sigint_received(false), _epollfd(epoll_create1(0)) {
   if (_epollfd == -1) {
     throw ServerException("Error: failed to create epoll instance.");
   }
+  // setting signal handler
+  setAsSignalHandler();
 }
 
 // Destructors //
@@ -35,7 +37,8 @@ void Dispatch::remove(const IO_Event& event) {
 void Dispatch::run(void) {
   int nfds = epoll_wait(_epollfd, _events, MAX_EVENTS, -1);
   if (nfds == -1) {
-    perror("epoll_wait failed");
+    // perror("epoll_wait failed");
+    _sigint_received = true;
     throw ServerException("Error: failed to wait for events.");
   }
   // std::cout << "nfds: " << nfds << std::endl;
@@ -59,6 +62,26 @@ void Dispatch::run(void) {
   }
 }
 
+// Getters //
+
 int Dispatch::get_epollfd(void) {
   return _epollfd;
+}
+
+int Dispatch::get_sigint_received(void) {
+  return _sigint_received;
+}
+
+// Signal handler //
+
+void Dispatch::recv_signal(int signal) {
+  if (signal == SIGINT) {}
+}
+
+void Dispatch::setAsSignalHandler() {
+  if (signal(SIGINT, recv_signal) == SIG_ERR)
+  {
+    perror("signal");
+    return ;
+  }            
 }

@@ -8,9 +8,6 @@
 
 Server::Server(Dispatch& d) : _type("server"), _d(d)
 {
-    // setting signal handler
-    setAsSignalHandler();
-
     //Creating server socket
     _socket = socket(AF_INET, SOCK_STREAM, 0);
     if (_socket == -1) {
@@ -88,18 +85,4 @@ int Server::getSocket(void) const
 std::string Server::getType(void)
 {
     return _type;
-}
-
-// Signal handler //
-
-void Server::recv_signal(int signal) {
-  if (signal == SIGINT) {}
-}
-
-void Server::setAsSignalHandler() {
-  if (signal(SIGINT, recv_signal) == SIG_ERR)
-  {
-    perror("signal");
-    return ;
-  }            
 }

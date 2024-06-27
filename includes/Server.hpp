@@ -3,7 +3,6 @@
 #include <netinet/in.h>
 #include <vector>
 #include <cstdio>
-#include <signal.h>
 
 #include "ServerException.hpp"
 #include "IO_Event.hpp"
@@ -22,8 +21,6 @@ class Server : public IO_Event
 		void send_message(void);
 		void receive_message(void);
 		int getSocket(void) const;
-		static void recv_signal(int signal);
-		void setAsSignalHandler();
 
 		//GETTERS
 		std::string getType(void);

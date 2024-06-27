@@ -11,7 +11,7 @@ int main(void) {
 
   d.add(s);
 
-  while (1) {
+  while (!d.get_sigint_received()) {
     try {
       d.run();
     } catch (const ServerException& e) {
