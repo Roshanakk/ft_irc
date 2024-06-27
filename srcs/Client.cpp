@@ -38,6 +38,9 @@ void Client::receive_message(void)
         return ;
     }
     std::cout << "Received: " << buf << std::endl;
+    std::string response = "Message received\n";
+    send(_socket, response.c_str(), response.size(), 0);
+    throw ServerException("Error: failed to receive.");
 }
 
 int Client::socket_func(void) const

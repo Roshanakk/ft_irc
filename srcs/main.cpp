@@ -12,7 +12,11 @@ int main(void) {
   d.add(s);
 
   while (1) {
-    d.run();
+    try {
+      d.run();
+    } catch (const ServerException& e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
 
   return 0;
