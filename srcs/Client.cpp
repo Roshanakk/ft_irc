@@ -13,7 +13,10 @@ Client::Client(int sock_val, Dispatch& d) : _socket(sock_val), _type("client"), 
     }
 }
 
-Client::~Client(void) {};
+Client::~Client(void) {
+    std::cout << "Client destructor called" << std::endl;
+    close(_socket);
+};
 
 
 /****************************************/

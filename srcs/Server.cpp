@@ -44,6 +44,8 @@ Server::~Server(void)
     std::cout << "Server destructor called" << std::endl;
     for (size_t i = 0; i < _clients.size(); ++i)
         delete _clients[i];
+    close(_socket);
+    close(_d.get_epollfd());
 };
 
 
