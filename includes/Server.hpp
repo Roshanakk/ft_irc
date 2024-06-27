@@ -6,34 +6,28 @@
 #include <sstream>
 
 #include "ServerException.hpp"
-#include "IO_Event.hpp"
+#include "AIO_Event.hpp"
 #include "Client.hpp"
 #include "Dispatch.hpp"
 
-class Server : public IO_Event
+class Server : public AIO_Event
 {
 	public:
-		//CONSTRUCTORS & DESTRUCTOR
-		Server(void);
+		// CONSTRUCTORS & DESTRUCTOR
 		Server(Dispatch& d);
 		~Server(void);
 
-		//METHODS
+		// METHODS
 		void send_message(void);
 		void receive_message(void);
 		int getSocket(void) const;
 
-		//GETTERS
-		std::string getType(void);
-
-
 	private:
-		// shared_socket
+		Server(void);
+
 		int _socket;
-		std::string _type;
 		struct sockaddr_in _addr;
 		socklen_t _client_addr_len;
 		Dispatch& _d;
 		std::vector<Client *> _clients;
-
 };

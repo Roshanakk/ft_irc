@@ -14,7 +14,7 @@ Dispatch::Dispatch(void)
 Dispatch::~Dispatch(void) {};
 
 // Member Functions //
-void Dispatch::add(IO_Event& event) {
+void Dispatch::add(AIO_Event& event) {
   struct epoll_event ev;
 
   // ev.events = EPOLLIN | EPOLLOUT;
@@ -27,7 +27,7 @@ void Dispatch::add(IO_Event& event) {
 
 }
 
-void Dispatch::remove(const IO_Event& event) {
+void Dispatch::remove(const AIO_Event& event) {
   if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, event.getSocket(), NULL) == -1) {
     perror("epoll_ctl");
     throw ServerException("Error: failed to remove event from epoll instance.");
@@ -37,26 +37,15 @@ void Dispatch::remove(const IO_Event& event) {
 void Dispatch::run(void) {
   int nfds = epoll_wait(_epollfd, _events, MAX_EVENTS, -1);
   if (nfds == -1) {
-    // perror("epoll_wait failed");
     _sigint_received = true;
-    throw ServerException("Error: failed to wait for events.");
+    // throw ServerException("Error: failed to wait for events.");
   }
-  // std::cout << "nfds: " << nfds << std::endl;
-
   for (int i = 0; i < nfds; ++i) {
-    // std::cout << "i: " << i << std::endl;
-    // std::cout << "_events[i].data.ptr: " << static_cast<IO_Event *>(_events[i].data.ptr) << std::endl;
-    IO_Event *event = static_cast<IO_Event *>(_events[i].data.ptr);
+    AIO_Event *event = static_cast<AIO_Event *>(_events[i].data.ptr);
     if (_events[i].events & EPOLLIN) {
-      // std::cout << "calling receive_message" << std::endl;
-      // std::cout << "event _type: " << event->getType() << std::endl;
-      // std::cout << "fd for reading: " << event->socket_func() << std::endl;
       event->receive_message();
     }
     if (_events[i].events & EPOLLOUT) {
-      // std::cout << "calling send_message" << std::endl;
-      // std::cout << "event _type: " << event->getType() << std::endl;
-      // std::cout << "fd for writing: " << event->socket_func() << std::endl;
       event->send_message();
     }
   }

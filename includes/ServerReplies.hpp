@@ -1,6 +1,3 @@
-//#define RPL_WELCOME(nick, user, host) "001 :Welcome to the Internet Relay Network !" + nick + "!" + user + "!@" + host
-
-
 #define RPL_WELCOME(hostname, nick, prefix) (":" + hostname + " 001 " + nick + " :Welcome to the Internet Relay Network " + prefix + "\r\n")
 
 // #define RPL_YOURHOST() "002 :Your host is <servername>, running version <ver>"

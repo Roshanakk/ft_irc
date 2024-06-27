@@ -2,15 +2,14 @@
 
 #include <string>
 
-class IO_Event {
+class AIO_Event {
   public:
 
-    virtual ~IO_Event(void) {};
+    virtual ~AIO_Event(void) {};
 
     virtual void send_message(void) = 0;
     virtual void receive_message(void) = 0;
     virtual int getSocket(void) const = 0;
-    virtual std::string getType(void) = 0;
 
     private:
 

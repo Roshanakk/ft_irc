@@ -6,11 +6,11 @@
 #include <signal.h>
 
 #include "ServerException.hpp"
-#include "IO_Event.hpp"
+#include "AIO_Event.hpp"
 
 #define MAX_EVENTS 8
 
-// class io_event;
+// class AIO_Event;
 
 class Dispatch {
   public:
@@ -19,8 +19,8 @@ class Dispatch {
     ~Dispatch(void);
 
     // Member Functions //
-    void add(IO_Event& event);
-    void remove(const IO_Event& event);
+    void add(AIO_Event& event);
+    void remove(const AIO_Event& event);
     void run(void);
     int get_epollfd(void);
     int get_sigint_received(void);

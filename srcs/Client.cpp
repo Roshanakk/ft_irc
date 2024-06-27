@@ -1,13 +1,12 @@
 #include "Client.hpp"
-#include "IO_Event.hpp"
-#include "ServerReplies.hpp"
 
 /**********************************************************/
 /*                CONSTRUCTORS & DESTRUCTOR               */
 /**********************************************************/
 
 
-Client::Client(int sock_val, Dispatch& d) : _socket(sock_val), _type("client"), _d(d) 
+Client::Client(int sock_val, Dispatch& d) 
+    : _socket(sock_val), _d(d) 
 {
     if (_socket == -1) {
     throw ServerException("Error creating client socket");
@@ -52,12 +51,3 @@ int Client::getSocket(void) const
 {
     return _socket;
 };
-
-/****************************************/
-/*                GETTERS               */
-/****************************************/
-
-std::string Client::getType(void)
-{
-    return _type;
-}

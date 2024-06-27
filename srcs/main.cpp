@@ -7,7 +7,6 @@ int main(void) {
 
   Dispatch d;
   Server s(d);
-  // std::cout << "_epollfd: " << d.get_epollfd() << std::endl;
 
   d.add(s);
 
