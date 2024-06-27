@@ -21,6 +21,9 @@ SRCS = 	main.cpp \
 		Channel.cpp \
 		UserOperator.cpp \
 		UserRegular.cpp \
+		Dispatch.cpp \
+		server.cpp \
+		client.cpp \
 
 OBJS := $(patsubst %.cpp,$(OBJ_DIR)%.o,$(SRCS))
 

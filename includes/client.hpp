@@ -1,19 +1,13 @@
 #pragma once
 
-#include <iostream>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <cstring>
-#include <vector>
 #include <unistd.h>
-#include <sys/select.h>
-#include <string>
-#include <sys/wait.h>
-#include <stdio.h>
 
-#include "io_event.hpp"
 #include "ServerException.hpp"
+#include "io_event.hpp"
+#include "Dispatch.hpp"
 
+class dispatch;
 
 class client : public io_event 
 {

@@ -1,17 +1,15 @@
 #pragma once
 
-#include <iostream>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <cstring>
-#include <vector>
-#include <unistd.h>
-#include <sys/select.h>
+// #include <iostream>
+// #include <sys/socket.h>
+// #include <netinet/in.h>
+// #include <cstring>
+// #include <vector>
+// #include <unistd.h>
+// #include <sys/select.h>
+// #include <sys/wait.h>
+// #include <stdio.h>
 #include <string>
-#include <sys/wait.h>
-#include <stdio.h>
-
-# define MAX_CHANNELS 10
 
 class AUser
 {
