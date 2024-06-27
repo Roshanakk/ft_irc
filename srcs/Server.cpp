@@ -65,6 +65,7 @@ void Server::receive_message(void)
     Client *newClient = new Client(sockfd, _d);
     _clients.push_back(newClient);
     _d.add(*newClient);
+    std::cout << "New client connected: (" << sockfd << ")" << std::endl;
 }
 
 
