@@ -68,7 +68,7 @@ void Server::receive_message(void)
 }
 
 
-int Server::socket_func(void) const
+int Server::getSocket(void) const
 {
     return _socket;
 };

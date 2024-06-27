@@ -20,7 +20,7 @@ class Server : public IO_Event
 		//METHODS
 		void send_message(void) {}
 		void receive_message(void);
-		int socket_func(void) const;
+		int getSocket(void) const;
 
 		//GETTERS
 		std::string getType(void);

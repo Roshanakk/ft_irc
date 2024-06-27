@@ -19,14 +19,14 @@ void Dispatch::add(IO_Event& event) {
   ev.events = EPOLLIN | EPOLLET;
   ev.data.ptr = &event;
 
-  if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, event.socket_func(), &ev) == -1) {
+  if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, event.getSocket(), &ev) == -1) {
     throw ServerException("Error: failed to add event to epoll instance.");
   }
 
 }
 
 void Dispatch::remove(const IO_Event& event) {
-  if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, event.socket_func(), NULL) == -1) {
+  if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, event.getSocket(), NULL) == -1) {
     perror("epoll_ctl");
     throw ServerException("Error: failed to remove event from epoll instance.");
   } 
