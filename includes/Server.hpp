@@ -13,11 +13,11 @@
 class Server : public AIO_Event
 {
 	public:
-		//CONSTRUCTORS & DESTRUCTOR
+		// CONSTRUCTORS & DESTRUCTOR
 		Server(Dispatch& d);
 		~Server(void);
 
-		//METHODS
+		// METHODS
 		void send_message(void);
 		void receive_message(void);
 		int getSocket(void) const;
@@ -25,11 +25,9 @@ class Server : public AIO_Event
 	private:
 		Server(void);
 
-		// shared_socket
 		int _socket;
 		struct sockaddr_in _addr;
 		socklen_t _client_addr_len;
 		Dispatch& _d;
 		std::vector<Client *> _clients;
-
 };

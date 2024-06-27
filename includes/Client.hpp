@@ -14,11 +14,11 @@ class Dispatch;
 class Client : public AIO_Event 
 {
 	public:
-		//CONSTRUCTORS & DESTRUCTOR
+		// CONSTRUCTORS & DESTRUCTOR
 		Client(int sock_val, Dispatch& d);
 		~Client(void);
 
-		//METHODS
+		// METHODS
 		void send_message(void);
 		void receive_message(void);
 		int getSocket(void) const;
@@ -26,7 +26,6 @@ class Client : public AIO_Event
 	private:
 		Client(void);
 
-		// shared_socket
 		int _socket;
 		char buf[1024];
 		Dispatch& _d;
