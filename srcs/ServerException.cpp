@@ -1,11 +1,11 @@
 #include <ServerException.hpp>
 
-serverException::serverException(void) {};
+ServerException::ServerException(void) {};
 
-serverException::serverException(const std::string& msg) : _msg(msg) {};
+ServerException::ServerException(const std::string& msg) : _msg(msg) {};
 
-serverException::~serverException(void) throw() {};
+ServerException::~ServerException(void) throw() {};
 
-const char *serverException::what(void) const throw() {
+const char *ServerException::what(void) const throw() {
   return _msg.c_str();
 }

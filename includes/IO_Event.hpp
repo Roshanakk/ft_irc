@@ -2,10 +2,10 @@
 
 #include <string>
 
-class io_event {
+class IO_Event {
   public:
 
-    virtual ~io_event(void) {};
+    virtual ~IO_Event(void) {};
 
     virtual void send_message(void) = 0;
     virtual void receive_message(void) = 0;

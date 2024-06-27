@@ -11,13 +11,13 @@
 // #include "io_event.hpp"
 // #include "ServerException.hpp"
 #include "Dispatch.hpp"
-#include "server.hpp"
+#include "Server.hpp"
 
 int main(void) {
 
-  dispatch d;
+  Dispatch d;
   std::cout << "_epollfd: " << d.get_epollfd() << std::endl;
-  server s(d);
+  Server s(d);
 
   d.add(s);
 

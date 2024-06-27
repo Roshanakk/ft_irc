@@ -1,36 +1,36 @@
-#include "client.hpp"
-#include "io_event.hpp"
+#include "Client.hpp"
+#include "IO_Event.hpp"
 
 /**********************************************************/
 /*                CONSTRUCTORS & DESTRUCTOR               */
 /**********************************************************/
 
 
-client::client(int sock_val, dispatch& d) : _socket(sock_val), _type("client"), _d(d) 
+Client::Client(int sock_val, Dispatch& d) : _socket(sock_val), _type("client"), _d(d) 
 {
     if (_socket == -1) {
-    throw serverException("Error creating client socket");
+    throw ServerException("Error creating client socket");
     }
 }
 
-client::~client(void) {};
+Client::~Client(void) {};
 
 
 /****************************************/
 /*                METHODS               */
 /****************************************/
 
-void client::send_message(void)
+void Client::send_message(void)
 {
     send(_socket, buf, sizeof buf, 0);
 }
 
-void client::receive_message(void)
+void Client::receive_message(void)
 {
     //Receiving client's message
     int numbytes = recv(_socket, buf, sizeof buf, 0);
     if (numbytes < 0)
-        throw serverException("Error: failed to receive.");
+        throw ServerException("Error: failed to receive.");
     else if (numbytes == 0) //If client disconnected
     {
         _d.remove(*this);
@@ -40,7 +40,7 @@ void client::receive_message(void)
     std::cout << "Received: " << buf << std::endl;
 }
 
-int client::socket_func(void) const
+int Client::socket_func(void) const
 {
     return _socket;
 };
@@ -49,7 +49,7 @@ int client::socket_func(void) const
 /*                GETTERS               */
 /****************************************/
 
-std::string client::getType(void)
+std::string Client::getType(void)
 {
     return _type;
 }
