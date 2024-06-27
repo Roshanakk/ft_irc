@@ -16,5 +16,4 @@ class Channel
 	private:
 		std::string _name;
 		// fd_set userChannels; 
-
 };

@@ -3,12 +3,12 @@
 #include <exception>
 #include <string>
 
-class serverException : public std::exception {
+class ServerException : public std::exception {
   public:
 
-    serverException(void);
-    serverException(const std::string& msg);
-    ~serverException(void) throw();
+    ServerException(void);
+    ServerException(const std::string& msg);
+    ~ServerException(void) throw();
     const char *what(void) const throw();
 
   private:

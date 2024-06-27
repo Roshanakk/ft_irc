@@ -1,46 +1,53 @@
-#include "client.hpp"
-#include "io_event.hpp"
+#include "Client.hpp"
+#include "IO_Event.hpp"
 
 /**********************************************************/
 /*                CONSTRUCTORS & DESTRUCTOR               */
 /**********************************************************/
 
 
-client::client(int sock_val, dispatch& d) : _socket(sock_val), _type("client"), _d(d) 
+Client::Client(int sock_val, Dispatch& d) : _socket(sock_val), _type("client"), _d(d) 
 {
     if (_socket == -1) {
-    throw serverException("Error creating client socket");
+    throw ServerException("Error creating client socket");
     }
 }
 
-client::~client(void) {};
+Client::~Client(void) {
+    std::cout << "Client destructor called" << std::endl;
+    close(_socket);
+};
 
 
 /****************************************/
 /*                METHODS               */
 /****************************************/
 
-void client::send_message(void)
+void Client::send_message(void)
 {
     send(_socket, buf, sizeof buf, 0);
 }
 
-void client::receive_message(void)
+void Client::receive_message(void)
 {
     //Receiving client's message
+    memset(buf, 0, sizeof buf);
     int numbytes = recv(_socket, buf, sizeof buf, 0);
     if (numbytes < 0)
-        throw serverException("Error: failed to receive.");
+        throw ServerException("Error: failed to receive.");
     else if (numbytes == 0) //If client disconnected
     {
+        std::cout << "Client (" << _socket << ") disconnected" << std::endl;
         _d.remove(*this);
         close(_socket);
         return ;
     }
-    std::cout << "Received: " << buf << std::endl;
+    std::cout << "Received(" << _socket << "): " << buf;
+    std::string response = "Message received\n";
+    send(_socket, response.c_str(), response.size(), 0);
 }
 
-int client::socket_func(void) const
+int Client::getSocket(void) const
 {
     return _socket;
 };
@@ -49,7 +56,7 @@ int client::socket_func(void) const
 /*                GETTERS               */
 /****************************************/
 
-std::string client::getType(void)
+std::string Client::getType(void)
 {
     return _type;
 }

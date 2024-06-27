@@ -17,13 +17,13 @@ NOCOLOR:=\033[0m
 
 SRCS = 	main.cpp \
 		ServerException.cpp \
-		AUser.cpp \
+		Dispatch.cpp \
+		Server.cpp \
+		Client.cpp \
 		Channel.cpp \
+		AUser.cpp \
 		UserOperator.cpp \
 		UserRegular.cpp \
-		Dispatch.cpp \
-		server.cpp \
-		client.cpp \
 
 OBJS := $(patsubst %.cpp,$(OBJ_DIR)%.o,$(SRCS))
 

@@ -5,22 +5,22 @@
 #include <cstdio>
 
 #include "ServerException.hpp"
-#include "io_event.hpp"
-#include "client.hpp"
+#include "IO_Event.hpp"
+#include "Client.hpp"
 #include "Dispatch.hpp"
 
-class server : public io_event
+class Server : public IO_Event
 {
 	public:
 		//CONSTRUCTORS & DESTRUCTOR
-		server(void);
-		server(dispatch& d);
-		~server(void);
+		Server(void);
+		Server(Dispatch& d);
+		~Server(void);
 
 		//METHODS
-		void send_message(void) {}
+		void send_message(void);
 		void receive_message(void);
-		int socket_func(void) const;
+		int getSocket(void) const;
 
 		//GETTERS
 		std::string getType(void);
@@ -32,7 +32,7 @@ class server : public io_event
 		std::string _type;
 		struct sockaddr_in _addr;
 		socklen_t _client_addr_len;
-		dispatch& _d;
-		std::vector<client *> _clients;
+		Dispatch& _d;
+		std::vector<Client *> _clients;
 
 };

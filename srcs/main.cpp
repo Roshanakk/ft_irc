@@ -1,28 +1,22 @@
-// #include <sys/socket.h>
-// #include <sys/epoll.h>
-// #include <arpa/inet.h>
-// #include <vector>
-// #include <exception>
-// #include <string>
 #include <iostream>
-// #include <unistd.h>
-// #include <cstdio>
 
-// #include "io_event.hpp"
-// #include "ServerException.hpp"
 #include "Dispatch.hpp"
-#include "server.hpp"
+#include "Server.hpp"
 
 int main(void) {
 
-  dispatch d;
-  std::cout << "_epollfd: " << d.get_epollfd() << std::endl;
-  server s(d);
+  Dispatch d;
+  Server s(d);
+  // std::cout << "_epollfd: " << d.get_epollfd() << std::endl;
 
   d.add(s);
 
-  while (1) {
-    d.run();
+  while (!d.get_sigint_received()) {
+    try {
+      d.run();
+    } catch (const ServerException& e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
 
   return 0;

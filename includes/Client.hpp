@@ -2,36 +2,36 @@
 
 #include <sys/socket.h>
 #include <unistd.h>
+#include <cstring>
 
 #include "ServerException.hpp"
-#include "io_event.hpp"
+#include "IO_Event.hpp"
 #include "Dispatch.hpp"
 
-class dispatch;
+class Dispatch;
 
-class client : public io_event 
+class Client : public IO_Event 
 {
 	public:
 		//CONSTRUCTORS & DESTRUCTOR
-		client(int sock_val, dispatch& d);
-		~client(void);
+		Client(int sock_val, Dispatch& d);
+		~Client(void);
 
 		//METHODS
 		void send_message(void);
 		void receive_message(void);
-		int socket_func(void) const;
+		int getSocket(void) const;
 
 		//GETTERS
 		std::string getType(void);
 
-
 	private:
-		client(void);
+		Client(void);
 
 		// shared_socket
 		int _socket;
 		char buf[1024];
 		std::string _type;
-		dispatch& _d;
+		Dispatch& _d;
 
 };
