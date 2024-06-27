@@ -71,7 +71,10 @@ void Server::receive_message(void)
     _clients.push_back(newClient);
     _d.add(*newClient);
     std::cout << "New client connected: (" << sockfd << ")" << std::endl;
-    std::string response = (RPL_WELCOME("host", "nick", "prefix"));
+    std::string host = "host";
+    std::string nick = "nick";
+    std::string prefix = "prefix";
+    std::string response = (RPL_WELCOME(host, nick, prefix));
     send(sockfd, response.c_str(), response.size(), 0);
 }
 
