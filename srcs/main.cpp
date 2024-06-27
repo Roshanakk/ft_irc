@@ -1,23 +1,17 @@
-#include <sys/socket.h>
-#include <sys/epoll.h>
-#include <arpa/inet.h>
-#include <vector>
-#include <exception>
-#include <string>
+// #include <sys/socket.h>
+// #include <sys/epoll.h>
+// #include <arpa/inet.h>
+// #include <vector>
+// #include <exception>
+// #include <string>
 #include <iostream>
-#include <unistd.h>
-#include <cstdio>
-#include "ServerException.hpp"
+// #include <unistd.h>
+// #include <cstdio>
 
-
-#define MAX_EVENTS 8
-
-class dispatch;
-class client;
-class server;
-
-
-
+// #include "io_event.hpp"
+// #include "ServerException.hpp"
+#include "Dispatch.hpp"
+#include "server.hpp"
 
 int main(void) {
 

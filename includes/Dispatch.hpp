@@ -1,14 +1,21 @@
-#include "ServerException.hpp"
+#pragma once
+
 #include <sys/epoll.h>
+#include <cstdio>
 #include <iostream>
 
+#include "ServerException.hpp"
+#include "io_event.hpp"
+
 #define MAX_EVENTS 8
+
+// class io_event;
 
 class dispatch {
   public:
 
     dispatch(void);
-    ~dispatch(void) {};
+    ~dispatch(void);
 
     // Member Functions //
     void add(io_event& event);

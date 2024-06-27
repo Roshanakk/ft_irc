@@ -9,7 +9,7 @@ dispatch::dispatch(void)
 }
 
 // Destructors //
-~dispatch(void) {};
+dispatch::~dispatch(void) {};
 
 // Member Functions //
 void dispatch::add(io_event& event) {
