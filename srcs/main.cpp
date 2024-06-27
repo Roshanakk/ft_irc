@@ -16,8 +16,8 @@
 int main(void) {
 
   Dispatch d;
-  std::cout << "_epollfd: " << d.get_epollfd() << std::endl;
   Server s(d);
+  // std::cout << "_epollfd: " << d.get_epollfd() << std::endl;
 
   d.add(s);
 
