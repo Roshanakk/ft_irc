@@ -22,10 +22,6 @@ class Server : public AIO_Event
 		void receive_message(void);
 		int getSocket(void) const;
 
-		//GETTERS
-		std::string getType(void);
-
-
 	private:
 		Server(void);
 
