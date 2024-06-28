@@ -24,6 +24,7 @@ SRCS = 	main.cpp \
 		AUser.cpp \
 		UserOperator.cpp \
 		UserRegular.cpp \
+		ArgParse.cpp \
 
 OBJS := $(patsubst %.cpp,$(OBJ_DIR)%.o,$(SRCS))
 
