@@ -12,7 +12,7 @@ Server::Server(Dispatch& d) : _d(d)
     //Creating server socket
     _socket = socket(AF_INET, SOCK_STREAM, 0);
     if (_socket == -1) {
-    throw ServerException("Error creating server socket");
+        throw ServerException("Error creating server socket");
     }
 
     _addr.sin_family = AF_INET;
@@ -23,18 +23,18 @@ Server::Server(Dispatch& d) : _d(d)
     //And allowing multiple sockets to bind to the same IP & port
     int opt = 1;
     if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
-    throw ServerException("Error setting socket options");
+        throw ServerException("Error setting socket options");
     }
 
     //Preparing server socket for connections
     if (bind(_socket, (struct sockaddr *)&_addr, sizeof _addr) == -1) {
-    perror("bind");
-    throw ServerException("Error binding server socket");
+        perror("bind");
+        throw ServerException("Error binding server socket");
     }
 
     if (listen(_socket, 5) == -1) {
-    perror("listen");
-    throw ServerException("Error listening on server socket");
+        perror("listen");
+        throw ServerException("Error listening on server socket");
     }
 
     _client_addr_len = sizeof _addr;

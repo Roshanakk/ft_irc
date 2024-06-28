@@ -8,12 +8,31 @@ void ArgParse::numArgs(int argc) {
   }
 }
 
-void ArgParse::parsePort(char *port) {
+int ArgParse::parsePort(char *portStr) {
   // Parse the argument for the port
-  (void) port;
+  for (char* p = portStr; *p; ++p) {
+    if (!std::isdigit(*p)) {
+      throw ServerException("Port must be a (pos) number.");
+    }
+  }
+
+  // Convert string to long
+  char* end;
+  long port = std::strtol(portStr, &end, 10);
+
+  // Check for valid port range
+  if (port < 1 || port > 65535) {
+    throw ServerException("Port number must be between 1 and 65535.");
+  }
+
+  return static_cast<int>(port);
 }
 
-void ArgParse::parsePass(char *pass) {
+std::string ArgParse::parsePass(char *pass) {
   // Parse the argument for the password
-  (void) pass;
+  std::string passStr(pass);
+  if (passStr.size() < 1) {
+    throw ServerException("Password must be at least 1 character long.");
+  }
+  return passStr;
 }
