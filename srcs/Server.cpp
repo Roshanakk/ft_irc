@@ -7,7 +7,7 @@
 
 // server::server() {}
 
-Server::Server(Dispatch& d) : _d(d)
+Server::Server(Dispatch& d, int port) : _d(d), _port(port)
 {
     //Creating server socket
     _socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -16,7 +16,7 @@ Server::Server(Dispatch& d) : _d(d)
     }
 
     _addr.sin_family = AF_INET;
-    _addr.sin_port = htons(12345);
+    _addr.sin_port = htons(_port);
     _addr.sin_addr.s_addr = INADDR_ANY;
 
     //Allowing socket to be reusable if the program restarts

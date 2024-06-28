@@ -14,7 +14,7 @@ class Server : public AIO_Event
 {
 	public:
 		// CONSTRUCTORS & DESTRUCTOR
-		Server(Dispatch& d);
+		Server(Dispatch& d, int port);
 		~Server(void);
 
 		// METHODS
@@ -26,6 +26,7 @@ class Server : public AIO_Event
 		Server(void);
 
 		int _socket;
+		int _port;
 		struct sockaddr_in _addr;
 		socklen_t _client_addr_len;
 		Dispatch& _d;
