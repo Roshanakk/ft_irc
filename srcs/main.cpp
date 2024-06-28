@@ -4,17 +4,13 @@
 #include "Server.hpp"
 #include "ArgParse.hpp"
 
-int main(int argc, char *argv) {
-
-  if (argc != 3) {
-    std::cerr << "Usage: ./ircserv [port] [password]" << std::endl;
-    return 1;
-  }
+int main(int argc, char **argv) {
 
   try {
-    ArgParse::parsePort();
-    ArgParse::parsePass();
-  } catch (const ArgParseException& e) {
+    ArgParse::numArgs(argc);
+    ArgParse::parsePort(argv[1]);
+    ArgParse::parsePass(argv[2]);
+  } catch (const ServerException& e) {
     std::cerr << e.what() << std::endl;
     return 1;
   }
