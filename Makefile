@@ -1,4 +1,4 @@
-NAME = ircsrv
+NAME = ircserv
 
 ### SETTINGS ###
 CXX := c++
