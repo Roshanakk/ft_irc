@@ -43,8 +43,28 @@ void Client::receive_message(void)
         close(_socket);
         return ;
     }
-    std::cout << "Received(" << _socket << "): " << buf;
+    _messageStr += buf;
+    if (std::find(_messageStr.begin(), _messageStr.end(), '\n') == _messageStr.end())
+        return ;
+    std::vector<std::string> strVec = split(_messageStr, '\n');
+    for (std::vector<std::string>::iterator it = strVec.begin(); it != strVec.end(); it++) {
+        // should call parsing function here rather than just printing.
+        std::cout << "Received(" << _socket << "): " << *it << std::endl;
+    }
+    _messageStr.clear();
     send_message();
+}
+
+std::vector<std::string> Client::split(const std::string& str, char delim) {
+    std::vector<std::string> retVec;
+    std::istringstream iss(str);
+    std::string line;
+
+    while (std::getline(iss, line, delim)) {
+        retVec.push_back(line);
+    }
+
+    return retVec;
 }
 
 int Client::getSocket(void) const
