@@ -3,6 +3,9 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <cstring>
+#include <algorithm>
+#include <vector>
+#include <sstream>
 
 #include "ServerException.hpp"
 #include "AIO_Event.hpp"
@@ -22,12 +25,14 @@ class Client : public AIO_Event
 		void send_message(void);
 		void receive_message(void);
 		int getSocket(void) const;
+		std::vector<std::string> split(const std::string& str, char delim);
 
 	private:
 		Client(void);
 
 		int _socket;
 		char buf[1024];
+		std::string _messageStr;
 		Dispatch& _d;
 
 };

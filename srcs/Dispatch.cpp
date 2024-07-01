@@ -18,7 +18,7 @@ void Dispatch::add(AIO_Event& event) {
   struct epoll_event ev;
 
   // ev.events = EPOLLIN | EPOLLOUT;
-  ev.events = EPOLLIN | EPOLLET;
+  ev.events = EPOLLIN;// | EPOLLET;
   ev.data.ptr = &event;
 
   if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, event.getSocket(), &ev) == -1) {
