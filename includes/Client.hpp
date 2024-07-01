@@ -11,6 +11,7 @@
 #include "AIO_Event.hpp"
 #include "Dispatch.hpp"
 #include "ServerReplies.hpp"
+#include "Utilities.hpp"
 
 class Dispatch;
 
@@ -25,7 +26,6 @@ class Client : public AIO_Event
 		void send_message(void);
 		void receive_message(void);
 		int getSocket(void) const;
-		std::vector<std::string> split(const std::string& str, char delim);
 
 	private:
 		Client(void);
