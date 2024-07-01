@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
   std::cout << "Password: " << passStr << std::endl;
 
   Dispatch d;
-  Server s(d);
+  Server s(d, port);
 
   d.add(s);
 

@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <cstring>
+#include <algorithm>
 
 #include "ServerException.hpp"
 #include "AIO_Event.hpp"
