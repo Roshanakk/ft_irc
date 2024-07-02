@@ -34,5 +34,4 @@ class Client : public AIO_Event
 		char buf[512];
 		std::string _messageStr;
 		Dispatch& _d;
-
 };
