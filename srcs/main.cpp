@@ -4,7 +4,7 @@
 #include "Dispatch.hpp"
 #include "Server.hpp"
 #include "ArgParse.hpp"
-// #include "Channel.hpp"
+#include "Channel.hpp"
 
 int main(int argc, char **argv) {
 
@@ -25,9 +25,9 @@ int main(int argc, char **argv) {
   std::cout << "Password: " << passStr << std::endl;
 
   std::set<Client *> clients;
-  // std::set<Channel *> channels;
+  std::set<Channel *> channels;
   Dispatch d;
-  Server s(d, port, clients);
+  Server s(d, port, clients, channels);
 
   d.add(s);
 

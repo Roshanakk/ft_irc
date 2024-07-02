@@ -6,8 +6,9 @@
 
 // server::server() {}
 
-Server::Server(Dispatch& d, int port, std::set<Client *> & clients)
-    : _port(port), _d(d), _clients(clients)
+Server::Server(Dispatch& d, int port, 
+    std::set<Client *> & clients, std::set<Channel *> & channels)
+    : _port(port), _d(d), _clients(clients), _channels(channels)
 {
     //Creating server socket
     _socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -67,7 +68,7 @@ void Server::receive_message(void)
     int sockfd = accept(_socket, (struct sockaddr *)&remoteaddr, &addrlen);
 
     //Creating the client class and adding it to Dispatch '_d'
-    Client *newClient = new Client(sockfd, _d);
+    Client *newClient = new Client(sockfd, _d, _clients, _channels);
     _clients.insert(newClient);
     _d.add(*newClient);
     std::cout << "New client connected: (" << sockfd << ")" << std::endl;
