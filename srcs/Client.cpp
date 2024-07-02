@@ -9,8 +9,9 @@ Client::Client(int sock_val, Dispatch& d)
     : _socket(sock_val), _d(d) 
 {
     if (_socket == -1) {
-    throw ServerException("Error creating client socket");
+        throw ServerException("Error creating client socket");
     }
+    _messageStr.clear();
 }
 
 Client::~Client(void) {
@@ -33,7 +34,7 @@ void Client::receive_message(void)
 {
     //Receiving client's message
     memset(buf, 0, sizeof buf);
-    int numbytes = recv(_socket, buf, sizeof buf, 0);
+    int numbytes = recv(_socket, buf, (sizeof buf) - 1, 0);
     if (numbytes < 0)
         throw ServerException("Error: failed to receive.");
     else if (numbytes == 0) //If client disconnected
@@ -43,15 +44,22 @@ void Client::receive_message(void)
         close(_socket);
         return ;
     }
+
     _messageStr += buf;
     if (std::find(_messageStr.begin(), _messageStr.end(), '\n') == _messageStr.end())
         return ;
+
     std::vector<std::string> strVec = Utilities::split(_messageStr, '\n');
-    for (std::vector<std::string>::iterator it = strVec.begin(); it != strVec.end(); it++) {
-        // should call parsing function here rather than just printing.
-        std::cout << "Received(" << _socket << "): " << *it << std::endl;
-    }
     _messageStr.clear();
+    for (std::vector<std::string>::iterator it = strVec.begin(); it != strVec.end(); it++) {
+        if (std::find(it->begin(), it->end(), '\r') != it->end())
+            // should call parsing function here rather than just printing.
+            std::cout << "Received(" << _socket << "): " << *it << std::endl;
+        else {
+            std::cout << "\tAdded remainder: " << *it << std::endl;
+            _messageStr = *it;
+        }
+    }
     send_message();
 }
 

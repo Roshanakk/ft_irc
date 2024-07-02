@@ -1,5 +1,7 @@
 #include "Utilities.hpp"
 
+#include <iostream>
+
 Utilities::~Utilities(void) {}
 
 std::vector<std::string> Utilities::split(const std::string& str, char delim) {
