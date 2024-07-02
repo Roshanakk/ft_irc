@@ -43,11 +43,16 @@ AUser & AUser::operator=(const AUser & src)
     return (*this);
 }
 
-/**********************************************************/
-/*                        GETTERS                         */
-/**********************************************************/
+/*********************************************************/
+/*                 GETTERS & SETTERS                     */
+/*********************************************************/
 
 std::string AUser::getNickname() const
 {
     return (_nickname);
+}
+
+void AUser::setNickname(std::string nickname)
+{
+    _nickname = nickname;
 }
