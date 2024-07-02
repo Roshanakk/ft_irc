@@ -15,3 +15,23 @@ std::vector<std::string> Utilities::split(const std::string& str, char delim) {
 
     return retVec;
 }
+
+std::vector<std::string> Utilities::clientSplit(const std::string& str, char delim) {
+    std::vector<std::string> retVec;
+    size_t start = 0;
+    size_t end = str.find(delim);
+
+    while (end != std::string::npos) {
+        // Include the delimiter in the substring
+        retVec.push_back(str.substr(start, end - start + 1));
+        start = end + 1;
+        end = str.find(delim, start);
+    }
+
+    // Add the remaining part of the string, if any
+    if (start < str.length()) {
+        retVec.push_back(str.substr(start));
+    }
+
+    return retVec;
+}

@@ -49,12 +49,12 @@ void Client::receive_message(void)
     if (std::find(_messageStr.begin(), _messageStr.end(), '\n') == _messageStr.end())
         return ;
 
-    std::vector<std::string> strVec = Utilities::split(_messageStr, '\n');
+    std::vector<std::string> strVec = Utilities::clientSplit(_messageStr, '\n');
     _messageStr.clear();
     for (std::vector<std::string>::iterator it = strVec.begin(); it != strVec.end(); it++) {
-        if (std::find(it->begin(), it->end(), '\r') != it->end())
+        if (std::find(it->begin(), it->end(), '\n') != it->end())
             // should call parsing function here rather than just printing.
-            std::cout << "Received(" << _socket << "): " << *it << std::endl;
+            std::cout << "Received(" << _socket << "): " << *it;
         else {
             std::cout << "\tAdded remainder: " << *it << std::endl;
             _messageStr = *it;

@@ -31,7 +31,7 @@ class Client : public AIO_Event
 		Client(void);
 
 		int _socket;
-		char buf[4];
+		char buf[512];
 		std::string _messageStr;
 		Dispatch& _d;
 
