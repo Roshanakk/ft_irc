@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include "ServerReplies.hpp"
 
 /**********************************************************/
 /*                CONSTRUCTORS & DESTRUCTOR               */
@@ -7,7 +6,9 @@
 
 // server::server() {}
 
-Server::Server(Dispatch& d, int port) : _port(port), _d(d)
+Server::Server(Dispatch& d, int port, 
+    std::set<Client *> & clients, std::set<Channel *> & channels)
+    : _port(port), _d(d), _clients(clients), _channels(channels)
 {
     //Creating server socket
     _socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -43,8 +44,8 @@ Server::Server(Dispatch& d, int port) : _port(port), _d(d)
 Server::~Server(void)
 {
     std::cout << "Server destructor called" << std::endl;
-    for (size_t i = 0; i < _clients.size(); ++i)
-        delete _clients[i];
+    for (std::set<Client*>::iterator it = _clients.begin(); it != _clients.end(); it++)
+        delete *it;
     close(_socket);
     close(_d.get_epollfd());
 };
@@ -67,8 +68,8 @@ void Server::receive_message(void)
     int sockfd = accept(_socket, (struct sockaddr *)&remoteaddr, &addrlen);
 
     //Creating the client class and adding it to Dispatch '_d'
-    Client *newClient = new Client(sockfd, _d);
-    _clients.push_back(newClient);
+    Client *newClient = new Client(sockfd, _d, _clients, _channels);
+    _clients.insert(newClient);
     _d.add(*newClient);
     std::cout << "New client connected: (" << sockfd << ")" << std::endl;
 

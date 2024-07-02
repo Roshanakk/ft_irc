@@ -8,8 +8,9 @@
 /**********************************************************/
 
 
-Client::Client(int sock_val, Dispatch& d) 
-    : _socket(sock_val), _d(d) 
+Client::Client(int sock_val, Dispatch& d,
+    std::set<Client *> & clients, std::set<Channel *> & channels)
+    : _socket(sock_val), _d(d), _clients(clients), _channels(channels)
 {
     if (_socket == -1) {
         throw ServerException("Error creating client socket");

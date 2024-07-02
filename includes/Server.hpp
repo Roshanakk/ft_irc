@@ -1,20 +1,24 @@
 #pragma once
 
 #include <netinet/in.h>
-#include <vector>
 #include <cstdio>
 #include <sstream>
+#include <set>
 
+#include "ServerReplies.hpp"
 #include "ServerException.hpp"
 #include "AIO_Event.hpp"
 #include "Client.hpp"
 #include "Dispatch.hpp"
+#include "Client.hpp"
+#include "Channel.hpp"
 
 class Server : public AIO_Event
 {
 	public:
 		// CONSTRUCTORS & DESTRUCTOR
-		Server(Dispatch& d, int port);
+		Server(Dispatch& d, int port, 
+			std::set<Client *>& clients, std::set<Channel *>& channels);
 		~Server(void);
 
 		// METHODS
@@ -30,5 +34,6 @@ class Server : public AIO_Event
 		struct sockaddr_in _addr;
 		socklen_t _client_addr_len;
 		Dispatch& _d;
-		std::vector<Client *> _clients;
+		std::set<Client *>& _clients;
+		std::set<Channel *>& _channels;
 };

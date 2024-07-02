@@ -9,9 +9,10 @@ class Channel
 		Channel(std::string name);
 		Channel(const Channel & src);
 
+		~Channel();
+
 		Channel & operator=(const Channel & src);
 
-		~Channel();
 
 	private:
 		std::string _name;
