@@ -22,9 +22,6 @@ SRCS = 	main.cpp \
 		Server.cpp \
 		Client.cpp \
 		Channel.cpp \
-		AUser.cpp \
-		UserOperator.cpp \
-		UserRegular.cpp \
 		ArgParse.cpp \
 		Utilities.cpp \
 		Command.cpp \

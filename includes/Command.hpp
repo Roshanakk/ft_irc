@@ -4,7 +4,6 @@
 #include <string>
 #include <set>
 
-#include "AUser.hpp"
 #include "Client.hpp"
 
 typedef enum e_cmd
