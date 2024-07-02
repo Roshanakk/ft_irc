@@ -1,4 +1,5 @@
 #include <ServerException.hpp>
+#include "ServerReplies.hpp"
 
 ServerException::ServerException(void) {};
 

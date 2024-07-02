@@ -17,6 +17,7 @@ NOCOLOR:=\033[0m
 
 SRCS = 	main.cpp \
 		ServerException.cpp \
+		NoCommandException.cpp \
 		Dispatch.cpp \
 		Server.cpp \
 		Client.cpp \
@@ -26,6 +27,7 @@ SRCS = 	main.cpp \
 		UserRegular.cpp \
 		ArgParse.cpp \
 		Utilities.cpp \
+		Command.cpp \
 
 OBJS := $(patsubst %.cpp,$(OBJ_DIR)%.o,$(SRCS))
 
