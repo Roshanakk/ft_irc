@@ -7,7 +7,7 @@
 
 // server::server() {}
 
-Server::Server(Dispatch& d) : _d(d)
+Server::Server(Dispatch& d, int port) : _port(port), _d(d)
 {
     //Creating server socket
     _socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -16,7 +16,7 @@ Server::Server(Dispatch& d) : _d(d)
     }
 
     _addr.sin_family = AF_INET;
-    _addr.sin_port = htons(12345);
+    _addr.sin_port = htons(_port);
     _addr.sin_addr.s_addr = INADDR_ANY;
 
     //Allowing socket to be reusable if the program restarts
@@ -71,6 +71,13 @@ void Server::receive_message(void)
     _clients.push_back(newClient);
     _d.add(*newClient);
     std::cout << "New client connected: (" << sockfd << ")" << std::endl;
+
+    // Need to accept the conection but do not give the client full 
+    // access to the server until we verify all information and the 
+    // client gives the correcct password.
+
+    // This portion will need to be sent in addition to rpl 002 003 and 004
+    // Will not be in this function; should be in 
     std::string host = "host";
     std::string nick = "nick";
     std::string prefix = "prefix";

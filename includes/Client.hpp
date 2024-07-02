@@ -3,11 +3,15 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <cstring>
+#include <algorithm>
+#include <vector>
+#include <sstream>
 
 #include "ServerException.hpp"
 #include "AIO_Event.hpp"
 #include "Dispatch.hpp"
 #include "ServerReplies.hpp"
+#include "Utilities.hpp"
 
 class Dispatch;
 
@@ -27,7 +31,8 @@ class Client : public AIO_Event
 		Client(void);
 
 		int _socket;
-		char buf[1024];
+		char buf[512];
+		std::string _messageStr;
 		Dispatch& _d;
 
 };

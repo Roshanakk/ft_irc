@@ -1,7 +1,7 @@
 NAME = ircserv
 
 ### SETTINGS ###
-CXX := c++
+CXX := g++
 SRC_DIR := srcs/
 OBJ_DIR := objs/
 H_DIR := includes/
@@ -26,6 +26,7 @@ SRCS = 	main.cpp \
 		UserOperator.cpp \
 		UserRegular.cpp \
 		ArgParse.cpp \
+		Utilities.cpp \
 		Command.cpp \
 
 OBJS := $(patsubst %.cpp,$(OBJ_DIR)%.o,$(SRCS))
