@@ -44,7 +44,10 @@ int Command::whatCmd(std::string & line)
 {
     std::string::size_type spacePos = line.find(' ');
     std::string firstWord = line.substr(0, spacePos);
-    
+
+    for (size_t i = 0; i < _listCmds->length() - 1; ++i)
+        std::cout << _listCmds[i] << std::endl;
+
     for (int i = 0; i < NB_CMDS; ++i)
     {
         if (firstWord == _listCmds[i])
