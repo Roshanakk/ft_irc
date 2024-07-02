@@ -6,6 +6,8 @@
 #include "ArgParse.hpp"
 #include "Channel.hpp"
 
+#include "Command.hpp"
+
 int main(int argc, char **argv) {
 
   int port = 0;
@@ -41,3 +43,17 @@ int main(int argc, char **argv) {
 
   return 0;
 }
+
+// int main(int argc, char **argv )
+// {
+//   if (argc < 2)
+//     return 1;
+  
+//   std::string line = argv[1];
+
+//   Client client;
+
+//   Command command(client);
+//   command.whatCmd(line);
+
+// }
