@@ -48,7 +48,7 @@ int Command::whatCmd(std::string & line)
     // for (size_t i = 0; i < _listCmds->length() - 1; ++i)
     //     std::cout << _listCmds[i] << std::endl;
 
-    std::cout << "HELLO YOU" << std::endl;
+    std::cout << "_listCmds length" << _listCmds->length() << std::endl;
 
     for (int i = 0; i < NB_CMDS; ++i)
     {
