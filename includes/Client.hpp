@@ -15,6 +15,7 @@
 #include "Channel.hpp"
 
 class Dispatch;
+class Channel;
 
 class Client : public AIO_Event 
 {

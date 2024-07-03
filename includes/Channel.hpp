@@ -6,8 +6,9 @@
 
 #include "Client.hpp"
 
-class Channel
-{
+class Client;
+
+class Channel {
 	public:
 		// Constructors & Destructor //
 		Channel(std::string name, std::string key_val = "");

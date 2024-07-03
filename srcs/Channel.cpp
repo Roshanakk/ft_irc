@@ -4,13 +4,11 @@
 /*                CONSTRUCTORS & DESTRUCTOR               */
 /**********************************************************/
 
-Channel::Channel(std::string name, std::string key_val = "") 
+Channel::Channel(std::string name, std::string key_val) 
     : _name(name), _key(key_val) {}
-}
 
 Channel::Channel(const Channel & src) 
-    : _name(src._name), _key(src._key){
-}
+    : _name(src._name), _key(src._key) {}
 
 Channel::~Channel() {}
 
@@ -32,8 +30,11 @@ Channel & Channel::operator=(const Channel & src)
 
 void Channel::forwardMessage(std::string message, Client *sender) {
     for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
+        (void) message;
         if (it->first != sender) {
-            it->first->send_message(message);
+            // Should send message to client but as a PRIVMSG command.
+            // DEBUG: show message
+            //it->first->send_message(message);
         }
     }
 };
