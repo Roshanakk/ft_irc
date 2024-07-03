@@ -28,10 +28,10 @@ Client::~Client(void) {
 /*                METHODS               */
 /****************************************/
 
-void Client::send_message(void)
+void Client::send_message(std::string message)
 {
-    std::string response = "Message Received\n";
-    send(_socket, response.c_str(), response.size(), 0);
+    // std::string response = "Message Received\n";
+    send(_socket, message.c_str(), message.size(), 0);
 }
 
 void Client::receive_message(void)
@@ -63,17 +63,22 @@ void Client::receive_message(void)
         {
             // should call parsing function here rather than just printing.
             std::cout << "Received(" << _socket << "): " << *it;
-            command.whatCmd(*it);
+            command.doCmd(*it);
         }
         else {
             std::cout << "\tAdded remainder: " << *it << std::endl;
             _messageStr = *it;
         }
     }
-    send_message();
+    send_message("Message received\n");
 }
 
 int Client::getSocket(void) const
 {
-    return _socket;
+    return (_socket);
 };
+
+std::string Client::getHostname(void) const
+{
+    return (_hostname);
+}

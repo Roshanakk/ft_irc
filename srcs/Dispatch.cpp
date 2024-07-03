@@ -46,7 +46,7 @@ void Dispatch::run(void) {
       event->receive_message();
     }
     if (_events[i].events & EPOLLOUT) {
-      event->send_message();
+      event->send_message("");
     }
   }
 }

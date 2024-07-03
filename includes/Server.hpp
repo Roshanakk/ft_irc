@@ -22,7 +22,7 @@ class Server : public AIO_Event
 		~Server(void);
 
 		// METHODS
-		void send_message(void);
+		void send_message(std::string message);
 		void receive_message(void);
 		int getSocket(void) const;
 
