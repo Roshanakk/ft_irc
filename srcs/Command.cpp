@@ -10,11 +10,20 @@ Command::Command(Client & client)
 
     std::string listCmds[21] = {"CAP", "INFO", "INVITE", "JOIN", "LIST", "KICK",
                 "KILL", "MODE", "NAMES", "NICK", "NOTICE", 
-                "PART", "PING", "PRIMSG", "TOPIC", "USER",
+                "PART", "PING", "PRIVMSG", "TOPIC", "USER",
                 "VERSION", "WHO", "WHOIS", "WHOWAS", "NB_CMDS" };
 
+    void  (Command::*fctCmds[21])() = {&Command::handle_CAP, &Command::handle_INFO, &Command::handle_INVITE,
+                                &Command::handle_JOIN, &Command::handle_LIST, &Command::handle_KICK, &Command::handle_KILL, &Command::handle_MODE,
+                                &Command::handle_NAMES, &Command::handle_NICK, &Command::handle_NOTICE, &Command::handle_PART,
+                                &Command::handle_PING, &Command::handle_PRIVMSG, &Command::handle_TOPIC, &Command::handle_USER,
+                                &Command::handle_VERSION, &Command::handle_WHO, &Command::handle_WHOIS, &Command::handle_WHOWAS};
+
     for (size_t i = 0; i < NB_CMDS; ++i)
+    {
         _listCmds[i] = listCmds[i];
+        _fctCmds[i] = fctCmds[i];
+    }
 
 }
 
@@ -26,9 +35,9 @@ Command::~Command()
 
 
 
-/*****************************************/
-/*                COMMANDS               */
-/*****************************************/
+/*************************************************/
+/*                GENERAL MANAGING               */
+/*************************************************/
 
 // void Commands::doNICK(std::string & nickname, AUser * user)
 // {
@@ -40,40 +49,86 @@ Command::~Command()
 
 // }
 
-int Command::whatCmd(std::string & line)
+// int Command::whatCmd(std::string & line)
+// {
+//     std::string::size_type spacePos = line.find(' ');
+//     std::string firstWord = line.substr(0, spacePos);
+
+//     for (int i = 0; i < NB_CMDS; ++i)
+//     {
+//         if (firstWord == _listCmds[i])
+//             return (i);
+//     }
+
+//     (void) _client;
+//     return (-1);
+// }
+
+void Command::doCmd(std::string & line)
 {
-    std::string::size_type spacePos = line.find(' ');
-    std::string firstWord = line.substr(0, spacePos);
+    size_t firstSpacePos = line.find(' ');
+    if (firstSpacePos == std::string::npos)
+        firstSpacePos = line.size() - 1;
 
-    for (int i = 0; i < NB_CMDS; ++i)
+    std::string cmd = line.substr(0, firstSpacePos);
+    std::string parameters = line.substr(firstSpacePos);
+    parameters.erase(std::remove(parameters.begin(), parameters.end(), '\n'));
+
+    _cmdLine.push_back(cmd);
+    _cmdLine.push_back(parameters);
+
+    try
     {
-        if (firstWord == _listCmds[i])
-            return (i);
-    }
+        int i = 0;
+        while (i < NB_CMDS && _cmdLine[0] != _listCmds[i])
+            ++i;
 
-    (void) _client;
-    return (-1);
+        if (i == NB_CMDS)
+            throw(NoCommandException(ERR_UNKNOWNCOMMAND(_client.getHostname(), _cmdLine[0])));
+        else
+            (this->*(_fctCmds[i]))();
+    }
+    catch(const std::exception& e)
+    {
+        _client.send_message(e.what());
+    }
+    
 }
 
-// void Command::doCmd(std::string & line)
-// {
 
-//     try
-//     {
-//         int cmd = whatCmd(line);
-//         if (cmd < 0)
-//         {
-//             // throw(NoCommandException())
-//         }
-//         /* code */
-//     }
-//     catch(const std::exception& e)
-//     {
-//         std::cerr << e.what() << '\n';
-//     }
-    
+/*****************************************/
+/*                COMMANDS               */
+/*****************************************/
 
-    
-//     std::string listCmds[3] = {"NICK", "USER", "EXIT"};
-        
-// }
+void Command::handle_CAP() {}
+void Command::handle_INFO() {}
+void Command::handle_INVITE() {}
+
+void Command::handle_JOIN() {
+
+    // std::cout << "YOUHOU" << std::endl;
+}
+
+void Command::handle_LIST() {}
+void Command::handle_KICK() {}
+void Command::handle_KILL() {}
+void Command::handle_MODE() {}
+void Command::handle_NAMES() {}
+void Command::handle_NICK() {}
+void Command::handle_NOTICE() {}
+void Command::handle_PART() {}
+
+void Command::handle_PING()
+{
+    std::string pong = "PONG";
+
+    send(_client.getSocket(), pong.c_str(), pong.size(), 0);
+}
+
+void Command::handle_PRIVMSG() {}
+void Command::handle_TOPIC() {}
+void Command::handle_USER() {}
+void Command::handle_VERSION() {}
+void Command::handle_WHO() {}
+void Command::handle_WHOIS() {}
+void Command::handle_WHOWAS() {}

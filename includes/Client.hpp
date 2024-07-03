@@ -25,17 +25,21 @@ class Client : public AIO_Event
 		~Client(void);
 
 		// METHODS
-		void send_message(void);
+		void send_message(std::string message);
 		void receive_message(void);
+
+		//GETTERS
 		int getSocket(void) const;
+		std::string getHostname(void) const;
 
 	private:
 		Client(void);
-
 		int _socket;
 		char buf[512];
 		std::string _messageStr;
 		Dispatch& _d;
 		std::set<Client *>& _clients;
 		std::set<Channel *>& _channels;
+
+		std::string _hostname;
 };
