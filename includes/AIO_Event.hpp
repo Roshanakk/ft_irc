@@ -7,7 +7,7 @@ class AIO_Event {
 
     virtual ~AIO_Event(void) {};
 
-    virtual void send_message(void) = 0;
+    virtual void send_message(std::string message) = 0;
     virtual void receive_message(void) = 0;
     virtual int getSocket(void) const = 0;
 

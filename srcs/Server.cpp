@@ -57,7 +57,9 @@ Server::~Server(void)
 /*                METHODS               */
 /****************************************/
 
-void Server::send_message(void) {}
+void Server::send_message(std::string message) {
+    (void) message;
+}
 
 void Server::receive_message(void)
 {
