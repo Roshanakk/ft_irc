@@ -4,25 +4,15 @@
 /*                CONSTRUCTORS & DESTRUCTOR               */
 /**********************************************************/
 
-Channel::Channel(std::string name)
-{
-    //if name doesnt already exist ( check in a <set> of channels ? )
-    _name = name;
-    //else
-    //add '_' at the end of the name
+Channel::Channel(std::string name, std::string key_val = "") 
+    : _name(name), _key(key_val) {}
 }
 
-Channel::Channel(const Channel & src)
-{
-    _name = src._name;
+Channel::Channel(const Channel & src) 
+    : _name(src._name), _key(src._key){
 }
 
-
-
-Channel::~Channel()
-{
-
-}
+Channel::~Channel() {}
 
 
 /**********************************************************/
@@ -35,3 +25,39 @@ Channel & Channel::operator=(const Channel & src)
         *this = src;
     return (*this);
 }
+
+/**********************************************************/
+/*                      PUBLIC METHODS                    */
+/**********************************************************/
+
+void Channel::forwardMessage(std::string message, Client *sender) {
+    for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
+        if (it->first != sender) {
+            it->first->send_message(message);
+        }
+    }
+};
+
+void Channel::addClient(Client *client) {
+    _clients.insert(std::make_pair(client, false));
+};
+
+void Channel::removeClient(Client *client) {
+    _clients.erase(client);
+};
+
+bool Channel::checkKey(std::string& key_val) {
+    return (_key == key_val);
+};
+
+bool Channel::shouldDelete(void) {
+    // return 1 if the channel should be deleted (ie. no clients)
+    return (_clients.size() == 0);
+};
+
+void Channel::promoteClient(Client *client) {
+    std::map<Client*, bool>::iterator it = _clients.find(client);
+    if (it != _clients.end()) {
+        it->second = true;
+    }
+};
