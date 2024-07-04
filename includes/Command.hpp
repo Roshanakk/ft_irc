@@ -3,11 +3,10 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <algorithm>
 
 #include "Client.hpp"
-
 #include "NoCommandException.hpp"
-
 #include "Utilities.hpp"
 
 typedef enum e_cmd

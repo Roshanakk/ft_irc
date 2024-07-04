@@ -71,8 +71,9 @@ void Command::doCmd(std::string & line)
         firstSpacePos = line.size() - 1;
 
     std::string cmd = line.substr(0, firstSpacePos);
-    std::string parameters = line.substr(firstSpacePos);
+    std::string parameters = line.substr(firstSpacePos + 1);
     parameters.erase(std::remove(parameters.begin(), parameters.end(), '\n'));
+    parameters.erase(std::remove(parameters.begin(), parameters.end(), '\r'));
 
     _cmdLine.push_back(cmd);
     _cmdLine.push_back(parameters);
@@ -105,8 +106,25 @@ void Command::handle_INFO() {}
 void Command::handle_INVITE() {}
 
 void Command::handle_JOIN() {
-    
-    // std::cout << "YOUHOU" << std::endl;
+    // Split parameters by space
+    std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
+
+    // Print parameters
+    for (size_t i = 0; i < params.size(); ++i)
+    {
+        std::cout << "JOIN: '" << params[i] << "'" << std::endl;
+    }
+
+    std::set<Channel *> &channels = _client.getChannels();
+    if (channels.size() == 0) {
+        Channel *testChan = new Channel("test1", "");
+        channels.insert(testChan);
+        testChan->addClient(&_client);
+    } else {
+        std::set<Channel*>::iterator it = channels.begin();
+        (*it)->addClient(&_client);
+    }
+    std::cout << "size of channels: " << channels.size() << std::endl;
 }
 
 void Command::handle_LIST() {}
@@ -120,12 +138,24 @@ void Command::handle_PART() {}
 
 void Command::handle_PING()
 {
-    std::string pong = "PONG";
+    std::string pong = "PONG ";
 
     send(_client.getSocket(), pong.c_str(), pong.size(), 0);
 }
 
-void Command::handle_PRIVMSG() {}
+void Command::handle_PRIVMSG() {
+    // Split parameters by space
+    // std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
+
+    // Print parameters
+    std::cout << "PRIVMSG: '" << _cmdLine[1] << "'" << std::endl;
+
+    std::cout << "forwarding message" << std::endl;
+    std::set<Channel *> &channels = _client.getChannels();
+    std::set<Channel*>::iterator it = channels.begin();
+    (*it)->forwardMessage(_cmdLine[1], &_client);
+}
+
 void Command::handle_TOPIC() {}
 void Command::handle_USER() {}
 void Command::handle_VERSION() {}

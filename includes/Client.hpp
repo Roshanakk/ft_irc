@@ -31,6 +31,8 @@ class Client : public AIO_Event
 
 		//GETTERS
 		int getSocket(void) const;
+		std::set<Client *> &getClinents(void) const;
+		std::set<Channel *> &getChannels(void) const;
 		std::string getHostname(void) const;
 
 	private:

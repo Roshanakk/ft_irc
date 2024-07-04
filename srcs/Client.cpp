@@ -76,9 +76,19 @@ void Client::receive_message(void)
 int Client::getSocket(void) const
 {
     return (_socket);
-};
+}
 
 std::string Client::getHostname(void) const
 {
     return (_hostname);
+}
+
+std::set<Client *> &Client::getClinents(void) const
+{
+    return (_clients);
+}
+
+std::set<Channel *> &Client::getChannels(void) const
+{
+    return (_channels);
 }

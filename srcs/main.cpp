@@ -41,6 +41,11 @@ int main(int argc, char **argv) {
     }
   }
 
+  // delete all channels
+  for (std::set<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it) {
+    delete *it;
+  }
+
   return 0;
 }
 
