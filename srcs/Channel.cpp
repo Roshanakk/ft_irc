@@ -30,17 +30,17 @@ Channel & Channel::operator=(const Channel & src)
 
 void Channel::forwardMessage(std::string message, Client *sender) {
     for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
-        (void) message;
         if (it->first != sender) {
-            // Should send message to client but as a PRIVMSG command.
-            // DEBUG: show message
-            //it->first->send_message(message);
+            it->first->send_message("PRIVMSG #" + _name + " " + message + "\r\n");
         }
     }
 };
 
 void Channel::addClient(Client *client) {
-    _clients.insert(std::make_pair(client, false));
+    if (_clients.size() == true)
+        _clients.insert(std::make_pair(client, true));
+    else
+        _clients.insert(std::make_pair(client, false));
 };
 
 void Channel::removeClient(Client *client) {

@@ -105,7 +105,7 @@ void Command::handle_INFO() {}
 void Command::handle_INVITE() {}
 
 void Command::handle_JOIN() {
-
+    
     // std::cout << "YOUHOU" << std::endl;
 }
 
