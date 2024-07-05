@@ -12,17 +12,18 @@
 #include "Dispatch.hpp"
 #include "ServerReplies.hpp"
 #include "Utilities.hpp"
-#include "Channel.hpp"
+#include "ChannelManager.hpp"
+#include "Command.hpp"
 
 class Dispatch;
-class Channel;
+class ChannelManager;
 
 class Client : public AIO_Event 
 {
 	public:
 		// CONSTRUCTORS & DESTRUCTOR
 		Client(int sock_val, Dispatch& d,
-			std::set<Client *>& clients, std::set<Channel *>& channels);
+			std::set<Client *>& clients, ChannelManager& cm);
 		~Client(void);
 
 		// METHODS
@@ -32,7 +33,7 @@ class Client : public AIO_Event
 		//GETTERS
 		int getSocket(void) const;
 		std::set<Client *> &getClinents(void) const;
-		std::set<Channel *> &getChannels(void) const;
+		ChannelManager &getCM(void) const;
 		std::string getHostname(void) const;
 
 	private:
@@ -42,7 +43,6 @@ class Client : public AIO_Event
 		std::string _messageStr;
 		Dispatch& _d;
 		std::set<Client *>& _clients;
-		std::set<Channel *>& _channels;
-
+		ChannelManager& _cm;
 		std::string _hostname;
 };

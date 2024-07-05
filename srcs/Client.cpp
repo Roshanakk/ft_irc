@@ -1,16 +1,13 @@
 #include "Client.hpp"
 
-#include "Command.hpp"
-
-
 /**********************************************************/
 /*                CONSTRUCTORS & DESTRUCTOR               */
 /**********************************************************/
 
 
 Client::Client(int sock_val, Dispatch& d,
-    std::set<Client *> & clients, std::set<Channel *> & channels)
-    : _socket(sock_val), _d(d), _clients(clients), _channels(channels)
+    std::set<Client *> & clients, ChannelManager& cm)
+    : _socket(sock_val), _d(d), _clients(clients), _cm(cm)
 {
     if (_socket == -1) {
         throw ServerException("Error creating client socket");
@@ -88,7 +85,6 @@ std::set<Client *> &Client::getClinents(void) const
     return (_clients);
 }
 
-std::set<Channel *> &Client::getChannels(void) const
-{
-    return (_channels);
-}
+ChannelManager &Client::getCM(void) const {
+    return (_cm);
+};

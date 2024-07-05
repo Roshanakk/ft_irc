@@ -28,6 +28,7 @@ class Channel {
 
 		// Getters //
 		std::string getName(void) const;
+		size_t getChanSize(void) const;
 
 		// To be implemented
 		// void removeClientFromAllChannels(Client *client);

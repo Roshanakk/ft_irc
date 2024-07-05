@@ -9,6 +9,8 @@
 #include "NoCommandException.hpp"
 #include "Utilities.hpp"
 
+class Client;
+
 typedef enum e_cmd
 {
 	CAP, //     0 

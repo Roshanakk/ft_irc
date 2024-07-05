@@ -115,16 +115,13 @@ void Command::handle_JOIN() {
         std::cout << "JOIN: '" << params[i] << "'" << std::endl;
     }
 
-    std::set<Channel *> &channels = _client.getChannels();
-    if (channels.size() == 0) {
-        Channel *testChan = new Channel("test1", "");
-        channels.insert(testChan);
-        testChan->addClient(&_client);
-    } else {
-        std::set<Channel*>::iterator it = channels.begin();
-        (*it)->addClient(&_client);
-    }
-    std::cout << "size of channels: " << channels.size() << std::endl;
+    // need if here
+    // if channel does not exist, create it and add _client
+    // else check password(key) and then add _client
+    ChannelManager& cm = _client.getCM();
+    cm.addChannel(params[0], &_client);
+
+    std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
 }
 
 void Command::handle_LIST() {}
@@ -153,15 +150,7 @@ void Command::handle_PRIVMSG() {
         std::cout << "PRIVMSG: '" << params[i] << "'" << std::endl;
     }
 
-    std::set<Channel*> &channels = _client.getChannels();
-    for (std::set<Channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
-    {
-        if ((*it)->getName() == params[1])
-            break;
-    }
-
-    std::set<Channel*>::iterator it = channels.begin();
-    (*it)->forwardMessage(_cmdLine[1], &_client);
+    // (*it)->forwardMessage(_cmdLine[1], &_client);
 }
 
 void Command::handle_TOPIC() {}

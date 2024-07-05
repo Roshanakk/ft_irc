@@ -71,3 +71,8 @@ void Channel::promoteClient(Client *client) {
 std::string Channel::getName(void) const {
     return (_name);
 };
+
+
+size_t Channel::getChanSize(void) const {
+    return (_clients.size());
+};
