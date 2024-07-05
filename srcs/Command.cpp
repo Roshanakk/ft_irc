@@ -145,13 +145,21 @@ void Command::handle_PING()
 
 void Command::handle_PRIVMSG() {
     // Split parameters by space
-    // std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
+    std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
 
     // Print parameters
-    std::cout << "PRIVMSG: '" << _cmdLine[1] << "'" << std::endl;
+    for (size_t i = 0; i < params.size(); ++i)
+    {
+        std::cout << "PRIVMSG: '" << params[i] << "'" << std::endl;
+    }
 
-    std::cout << "forwarding message" << std::endl;
-    std::set<Channel *> &channels = _client.getChannels();
+    std::set<Channel*> &channels = _client.getChannels();
+    for (std::set<Channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
+    {
+        if ((*it)->getName() == params[1])
+            break;
+    }
+
     std::set<Channel*>::iterator it = channels.begin();
     (*it)->forwardMessage(_cmdLine[1], &_client);
 }

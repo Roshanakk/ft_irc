@@ -26,6 +26,12 @@ class Channel {
 		bool shouldDelete(void);
 		void promoteClient(Client *client);
 
+		// Getters //
+		std::string getName(void) const;
+
+		// To be implemented
+		// void removeClientFromAllChannels(Client *client);
+
 	private:
 		std::string _name;
 		std::string _key;

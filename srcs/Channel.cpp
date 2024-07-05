@@ -63,3 +63,11 @@ void Channel::promoteClient(Client *client) {
         it->second = true;
     }
 };
+
+/**********************************************************/
+/*                        GETTERS                         */
+/**********************************************************/
+
+std::string Channel::getName(void) const {
+    return (_name);
+};
