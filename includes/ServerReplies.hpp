@@ -1,13 +1,55 @@
-#define RPL_WELCOME(hostname, nick, prefix) (":" + hostname + " 001 " + nick + " :Welcome to the Internet Relay Network " + prefix + "\r\n")
-
-
+// Error Replies (Section 6.1 of RFC 1459)
+#define ERR_NOSUCHNICK(nick) (nick + " :No such nick/channel\r\n")
+#define ERR_NOSUCHSERVER(servername) (servername + " :No such server\r\n")
+#define ERR_NOSUCHCHANNEL(channel) (channel + " :No such channel\r\n")
+#define ERR_CANNOTSENDTOCHAN(channel) (channel + " :Cannot send to channel\r\n")
+#define ERR_TOOMANYCHANNELS(channel) (channel + " :You have joined too many channels\r\n")
+#define ERR_WASNOSUCHNICK(nick) (nick + " :There was no such nickname\r\n")
+#define ERR_TOOMANYTARGETS(target) (target + " :Duplicate recipients. No message delivered\r\n")
+#define ERR_NOORIGIN() (":No origin specified\r\n")
+#define ERR_NORECIPIENT(command) (command + " :No recipient given (" + command + ")\r\n")
+#define ERR_NOTEXTTOSEND() (":No text to send\r\n")
+#define ERR_NOTOPLEVEL(domain) (domain + " :No toplevel domain specified\r\n")
+#define ERR_WILDTOPLEVEL(domain) (domain + " :Wildcard in toplevel domain\r\n")
 #define ERR_UNKNOWNCOMMAND(hostname, cmd) (cmd + " :" + "Unknown command\r\n") 
+#define ERR_NOMOTD() (":MOTD File is missing\r\n")
+#define ERR_NOADMININFO(servername) (servername + " :No administrative info available\r\n")
+#define ERR_FILEERROR(fileop, file) (":File error doing " + fileop + " on " + file + "\r\n")
+#define ERR_NONICKNAMEGIVEN() (":No nickname given\r\n")
+#define ERR_ERRONEUSNICKNAME(nick) (nick + " :Erroneus nickname\r\n")
+#define ERR_NICKNAMEINUSE(nick) (nick + " :Nickname is already in use\r\n")
+#define ERR_NICKCOLLISION(nick) (nick + " :Nickname collision KILL\r\n")
+#define ERR_USERNOTINCHANNEL(nick, channel) (nick + " " + channel + " :They aren't on that channel\r\n")
+#define ERR_NOTONCHANNEL(channel) (channel + " :You're not on that channel\r\n")
+#define ERR_USERONCHANNEL(nick, channel) (nick + " " + channel + " :is already on channel\r\n")
+#define ERR_NOLOGIN(nick) (nick + " :User not logged in\r\n")
+#define ERR_SUMMONDISABLED() (":SUMMON has been disabled\r\n")
+#define ERR_USERSDISABLED() (":USERS has been disabled\r\n")
+#define ERR_NOTREGISTERED() (":You have not registered\r\n")
+#define ERR_NEEDMOREPARAMS(command) (command + " :Not enough parameters\r\n")
+#define ERR_ALREADYREGISTRED() (":You may not reregister\r\n")
+#define ERR_NOPERMFORHOST() (":Your host isn't among the privileged\r\n")
+#define ERR_PASSWDMISMATCH() (":Password incorrect\r\n")
+#define ERR_YOUREBANNEDCREEP() (":You are banned from this server\r\n")
+#define ERR_KEYSET(channel) (channel + " :Channel key already set\r\n")
+#define ERR_CHANNELISFULL(channel) (channel + " :Cannot join channel (+l)\r\n")
+#define ERR_UNKNOWNMODE(mode) (mode + " :is unknown mode char to me\r\n")
+#define ERR_INVITEONLYCHAN(channel) (channel + " :Cannot join channel (+i)\r\n")
+#define ERR_BANNEDFROMCHAN(channel) (channel + " :Cannot join channel (+b)\r\n")
+#define ERR_BADCHANNELKEY(channel) (channel + " :Cannot join channel (+k)\r\n")
+#define ERR_NOPRIVILEGES() (":Permission Denied- You're not an IRC operator\r\n")
+#define ERR_CHANOPRIVSNEEDED(channel) (channel + " :You're not channel operator\r\n")
+#define ERR_CANTKILLSERVER() (":You cant kill a server!\r\n")
+#define ERR_NOOPERHOST() (":No O-lines for your host\r\n")
+#define ERR_UMODEUNKNOWNFLAG() (":Unknown MODE flag\r\n")
+#define ERR_USERSDONTMATCH() (":Cant change mode for other users\r\n")
 
+// Command Responses (Section 6.2 of RFC 1459)
+// Responses can be variable, not defining right now. 
+// This may not be as straightforward as the error replies.
+
+// Connection Confirmation (Not in RFC 1459)
+#define RPL_WELCOME(hostname, nick, prefix) (":" + hostname + " 001 " + nick + " :Welcome to the Internet Relay Network " + prefix + "\r\n")
 // #define RPL_YOURHOST() "002 :Your host is <servername>, running version <ver>"
-       
-       
 // #define RPL_CREATED() "003 This server was created <date>"
-
 // #define RPL_MYINFO() "004 RPL_MYINFO <servername> <version> <available user modes> <available channel modes>"NB_CMDS
-
-
