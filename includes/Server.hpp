@@ -11,14 +11,14 @@
 #include "Client.hpp"
 #include "Dispatch.hpp"
 #include "Client.hpp"
-#include "Channel.hpp"
+#include "ChannelManager.hpp"
 
 class Server : public AIO_Event
 {
 	public:
 		// CONSTRUCTORS & DESTRUCTOR
 		Server(Dispatch& d, int port, 
-			std::set<Client *>& clients, std::set<Channel *>& channels);
+			std::set<Client *>& clients, ChannelManager& cm);
 		~Server(void);
 
 		// METHODS
@@ -35,5 +35,5 @@ class Server : public AIO_Event
 		socklen_t _client_addr_len;
 		Dispatch& _d;
 		std::set<Client *>& _clients;
-		std::set<Channel *>& _channels;
+		ChannelManager& _cm;
 };

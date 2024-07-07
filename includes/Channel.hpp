@@ -2,19 +2,39 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 
-class Channel
-{
+#include "Client.hpp"
+
+class Client;
+
+class Channel {
 	public:
-		Channel(std::string name);
+		// Constructors & Destructor //
+		Channel(std::string name, std::string key_val = "");
 		Channel(const Channel & src);
-
 		~Channel();
 
+		// Overloaded operators //
 		Channel & operator=(const Channel & src);
 
+		// Public Methods //
+		void forwardMessage(std::string message, Client *sender);
+		void addClient(Client *client);
+		void removeClient(Client *client);
+		bool checkKey(std::string& key_val);
+		bool shouldDelete(void);
+		void promoteClient(Client *client);
+
+		// Getters //
+		std::string getName(void) const;
+		size_t getChanSize(void) const;
+
+		// To be implemented
+		// void removeClientFromAllChannels(Client *client);
 
 	private:
 		std::string _name;
-		// fd_set userChannels; 
+		std::string _key;
+		std::map<Client *, bool> _clients;
 };
