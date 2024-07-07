@@ -72,11 +72,17 @@ void Command::doCmd(std::string & line)
 
     std::string cmd = line.substr(0, firstSpacePos);
     std::string parameters = line.substr(firstSpacePos + 1);
-    parameters.erase(std::remove(parameters.begin(), parameters.end(), '\n'));
-    parameters.erase(std::remove(parameters.begin(), parameters.end(), '\r'));
 
-    _cmdLine.push_back(cmd);
-    _cmdLine.push_back(parameters);
+    parameters.erase(std::remove(parameters.begin(), parameters.end(), '\n'), parameters.end());
+    parameters.erase(std::remove(parameters.begin(), parameters.end(), '\r'), parameters.end());
+
+    if (cmd.size() > 0 ) {
+        _cmdLine.push_back(cmd);
+    }
+
+    if (parameters.size() > 0 ) {
+        _cmdLine.push_back(parameters);
+    }
 
     try
     {
@@ -106,10 +112,12 @@ void Command::handle_INFO() {}
 void Command::handle_INVITE() {}
 
 void Command::handle_JOIN() {
+    // Need to check if there are parameters. If not, throw an exception.
+    if (_cmdLine.size() <= 1)
+        throw NoCommandException(ERR_NEEDMOREPARAMS(_cmdLine[0]));
+
     // Split parameters by space
-    std::cout << "cmdLine.size: '" << _cmdLine.size() << "'" << std::endl;
     std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
-    // After splitting, params[0] is the channel name, params[1] is the password
 
     // Print parameters
     for (size_t i = 0; i < params.size(); ++i)
@@ -128,16 +136,18 @@ void Command::handle_JOIN() {
         if (chan->checkKey(chanKey)) {
             std::cout << "Password is correct" << std::endl;
             chan->addClient(&_client);
+            // Response to send: RPL_TOPIC and RPL_NAMREPLY
         } else {
             std::cout << "Password is incorrect" << std::endl;
             throw NoCommandException(ERR_PASSWDMISMATCH());
         }
     } else {
         // Channel does not exist. Create channel and add client.
-        std::cout << "Channel does not exist" << std::endl;
+        std::cout << "Channel does not exist, creating channel" << std::endl;
         cm.addChannel(chanName, &_client, chanKey);
+        // Response to send: RPL_TOPIC and RPL_NAMREPLY
     }
-    std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
+    //std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
 }
 
 void Command::handle_LIST() {}
