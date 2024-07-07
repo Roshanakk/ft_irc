@@ -19,6 +19,7 @@ class ChannelManager {
     // Getters //
     size_t getNumChannels(void);
     size_t getNumClientsInChannel(std::string name);
+    Channel *getChannel(std::string name);
 
   private:
     std::set<Channel *> _channels;

@@ -107,7 +107,9 @@ void Command::handle_INVITE() {}
 
 void Command::handle_JOIN() {
     // Split parameters by space
+    std::cout << "cmdLine.size: '" << _cmdLine.size() << "'" << std::endl;
     std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
+    // After splitting, params[0] is the channel name, params[1] is the password
 
     // Print parameters
     for (size_t i = 0; i < params.size(); ++i)
@@ -115,12 +117,26 @@ void Command::handle_JOIN() {
         std::cout << "JOIN: '" << params[i] << "'" << std::endl;
     }
 
-    // need if here
-    // if channel does not exist, create it and add _client
-    // else check password(key) and then add _client
-    ChannelManager& cm = _client.getCM();
-    cm.addChannel(params[0], &_client);
+    std::string chanName = params[0];
+    std::string chanKey = params.size() > 1 ? params[1] : "";
 
+    ChannelManager& cm = _client.getCM();
+    Channel *chan = cm.getChannel(chanName);
+    if (chan != NULL) {
+        // channel exists. check password
+        std::cout << "Channel exists" << std::endl;
+        if (chan->checkKey(chanKey)) {
+            std::cout << "Password is correct" << std::endl;
+            chan->addClient(&_client);
+        } else {
+            std::cout << "Password is incorrect" << std::endl;
+            throw NoCommandException(ERR_PASSWDMISMATCH());
+        }
+    } else {
+        // Channel does not exist. Create channel and add client.
+        std::cout << "Channel does not exist" << std::endl;
+        cm.addChannel(chanName, &_client, chanKey);
+    }
     std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
 }
 

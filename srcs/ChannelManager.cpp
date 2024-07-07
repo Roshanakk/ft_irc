@@ -42,10 +42,7 @@ void ChannelManager::removeChannel(std::string name) {
   }
 };
 
-
-
-
-// GETTERS
+// GETTERS //
 
 size_t ChannelManager::getNumChannels(void) {
   return _channels.size();
@@ -59,4 +56,14 @@ size_t ChannelManager::getNumClientsInChannel(std::string name) {
     }
   }
   return 0;
+};
+
+Channel *ChannelManager::getChannel(std::string name) {
+  // Look for channel by name
+  for (std::set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
+    if ((*it)->getName() == name) {
+      return *it;
+    }
+  }
+  return NULL;
 };
