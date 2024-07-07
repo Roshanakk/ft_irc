@@ -147,7 +147,7 @@ void Command::handle_JOIN() {
         cm.addChannel(chanName, &_client, chanKey);
         // Response to send: RPL_TOPIC and RPL_NAMREPLY
     }
-    //std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
+    std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
 }
 
 void Command::handle_LIST() {}
@@ -167,16 +167,51 @@ void Command::handle_PING()
 }
 
 void Command::handle_PRIVMSG() {
-    // Split parameters by space
-    std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
-
-    // Print parameters
-    for (size_t i = 0; i < params.size(); ++i)
-    {
-        std::cout << "PRIVMSG: '" << params[i] << "'" << std::endl;
+    // Initial error checking
+    if (_cmdLine.size() != 2) {
+        if (_cmdLine.size() == 1)
+            throw NoCommandException(ERR_NORECIPIENT(_cmdLine[0]));
+        else
+            throw NoCommandException(ERR_NOTEXTTOSEND());
     }
 
-    // (*it)->forwardMessage(_cmdLine[1], &_client);
+    // Split parameters by space
+    // std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
+
+    size_t firstSpacePos = _cmdLine[1].find(' ');
+    if (firstSpacePos == std::string::npos)
+        firstSpacePos = _cmdLine[1].size() - 1;
+
+    std::string recipeints = _cmdLine[1].substr(0, firstSpacePos);
+    std::string message = _cmdLine[1].substr(firstSpacePos + 1);
+
+
+    // Print parameters
+    // for (size_t i = 0; i < params.size(); ++i)
+    // {
+    //     std::cout << "PRIVMSG: '" << params[i] << "'" << std::endl;
+    // }
+
+    // Check if the first parameter is a channel or a user
+    if (recipeints[0] == '#') {
+        // Channel
+        ChannelManager& cm = _client.getCM();
+        Channel *chan = cm.getChannel(recipeints);
+        if (chan != NULL) {
+            // Channel exists
+            std::cout << "Channel exists" << std::endl;
+            // Send message to all clients in channel
+            chan->forwardMessage(message, &_client);
+        } else {
+            // Channel does not exist
+            std::cout << "Channel does not exist" << std::endl;
+            throw NoCommandException(ERR_CANNOTSENDTOCHAN(recipeints));
+        }
+    } else {
+        // User
+        // Send message to user
+        // _client.forwardMessage(_cmdLine[1], &_client);
+    }
 }
 
 void Command::handle_TOPIC() {}
