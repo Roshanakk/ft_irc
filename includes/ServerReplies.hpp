@@ -7,7 +7,7 @@
 #define ERR_WASNOSUCHNICK(nick) (nick + " :There was no such nickname\r\n")
 #define ERR_TOOMANYTARGETS(target) (target + " :Duplicate recipients. No message delivered\r\n")
 #define ERR_NOORIGIN() (":No origin specified\r\n")
-#define ERR_NORECIPIENT(command) (command + " :No recipient given (" + command + ")\r\n")
+#define ERR_NORECIPIENT(command) (":No recipient given (" + command + ")\r\n")
 #define ERR_NOTEXTTOSEND() (":No text to send\r\n")
 #define ERR_NOTOPLEVEL(domain) (domain + " :No toplevel domain specified\r\n")
 #define ERR_WILDTOPLEVEL(domain) (domain + " :Wildcard in toplevel domain\r\n")
