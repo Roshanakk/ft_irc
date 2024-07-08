@@ -120,15 +120,27 @@ void Command::handle_JOIN() {
 
     ChannelManager& cm = _client.getCM();
     Channel *chan = cm.getChannel(params[0]);
+
+    // Check that user is not in too many channels
+    if (cm.getClientChannelCount(&_client) >= cm.getMaxChannelsForClient()) {
+        throw NoCommandException(ERR_TOOMANYCHANNELS(params[0]));
+    }
+
     if (chan != NULL) {
         // channel exists. start channel checks
         std::cout << "Channel exists" << std::endl;
-        // check that user is not a member of too many channels
-            // just search for the user in all the channels? not fast but would be easy to implement.
         // check that user is not banned from channel
             // Add a banned list to the channel class
         // check that the channel is not invite only
             // Add flags to the channel class
+        if (chan->getInviteOnly()) {
+            // check the channels invite list for the user
+                // Add an invite list to the channel class
+            // if (!chan->checkInviteList(&_client)) {
+            //     std::cout << "User is not invited" << std::endl;
+            //     throw NoCommandException(ERR_INVITEONLYCHAN());
+            // }
+        }
         // check that the channel is not full
         if (!chan->checkCanAddMoreClients()) {
             std::cout << "Channel is full" << std::endl;

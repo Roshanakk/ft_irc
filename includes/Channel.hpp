@@ -18,28 +18,34 @@ class Channel {
 		// Overloaded operators //
 		Channel & operator=(const Channel & src);
 
+		/******************/
 		// Public Methods //
-		void forwardMessage(std::string message, Client *sender);
+		/******************/
+		// Client methods
 		void addClient(Client *client);
 		void removeClient(Client *client);
 		void promoteClient(Client *client);
+		bool checkCanAddMoreClients(void);
 		bool shouldDelete(void);
+		// Message methods
+		void forwardMessage(std::string message, Client *sender);
+		// Key methods
 		bool checkKey(std::string& key_val);
 		bool requiresKey(void);
-		bool checkCanAddMoreClients(void);
+		// Invite methods
+		bool checkInvite(Client *client);
+		void addInvite(Client *client);
+		void removeInvite(Client *client);
 
 		// Getters //
 		std::string getName(void) const;
 		size_t getChanSize(void) const;
+		std::map<Client *, bool> &getClients(void);
+		bool getInviteOnly(void);
 
 		// Setters //
 		void setMaxClients(int maxClients);
-
-		// To be implemented
-		// void removeClientFromAllChannels(Client *client);
-			// remove the client from the channel map
-		// int getClinentChannelCount(Client *client);
-			// return the number of channels the client is in
+		void setInviteOnly(bool inviteOnly);
 
 	private:
 		std::string _name;
@@ -47,4 +53,8 @@ class Channel {
 		std::map<Client *, bool> _clients;
 		int _maxClients;
 		// Need a ban list
+		std::set<Client *> _invites;
+
+		// Mode flags
+		bool _inviteOnly;
 };

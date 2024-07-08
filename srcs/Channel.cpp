@@ -5,7 +5,7 @@
 /**********************************************************/
 
 Channel::Channel(std::string name, std::string key_val) 
-    : _name(name), _key(key_val), _maxClients(-1) {}
+    : _name(name), _key(key_val), _maxClients(-1), _inviteOnly(false) {}
 
 Channel::Channel(const Channel & src) 
     : _name(src._name), _key(src._key), _maxClients(-1) {}
@@ -75,6 +75,18 @@ bool Channel::checkCanAddMoreClients(void) {
     return (static_cast<int>(_clients.size()) < _maxClients);
 };
 
+bool Channel::checkInvite(Client *client) {
+    return (_invites.find(client) != _invites.end());
+};
+
+void Channel::addInvite(Client *client) {
+    _invites.insert(client);
+};
+
+void Channel::removeInvite(Client *client) {
+    _invites.erase(client);
+};
+
 /**********************************************************/
 /*                        GETTERS                         */
 /**********************************************************/
@@ -86,6 +98,14 @@ std::string Channel::getName(void) const {
 
 size_t Channel::getChanSize(void) const {
     return (_clients.size());
+};
+
+std::map<Client *, bool> &Channel::getClients(void) {
+    return (_clients);
+};
+
+bool Channel::getInviteOnly(void) {
+    return (_inviteOnly);
 };
 
 /**********************************************************/
@@ -105,4 +125,8 @@ void Channel::setMaxClients(int maxClients) {
         // sets the max number of clients allowed in the channel
         _maxClients = maxClients;
     }
+};
+
+void Channel::setInviteOnly(bool inviteOnly) {
+    _inviteOnly = inviteOnly;
 };
