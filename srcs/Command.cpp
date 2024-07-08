@@ -165,7 +165,21 @@ void Command::handle_JOIN() {
 void Command::handle_LIST() {}
 void Command::handle_KICK() {}
 void Command::handle_KILL() {}
-void Command::handle_MODE() {}
+void Command::handle_MODE() {
+    // Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>]
+        //    o - give/take channel operator privileges;
+        //    p - private channel flag;
+        //    s - secret channel flag;
+        //    i - invite-only channel flag;
+        //    t - topic settable by channel operator only flag;
+        //    n - no messages to channel from clients on the outside;
+        //    m - moderated channel;
+        //    l - set the user limit to channel;
+        //    b - set a ban mask to keep users out;
+        //    v - give/take the ability to speak on a moderated channel;
+        //    k - set a channel key (password).
+}
+
 void Command::handle_NAMES() {}
 void Command::handle_NICK() {}
 void Command::handle_NOTICE() {}
