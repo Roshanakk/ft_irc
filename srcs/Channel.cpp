@@ -52,6 +52,10 @@ bool Channel::checkKey(std::string& key_val) {
     return (_key == key_val);
 };
 
+bool Channel::requiresKey(void) {
+    return (_key.size() > 0);
+};
+
 bool Channel::shouldDelete(void) {
     // return 1 if the channel should be deleted (ie. no clients)
     return (_clients.size() == 0);

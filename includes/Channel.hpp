@@ -22,9 +22,10 @@ class Channel {
 		void forwardMessage(std::string message, Client *sender);
 		void addClient(Client *client);
 		void removeClient(Client *client);
-		bool checkKey(std::string& key_val);
-		bool shouldDelete(void);
 		void promoteClient(Client *client);
+		bool shouldDelete(void);
+		bool checkKey(std::string& key_val);
+		bool requiresKey(void);
 
 		// Getters //
 		std::string getName(void) const;

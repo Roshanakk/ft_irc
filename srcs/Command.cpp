@@ -135,15 +135,23 @@ void Command::handle_JOIN() {
             // Add a checkMax function to the channel class
         // check that the channel mask is good ??? (unsure what this means)
             // idk what this is yet.
-        // check if password is correct
-            // NOTE: no spaces are allowed in the password so we can just chck params[1]
-        if (params.size() > 1 && chan->checkKey(params[1])) {
-            std::cout << "Password is correct" << std::endl;
+
+        // check password
+        if (chan->requiresKey()) {
+            // Channel requires a password
+                // NOTE: no spaces are allowed in the password so we can just chck params[1]
+            if (params.size() > 1 && chan->checkKey(params[1])) {
+                std::cout << "Password is correct" << std::endl;
+                chan->addClient(&_client);
+                // Response to send: RPL_TOPIC and RPL_NAMREPLY
+            } else {
+                std::cout << "Password is incorrect" << std::endl;
+                throw NoCommandException(ERR_PASSWDMISMATCH());
+            }
+        } else {
+            // Channel does not require a password
             chan->addClient(&_client);
             // Response to send: RPL_TOPIC and RPL_NAMREPLY
-        } else {
-            std::cout << "Password is incorrect" << std::endl;
-            throw NoCommandException(ERR_PASSWDMISMATCH());
         }
     } else {
         // Channel does not exist. Create channel and add client to channel.
