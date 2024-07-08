@@ -111,13 +111,6 @@ void Command::handle_JOIN() {
     // Split parameters by space
     std::vector<std::string> params = Utilities::split(_parameters, ' ');
 
-    // Print parameters
-    for (size_t i = 0; i < params.size(); ++i)
-    {
-        std::cout << "JOIN: '" << params[i] << "'" << std::endl;
-    }
-    std::cout << "Number of parameters: " << params.size() << std::endl;
-
     ChannelManager& cm = _client.getCM();
     Channel *chan = cm.getChannel(params[0]);
 
@@ -172,7 +165,7 @@ void Command::handle_JOIN() {
         std::cout << "Channel does not exist, creating channel" << std::endl;
         cm.addChannel(params[0], &_client);
     }
-    std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
+    // std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
 }
 
 void Command::handle_LIST() {}
