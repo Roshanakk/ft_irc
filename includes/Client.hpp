@@ -35,6 +35,10 @@ class Client : public AIO_Event
 		std::set<Client *> &getClinents(void) const;
 		ChannelManager &getCM(void) const;
 		std::string getHostname(void) const;
+		std::string getNick(void) const;
+
+		// SETTERS
+		void setNick(std::string nick);
 
 	private:
 		Client(void);
@@ -45,4 +49,5 @@ class Client : public AIO_Event
 		std::set<Client *>& _clients;
 		ChannelManager& _cm;
 		std::string _hostname;
+		std::string _nick;
 };

@@ -4,8 +4,9 @@
 /*                CONSTRUCTORS & DESTRUCTOR               */
 /**********************************************************/
 
-Channel::Channel(std::string name, std::string key_val) 
-    : _name(name), _key(key_val), _maxClients(-1), _inviteOnly(false) {}
+Channel::Channel(std::string name) 
+    : _name(name), _key(""), _topic(""), _maxClients(-1),
+    _inviteOnly(false) {}
 
 Channel::Channel(const Channel & src) 
     : _name(src._name), _key(src._key), _maxClients(-1) {}
@@ -130,6 +131,17 @@ bool Channel::getInviteOnly(void) {
     return (_inviteOnly);
 };
 
+std::string Channel::getTopic() const {
+    return (_topic);
+};
+
+std::string Channel::getClientNicknames(void) const {
+    std::istringstream ss;
+    for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
+        ss << it->first->getNick() << ", ";
+    }
+};
+
 /**********************************************************/
 /*                        SETTERS                         */
 /**********************************************************/
@@ -151,4 +163,8 @@ void Channel::setMaxClients(int maxClients) {
 
 void Channel::setInviteOnly(bool inviteOnly) {
     _inviteOnly = inviteOnly;
+};
+
+void Channel::setTopic(std::string topic) {
+    _topic = topic;
 };

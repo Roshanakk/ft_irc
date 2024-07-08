@@ -169,12 +169,15 @@ void Command::handle_JOIN() {
             // Channel does not require a password
             chan->removeInvite(&_client);
             chan->addClient(&_client);
+            _client.send_message(RPL_TOPIC());
             // Response to send: RPL_TOPIC and RPL_NAMREPLY
         }
     } else {
         // Channel does not exist. Create channel and add client to channel.
         std::cout << "Channel does not exist, creating channel" << std::endl;
         cm.addChannel(params[0], &_client);
+        _client.send_message(RPL_NOTOPIC(params[0]));
+        _client.send_message(RPL_NAMREPLY(params[0], ));
         // Response to send: RPL_TOPIC and RPL_NAMREPLY
     }
     std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
@@ -206,56 +209,46 @@ void Command::handle_PART() {}
 void Command::handle_PING()
 {
     std::string pong = "PONG ";
-
-    send(_client.getSocket(), pong.c_str(), pong.size(), 0);
+    std::cout << "Sending PONG" << std::endl;
+    // send(_client.getSocket(), pong.c_str(), pong.size(), 0);
+    _client.send_message(pong);
 }
 
 void Command::handle_PRIVMSG() {
-    // // Initial error checking
-    // if (_cmd.size() != 2) {
-    //     if (_cmd.size() == 1)
-    //         throw NoCommandException(ERR_NORECIPIENT(_cmd));
-    //     else
-    //         throw NoCommandException(ERR_NOTEXTTOSEND());
-    // }
+    // Initial error checking
+    if (_parameters.size() <= 1)
+        throw NoCommandException(ERR_NEEDMOREPARAMS(_cmd));
 
-    // // Split parameters by space
-    // // std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
+    size_t firstSpacePos = _parameters.find(' ');
+    if (firstSpacePos == std::string::npos)
+        firstSpacePos = _parameters.size() - 1;
 
-    // size_t firstSpacePos = _parameters.find(' ');
-    // if (firstSpacePos == std::string::npos)
-    //     firstSpacePos = _parameters.size() - 1;
+    std::string recipeints = _parameters.substr(0, firstSpacePos);
+    std::string message = _parameters.substr(firstSpacePos + 1);
 
-    // std::string recipeints = _parameters.substr(0, firstSpacePos);
-    // std::string message = _parameters.substr(firstSpacePos + 1);
+    if (message[0] == ':')
+        message = message.substr(1);
 
-
-    // // Print parameters
-    // // for (size_t i = 0; i < params.size(); ++i)
-    // // {
-    // //     std::cout << "PRIVMSG: '" << params[i] << "'" << std::endl;
-    // // }
-
-    // // Check if the first parameter is a channel or a user
-    // if (recipeints[0] == '#') {
-    //     // Channel
-    //     ChannelManager& cm = _client.getCM();
-    //     Channel *chan = cm.getChannel(recipeints);
-    //     if (chan != NULL) {
-    //         // Channel exists
-    //         std::cout << "Channel exists" << std::endl;
-    //         // Send message to all clients in channel
-    //         chan->forwardMessage(message, &_client);
-    //     } else {
-    //         // Channel does not exist
-    //         std::cout << "Channel does not exist" << std::endl;
-    //         throw NoCommandException(ERR_CANNOTSENDTOCHAN(recipeints));
-    //     }
-    // } else {
-    //     // User
-    //     // Send message to user
-    //     // _client.forwardMessage(_cmdLine[1], &_client);
-    // }
+    // Check if the first parameter is a channel or a user
+    if (recipeints[0] == '#') {
+        // Channel
+        ChannelManager& cm = _client.getCM();
+        Channel *chan = cm.getChannel(recipeints);
+        if (chan != NULL) {
+            // Channel exists
+            std::cout << "Channel exists" << std::endl;
+            // Send message to all clients in channel
+            chan->forwardMessage(message, &_client);
+        } else {
+            // Channel does not exist
+            std::cout << "Channel does not exist" << std::endl;
+            throw NoCommandException(ERR_CANNOTSENDTOCHAN(recipeints));
+        }
+    } else {
+        // User
+        // Send message to user
+        // _client.forwardMessage(_cmdLine[1], &_client);
+    }
 }
 
 void Command::handle_TOPIC() {}

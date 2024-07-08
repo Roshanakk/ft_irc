@@ -11,7 +11,7 @@ class Client;
 class Channel {
 	public:
 		// Constructors & Destructor //
-		Channel(std::string name, std::string key_val = "");
+		Channel(std::string name);
 		Channel(const Channel & src);
 		~Channel();
 
@@ -46,14 +46,18 @@ class Channel {
 		size_t getChanSize(void) const;
 		std::map<Client *, bool> &getClients(void);
 		bool getInviteOnly(void);
+		std::string getTopic() const;
+		std::string getClientNicknames(void) const;
 
 		// Setters //
 		void setMaxClients(int maxClients);
 		void setInviteOnly(bool inviteOnly);
+		void setTopic(std::string topic);
 
 	private:
 		std::string _name;
 		std::string _key;
+		std::string _topic;
 		std::map<Client *, bool> _clients;
 		int _maxClients;
 		std::set<Client *> _bans;

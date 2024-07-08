@@ -28,6 +28,7 @@ Client::~Client(void) {
 void Client::send_message(std::string message)
 {
     // std::string response = "Message Received\n";
+    std::cout << "Sending to (" << _socket << "): " << message << std::endl;
     send(_socket, message.c_str(), message.size(), 0);
 }
 
@@ -70,6 +71,10 @@ void Client::receive_message(void)
     // send_message("Message received\n");
 }
 
+/*************************************/
+/*                GETTERS            */
+/*************************************/
+
 int Client::getSocket(void) const
 {
     return (_socket);
@@ -87,4 +92,16 @@ std::set<Client *> &Client::getClinents(void) const
 
 ChannelManager &Client::getCM(void) const {
     return (_cm);
+};
+
+std::string Client::getNick(void) const {
+    return (_nick);
+};
+
+/*************************************/
+/*                SETTERS            */
+/*************************************/
+
+void Client::setNick(std::string nick) {
+    _nick = nick;
 };
