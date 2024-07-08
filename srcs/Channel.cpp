@@ -28,14 +28,7 @@ Channel & Channel::operator=(const Channel & src)
 /*                      PUBLIC METHODS                    */
 /**********************************************************/
 
-void Channel::forwardMessage(std::string message, Client *sender) {
-    for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
-        if (it->first != sender) {
-            std::cout << "Sending message to client: " << it->first->getSocket() << std::endl;
-            it->first->send_message("PRIVMSG " + _name + " :" + message + "\r\n");
-        }
-    }
-};
+// Client methods
 
 void Channel::addClient(Client *client) {
     if (_clients.size() == true)
@@ -46,19 +39,6 @@ void Channel::addClient(Client *client) {
 
 void Channel::removeClient(Client *client) {
     _clients.erase(client);
-};
-
-bool Channel::checkKey(std::string& key_val) {
-    return (_key == key_val);
-};
-
-bool Channel::requiresKey(void) {
-    return (_key.size() > 0);
-};
-
-bool Channel::shouldDelete(void) {
-    // return 1 if the channel should be deleted (ie. no clients)
-    return (_clients.size() == 0);
 };
 
 void Channel::promoteClient(Client *client) {
@@ -75,6 +55,34 @@ bool Channel::checkCanAddMoreClients(void) {
     return (static_cast<int>(_clients.size()) < _maxClients);
 };
 
+bool Channel::shouldDelete(void) {
+    // return 1 if the channel should be deleted (ie. no clients)
+    return (_clients.size() == 0);
+};
+
+// Message methods
+
+void Channel::forwardMessage(std::string message, Client *sender) {
+    for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
+        if (it->first != sender) {
+            std::cout << "Sending message to client: " << it->first->getSocket() << std::endl;
+            it->first->send_message("PRIVMSG " + _name + " :" + message + "\r\n");
+        }
+    }
+};
+
+// Key methods
+
+bool Channel::checkKey(std::string& key_val) {
+    return (_key == key_val);
+};
+
+bool Channel::requiresKey(void) {
+    return (_key.size() > 0);
+};
+
+// Invite methods
+
 bool Channel::checkInvite(Client *client) {
     return (_invites.find(client) != _invites.end());
 };
@@ -85,6 +93,20 @@ void Channel::addInvite(Client *client) {
 
 void Channel::removeInvite(Client *client) {
     _invites.erase(client);
+};
+
+// Ban methods
+
+bool Channel::checkBan(Client *client) {
+    return (_bans.find(client) != _bans.end());
+};
+
+void Channel::addBan(Client *client) {
+    _bans.insert(client);
+};
+
+void Channel::removeBan(Client *client) {
+    _bans.erase(client);
 };
 
 /**********************************************************/

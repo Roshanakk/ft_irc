@@ -132,32 +132,28 @@ void Command::handle_JOIN() {
         // check that user is not banned from channel
             // Add a banned list to the channel class
         // check that the channel is not invite only
-            // Add flags to the channel class
         if (chan->getInviteOnly()) {
-            // check the channels invite list for the user
-                // Add an invite list to the channel class
-            // if (!chan->checkInviteList(&_client)) {
-            //     std::cout << "User is not invited" << std::endl;
-            //     throw NoCommandException(ERR_INVITEONLYCHAN());
-            // }
+            if (chan->checkInvite(&_client)) {
+                std::cout << "User is invited" << std::endl;
+            } else {
+                std::cout << "User is not invited" << std::endl;
+                throw NoCommandException(ERR_INVITEONLYCHAN());
+            }
         }
         // check that the channel is not full
         if (!chan->checkCanAddMoreClients()) {
             std::cout << "Channel is full" << std::endl;
             throw NoCommandException(ERR_CHANNELISFULL());
         }
-            // Add a max number of users to the channel class.
-            // I think this is infinite at first, but can be chagned with mode +l #
-            // Add a checkMax function to the channel class
         // check that the channel mask is good ??? (unsure what this means)
             // idk what this is yet.
-
         // check password
         if (chan->requiresKey()) {
             // Channel requires a password
                 // NOTE: no spaces are allowed in the password so we can just chck params[1]
             if (params.size() > 1 && chan->checkKey(params[1])) {
                 std::cout << "Password is correct" << std::endl;
+                chan->removeInvite(&_client);
                 chan->addClient(&_client);
                 // Response to send: RPL_TOPIC and RPL_NAMREPLY
             } else {
@@ -166,6 +162,7 @@ void Command::handle_JOIN() {
             }
         } else {
             // Channel does not require a password
+            chan->removeInvite(&_client);
             chan->addClient(&_client);
             // Response to send: RPL_TOPIC and RPL_NAMREPLY
         }
