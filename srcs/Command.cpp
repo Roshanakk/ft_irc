@@ -70,28 +70,20 @@ void Command::doCmd(std::string & line)
     if (firstSpacePos == std::string::npos)
         firstSpacePos = line.size() - 1;
 
-    std::string cmd = line.substr(0, firstSpacePos);
-    std::string parameters = line.substr(firstSpacePos + 1);
+    _cmd = line.substr(0, firstSpacePos);
+    _parameters = line.substr(firstSpacePos + 1);
 
-    parameters.erase(std::remove(parameters.begin(), parameters.end(), '\n'), parameters.end());
-    parameters.erase(std::remove(parameters.begin(), parameters.end(), '\r'), parameters.end());
-
-    if (cmd.size() > 0 ) {
-        _cmdLine.push_back(cmd);
-    }
-
-    if (parameters.size() > 0 ) {
-        _cmdLine.push_back(parameters);
-    }
+    _parameters.erase(std::remove(_parameters.begin(), _parameters.end(), '\n'), _parameters.end());
+    _parameters.erase(std::remove(_parameters.begin(), _parameters.end(), '\r'), _parameters.end());
 
     try
     {
         int i = 0;
-        while (i < NB_CMDS && _cmdLine[0] != _listCmds[i])
+        while (i < NB_CMDS && _cmd != _listCmds[i])
             ++i;
 
         if (i == NB_CMDS)
-            throw(NoCommandException(ERR_UNKNOWNCOMMAND(_client.getHostname(), _cmdLine[0])));
+            throw(NoCommandException(ERR_UNKNOWNCOMMAND(_client.getHostname(), _cmd)));
         else
             (this->*(_fctCmds[i]))();
     }
@@ -113,27 +105,39 @@ void Command::handle_INVITE() {}
 
 void Command::handle_JOIN() {
     // Need to check if there are parameters. If not, throw an exception.
-    if (_cmdLine.size() <= 1)
-        throw NoCommandException(ERR_NEEDMOREPARAMS(_cmdLine[0]));
+    if (_parameters.size() <= 1)
+        throw NoCommandException(ERR_NEEDMOREPARAMS(_cmd));
 
     // Split parameters by space
-    std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
+    std::vector<std::string> params = Utilities::split(_parameters, ' ');
 
     // Print parameters
     for (size_t i = 0; i < params.size(); ++i)
     {
         std::cout << "JOIN: '" << params[i] << "'" << std::endl;
     }
-
-    std::string chanName = params[0];
-    std::string chanKey = params.size() > 1 ? params[1] : "";
+    std::cout << "Number of parameters: " << params.size() << std::endl;
 
     ChannelManager& cm = _client.getCM();
-    Channel *chan = cm.getChannel(chanName);
+    Channel *chan = cm.getChannel(params[0]);
     if (chan != NULL) {
-        // channel exists. check password
+        // channel exists. start channel checks
         std::cout << "Channel exists" << std::endl;
-        if (chan->checkKey(chanKey)) {
+        // check that user is not a member of too many channels
+            // just search for the user in all the channels? not fast but would be easy to implement.
+        // check that user is not banned from channel
+            // Add a banned list to the channel class
+        // check that the channel is not invite only
+            // Add flags to the channel class
+        // check that the channel is not full
+            // Add a max number of users to the channel class.
+            // I think this is infinite at first, but can be chagned with mode +l #
+            // Add a checkMax function to the channel class
+        // check that the channel mask is good ??? (unsure what this means)
+            // idk what this is yet.
+        // check if password is correct
+            // NOTE: no spaces are allowed in the password so we can just chck params[1]
+        if (params.size() > 1 && chan->checkKey(params[1])) {
             std::cout << "Password is correct" << std::endl;
             chan->addClient(&_client);
             // Response to send: RPL_TOPIC and RPL_NAMREPLY
@@ -142,9 +146,9 @@ void Command::handle_JOIN() {
             throw NoCommandException(ERR_PASSWDMISMATCH());
         }
     } else {
-        // Channel does not exist. Create channel and add client.
+        // Channel does not exist. Create channel and add client to channel.
         std::cout << "Channel does not exist, creating channel" << std::endl;
-        cm.addChannel(chanName, &_client, chanKey);
+        cm.addChannel(params[0], &_client);
         // Response to send: RPL_TOPIC and RPL_NAMREPLY
     }
     std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
@@ -167,51 +171,51 @@ void Command::handle_PING()
 }
 
 void Command::handle_PRIVMSG() {
-    // Initial error checking
-    if (_cmdLine.size() != 2) {
-        if (_cmdLine.size() == 1)
-            throw NoCommandException(ERR_NORECIPIENT(_cmdLine[0]));
-        else
-            throw NoCommandException(ERR_NOTEXTTOSEND());
-    }
-
-    // Split parameters by space
-    // std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
-
-    size_t firstSpacePos = _cmdLine[1].find(' ');
-    if (firstSpacePos == std::string::npos)
-        firstSpacePos = _cmdLine[1].size() - 1;
-
-    std::string recipeints = _cmdLine[1].substr(0, firstSpacePos);
-    std::string message = _cmdLine[1].substr(firstSpacePos + 1);
-
-
-    // Print parameters
-    // for (size_t i = 0; i < params.size(); ++i)
-    // {
-    //     std::cout << "PRIVMSG: '" << params[i] << "'" << std::endl;
+    // // Initial error checking
+    // if (_cmd.size() != 2) {
+    //     if (_cmd.size() == 1)
+    //         throw NoCommandException(ERR_NORECIPIENT(_cmd));
+    //     else
+    //         throw NoCommandException(ERR_NOTEXTTOSEND());
     // }
 
-    // Check if the first parameter is a channel or a user
-    if (recipeints[0] == '#') {
-        // Channel
-        ChannelManager& cm = _client.getCM();
-        Channel *chan = cm.getChannel(recipeints);
-        if (chan != NULL) {
-            // Channel exists
-            std::cout << "Channel exists" << std::endl;
-            // Send message to all clients in channel
-            chan->forwardMessage(message, &_client);
-        } else {
-            // Channel does not exist
-            std::cout << "Channel does not exist" << std::endl;
-            throw NoCommandException(ERR_CANNOTSENDTOCHAN(recipeints));
-        }
-    } else {
-        // User
-        // Send message to user
-        // _client.forwardMessage(_cmdLine[1], &_client);
-    }
+    // // Split parameters by space
+    // // std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
+
+    // size_t firstSpacePos = _parameters.find(' ');
+    // if (firstSpacePos == std::string::npos)
+    //     firstSpacePos = _parameters.size() - 1;
+
+    // std::string recipeints = _parameters.substr(0, firstSpacePos);
+    // std::string message = _parameters.substr(firstSpacePos + 1);
+
+
+    // // Print parameters
+    // // for (size_t i = 0; i < params.size(); ++i)
+    // // {
+    // //     std::cout << "PRIVMSG: '" << params[i] << "'" << std::endl;
+    // // }
+
+    // // Check if the first parameter is a channel or a user
+    // if (recipeints[0] == '#') {
+    //     // Channel
+    //     ChannelManager& cm = _client.getCM();
+    //     Channel *chan = cm.getChannel(recipeints);
+    //     if (chan != NULL) {
+    //         // Channel exists
+    //         std::cout << "Channel exists" << std::endl;
+    //         // Send message to all clients in channel
+    //         chan->forwardMessage(message, &_client);
+    //     } else {
+    //         // Channel does not exist
+    //         std::cout << "Channel does not exist" << std::endl;
+    //         throw NoCommandException(ERR_CANNOTSENDTOCHAN(recipeints));
+    //     }
+    // } else {
+    //     // User
+    //     // Send message to user
+    //     // _client.forwardMessage(_cmdLine[1], &_client);
+    // }
 }
 
 void Command::handle_TOPIC() {}

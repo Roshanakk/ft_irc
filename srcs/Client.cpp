@@ -63,11 +63,11 @@ void Client::receive_message(void)
             command.doCmd(*it);
         }
         else {
-            std::cout << "\tAdded remainder: " << *it << std::endl;
+            // std::cout << "\tAdded remainder: " << *it << std::endl;
             _messageStr = *it;
         }
     }
-    send_message("Message received\n");
+    // send_message("Message received\n");
 }
 
 int Client::getSocket(void) const
