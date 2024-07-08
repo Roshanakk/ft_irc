@@ -14,28 +14,24 @@ ChannelManager::~ChannelManager(void) {
 
 // METHODS
 
-Channel *ChannelManager::addChannel(std::string name, Client *client) {
+void ChannelManager::addChannel(std::string name, Client *client) {
 
   if (client == NULL) {
-    // No client to add to channel
     throw ServerException("No client to add to channel");
   }
 
   // Check if channel already exists by this name
   for (std::set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
     if ((*it)->getName() == name) {
-      // name already exists
       throw ServerException("Channel already exists");
     }
   }
   Channel *newChannel = new Channel(name);
   if (newChannel == NULL) {
-    // Error creating channel
     throw ServerException("Error creating channel");
   }
   newChannel->addClient(client);
   _channels.insert(newChannel);
-  return newChannel;
 };
 
 void ChannelManager::removeChannel(std::string name) {

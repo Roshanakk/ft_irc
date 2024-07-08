@@ -158,35 +158,19 @@ void Command::handle_JOIN() {
                 // NOTE: no spaces are allowed in the password so we can just chck params[1]
             if (params.size() > 1 && chan->checkKey(params[1])) {
                 std::cout << "Password is correct" << std::endl;
-                chan->removeInvite(&_client);
                 chan->addClient(&_client);
-                if (chan->getTopic().size() > 0) {
-                    _client.send_message(RPL_TOPIC(chan->getName(), chan->getTopic()));
-                } else {
-                    _client.send_message(RPL_NOTOPIC(chan->getName()));
-                }
-                _client.send_message(RPL_NAMREPLY(params[0], chan->getClientNicknames()));
             } else {
                 std::cout << "Password is incorrect" << std::endl;
                 throw NoCommandException(ERR_PASSWDMISMATCH());
             }
         } else {
             // Channel does not require a password
-            chan->removeInvite(&_client);
             chan->addClient(&_client);
-            if (chan->getTopic().size() > 0) {
-                _client.send_message(RPL_TOPIC(chan->getName(), chan->getTopic()));
-            } else {
-                _client.send_message(RPL_NOTOPIC(chan->getName()));
-            }
-            _client.send_message(RPL_NAMREPLY(params[0], chan->getClientNicknames()));
         }
     } else {
         // Channel does not exist. Create channel and add client to channel.
         std::cout << "Channel does not exist, creating channel" << std::endl;
-        Channel *chan = cm.addChannel(params[0], &_client);
-        _client.send_message(RPL_NOTOPIC(params[0]));
-        _client.send_message(RPL_NAMREPLY(params[0], chan->getClientNicknames()));
+        cm.addChannel(params[0], &_client);
     }
     std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
 }

@@ -28,7 +28,7 @@ Client::~Client(void) {
 void Client::send_message(std::string message)
 {
     // std::string response = "Message Received\n";
-    std::cout << "Sending to (" << _socket << "): " << message << std::endl;
+    std::cout << "Sending to (" << _socket << "): " << message;
     send(_socket, message.c_str(), message.size(), 0);
 }
 

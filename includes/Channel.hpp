@@ -5,6 +5,7 @@
 #include <map>
 
 #include "Client.hpp"
+#include "ServerReplies.hpp"
 
 class Client;
 

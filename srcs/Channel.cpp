@@ -32,10 +32,22 @@ Channel & Channel::operator=(const Channel & src)
 // Client methods
 
 void Channel::addClient(Client *client) {
+    if (client == NULL)
+        return ;
+
     if (_clients.size() == true)
+        // add the client as a channel operator
         _clients.insert(std::make_pair(client, true));
     else
         _clients.insert(std::make_pair(client, false));
+    
+    this->removeInvite(client);
+    if (this->getTopic().size() > 0) {
+        client->send_message(RPL_TOPIC(this->getName(), this->getTopic()));
+    } else {
+        client->send_message(RPL_NOTOPIC(this->getName()));
+    }
+    client->send_message(RPL_NAMREPLY(_name, this->getClientNicknames()));
 };
 
 void Channel::removeClient(Client *client) {
