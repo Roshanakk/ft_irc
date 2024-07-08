@@ -5,10 +5,10 @@
 /**********************************************************/
 
 Channel::Channel(std::string name, std::string key_val) 
-    : _name(name), _key(key_val) {}
+    : _name(name), _key(key_val), _maxClients(-1) {}
 
 Channel::Channel(const Channel & src) 
-    : _name(src._name), _key(src._key) {}
+    : _name(src._name), _key(src._key), _maxClients(-1) {}
 
 Channel::~Channel() {}
 
@@ -68,6 +68,13 @@ void Channel::promoteClient(Client *client) {
     }
 };
 
+bool Channel::checkCanAddMoreClients(void) {
+    // Answers the question: Can we add more clients to the channel?
+    if (_maxClients == -1)
+        return (true);
+    return (static_cast<int>(_clients.size()) < _maxClients);
+};
+
 /**********************************************************/
 /*                        GETTERS                         */
 /**********************************************************/
@@ -79,4 +86,23 @@ std::string Channel::getName(void) const {
 
 size_t Channel::getChanSize(void) const {
     return (_clients.size());
+};
+
+/**********************************************************/
+/*                        SETTERS                         */
+/**********************************************************/
+
+void Channel::setMaxClients(int maxClients) {
+    if (maxClients < 0) {
+        // maxClients < 0 means no limit
+        _maxClients = -1;
+        return ;
+    } else if (maxClients > 100000) {
+        // Sets the max number of clients allowed in the channel to 100000
+        _maxClients = 100000;
+        return ;
+    } else {
+        // sets the max number of clients allowed in the channel
+        _maxClients = maxClients;
+    }
 };

@@ -26,16 +26,25 @@ class Channel {
 		bool shouldDelete(void);
 		bool checkKey(std::string& key_val);
 		bool requiresKey(void);
+		bool checkCanAddMoreClients(void);
 
 		// Getters //
 		std::string getName(void) const;
 		size_t getChanSize(void) const;
 
+		// Setters //
+		void setMaxClients(int maxClients);
+
 		// To be implemented
 		// void removeClientFromAllChannels(Client *client);
+			// remove the client from the channel map
+		// int getClinentChannelCount(Client *client);
+			// return the number of channels the client is in
 
 	private:
 		std::string _name;
 		std::string _key;
 		std::map<Client *, bool> _clients;
+		int _maxClients;
+		// Need a ban list
 };

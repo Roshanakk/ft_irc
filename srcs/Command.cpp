@@ -130,6 +130,10 @@ void Command::handle_JOIN() {
         // check that the channel is not invite only
             // Add flags to the channel class
         // check that the channel is not full
+        if (!chan->checkCanAddMoreClients()) {
+            std::cout << "Channel is full" << std::endl;
+            throw NoCommandException(ERR_CHANNELISFULL());
+        }
             // Add a max number of users to the channel class.
             // I think this is infinite at first, but can be chagned with mode +l #
             // Add a checkMax function to the channel class
