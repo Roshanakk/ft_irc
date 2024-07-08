@@ -47,7 +47,7 @@ class Channel {
 		std::map<Client *, bool> &getClients(void);
 		bool getInviteOnly(void);
 		std::string getTopic() const;
-		std::string getClientNicknames(void) const;
+		std::string getClientNicknames(void);
 
 		// Setters //
 		void setMaxClients(int maxClients);

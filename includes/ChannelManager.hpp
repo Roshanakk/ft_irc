@@ -13,7 +13,7 @@ class ChannelManager {
     ChannelManager(void);
     ~ChannelManager(void);
 
-    void addChannel(std::string name, Client *client = NULL, std::string key_val = "");
+    Channel *addChannel(std::string name, Client *client = NULL);
     void removeChannel(std::string name);
 
     // Getters //

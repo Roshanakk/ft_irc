@@ -135,11 +135,14 @@ std::string Channel::getTopic() const {
     return (_topic);
 };
 
-std::string Channel::getClientNicknames(void) const {
-    std::istringstream ss;
+std::string Channel::getClientNicknames(void) {
+    std::ostringstream ss;
     for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
-        ss << it->first->getNick() << ", ";
+        if (it != _clients.begin())
+            ss << ", ";
+        ss << it->first->getNick();
     }
+    return ss.str();
 };
 
 /**********************************************************/

@@ -7,7 +7,7 @@
 
 Client::Client(int sock_val, Dispatch& d,
     std::set<Client *> & clients, ChannelManager& cm)
-    : _socket(sock_val), _d(d), _clients(clients), _cm(cm)
+    : _socket(sock_val), _d(d), _clients(clients), _cm(cm), _nick("default")
 {
     if (_socket == -1) {
         throw ServerException("Error creating client socket");

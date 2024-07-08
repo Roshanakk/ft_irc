@@ -51,7 +51,7 @@
 // Connection Confirmation (Not in RFC 1459)
 #define RPL_WELCOME(hostname, nick, prefix) (":" + hostname + " 001 " + nick + " :Welcome to the Internet Relay Network " + prefix + "\r\n")
 // JOIN replies (Section 4.2.1 of RFC 1459)
-#define RPL_TOPIC(channel, topic) (channel + " :" + topic + "\r\n"
+#define RPL_TOPIC(channel, topic) (channel + " :" + topic + "\r\n")
 #define RPL_NOTOPIC(channel) (channel + " :No topic is set\r\n")
 #define RPL_NAMREPLY(channel, nick) (channel + " :" + nick + "\r\n")
 // #define RPL_YOURHOST() "002 :Your host is <servername>, running version <ver>"

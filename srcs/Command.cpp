@@ -160,7 +160,12 @@ void Command::handle_JOIN() {
                 std::cout << "Password is correct" << std::endl;
                 chan->removeInvite(&_client);
                 chan->addClient(&_client);
-                // Response to send: RPL_TOPIC and RPL_NAMREPLY
+                if (chan->getTopic().size() > 0) {
+                    _client.send_message(RPL_TOPIC(chan->getName(), chan->getTopic()));
+                } else {
+                    _client.send_message(RPL_NOTOPIC(chan->getName()));
+                }
+                _client.send_message(RPL_NAMREPLY(params[0], chan->getClientNicknames()));
             } else {
                 std::cout << "Password is incorrect" << std::endl;
                 throw NoCommandException(ERR_PASSWDMISMATCH());
@@ -169,16 +174,19 @@ void Command::handle_JOIN() {
             // Channel does not require a password
             chan->removeInvite(&_client);
             chan->addClient(&_client);
-            _client.send_message(RPL_TOPIC());
-            // Response to send: RPL_TOPIC and RPL_NAMREPLY
+            if (chan->getTopic().size() > 0) {
+                _client.send_message(RPL_TOPIC(chan->getName(), chan->getTopic()));
+            } else {
+                _client.send_message(RPL_NOTOPIC(chan->getName()));
+            }
+            _client.send_message(RPL_NAMREPLY(params[0], chan->getClientNicknames()));
         }
     } else {
         // Channel does not exist. Create channel and add client to channel.
         std::cout << "Channel does not exist, creating channel" << std::endl;
-        cm.addChannel(params[0], &_client);
+        Channel *chan = cm.addChannel(params[0], &_client);
         _client.send_message(RPL_NOTOPIC(params[0]));
-        _client.send_message(RPL_NAMREPLY(params[0], ));
-        // Response to send: RPL_TOPIC and RPL_NAMREPLY
+        _client.send_message(RPL_NAMREPLY(params[0], chan->getClientNicknames()));
     }
     std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
 }
@@ -208,9 +216,7 @@ void Command::handle_PART() {}
 
 void Command::handle_PING()
 {
-    std::string pong = "PONG ";
-    std::cout << "Sending PONG" << std::endl;
-    // send(_client.getSocket(), pong.c_str(), pong.size(), 0);
+    std::string pong = "PONG ft_irc\r\n";
     _client.send_message(pong);
 }
 
