@@ -126,11 +126,16 @@ void Command::handle_JOIN() {
         throw NoCommandException(ERR_TOOMANYCHANNELS(params[0]));
     }
 
+    // Following checks are only required if the channel exists
     if (chan != NULL) {
         // channel exists. start channel checks
         std::cout << "Channel exists" << std::endl;
         // check that user is not banned from channel
-            // Add a banned list to the channel class
+            // Can leave this in? But not required by subject.
+        if (chan->checkBan(&_client)) {
+            std::cout << "User is banned" << std::endl;
+            throw NoCommandException(ERR_BANNEDFROMCHAN());
+        }
         // check that the channel is not invite only
         if (chan->getInviteOnly()) {
             if (chan->checkInvite(&_client)) {
@@ -145,8 +150,8 @@ void Command::handle_JOIN() {
             std::cout << "Channel is full" << std::endl;
             throw NoCommandException(ERR_CHANNELISFULL());
         }
-        // check that the channel mask is good ??? (unsure what this means)
-            // idk what this is yet.
+        // check that the channel mask is good ???
+            // This is listed as a future feature so ignore for now
         // check password
         if (chan->requiresKey()) {
             // Channel requires a password
