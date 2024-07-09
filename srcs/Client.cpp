@@ -7,7 +7,7 @@
 
 Client::Client(int sock_val, Dispatch& d,
     std::set<Client *> & clients, ChannelManager& cm)
-    : _socket(sock_val), _d(d), _clients(clients), _cm(cm)
+    : _socket(sock_val), _d(d), _clients(clients), _cm(cm), _nick("default")
 {
     if (_socket == -1) {
         throw ServerException("Error creating client socket");
@@ -27,7 +27,7 @@ Client::~Client(void) {
 
 void Client::send_message(std::string message)
 {
-    // std::string response = "Message Received\n";
+    std::cout << "Sending to (" << _socket << "): " << message;
     send(_socket, message.c_str(), message.size(), 0);
 }
 
@@ -63,12 +63,16 @@ void Client::receive_message(void)
             command.doCmd(*it);
         }
         else {
-            std::cout << "\tAdded remainder: " << *it << std::endl;
+            // std::cout << "\tAdded remainder: " << *it << std::endl;
             _messageStr = *it;
         }
     }
-    send_message("Message received\n");
+    // send_message("Message received\n");
 }
+
+/*************************************/
+/*                GETTERS            */
+/*************************************/
 
 int Client::getSocket(void) const
 {
@@ -87,4 +91,16 @@ std::set<Client *> &Client::getClinents(void) const
 
 ChannelManager &Client::getCM(void) const {
     return (_cm);
+};
+
+std::string Client::getNick(void) const {
+    return (_nick);
+};
+
+/*************************************/
+/*                SETTERS            */
+/*************************************/
+
+void Client::setNick(std::string nick) {
+    _nick = nick;
 };

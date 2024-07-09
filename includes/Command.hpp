@@ -76,7 +76,8 @@ class Command
 		std::string _listCmds[21];
 		void  (Command::*_fctCmds[21])();
 		Client & _client;
-		std::vector<std::string> _cmdLine; // First string is the command, second one is the rest,
+		std::string _cmd;
+		std::string _parameters;
+		//std::vector<std::string> _cmdLine; // First string is the command, second one is the rest,
 											// meaning by that : the parameters
-
 };
