@@ -6,7 +6,9 @@
 #include <algorithm>
 
 #include "Client.hpp"
-#include "NoCommandException.hpp"
+
+#include "CommandException.hpp"
+
 #include "Utilities.hpp"
 
 class Client;

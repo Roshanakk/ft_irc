@@ -83,9 +83,14 @@ void Command::doCmd(std::string & line)
             ++i;
 
         if (i == NB_CMDS)
-            throw(NoCommandException(ERR_UNKNOWNCOMMAND(_client.getHostname(), _cmd)));
+            throw(CommandException(ERR_UNKNOWNCOMMAND(_client.getHostname(), _cmd)));
         else
+        {
+            // std::cout << "CMD = " << i << std::endl;
+            // std::cout << "_cmdLine[1] = " << _cmdLine[1] << std::endl;
+
             (this->*(_fctCmds[i]))();
+        }
     }
     catch(const std::exception& e)
     {
@@ -99,14 +104,19 @@ void Command::doCmd(std::string & line)
 /*                COMMANDS               */
 /*****************************************/
 
-void Command::handle_CAP() {}
+void Command::handle_CAP() 
+{
+    // std::cout << "Cap command" << std::endl;
+}
+
+
 void Command::handle_INFO() {}
 void Command::handle_INVITE() {}
 
 void Command::handle_JOIN() {
     // Need to check if there are parameters. If not, throw an exception.
     if (_parameters.size() <= 1)
-        throw NoCommandException(ERR_NEEDMOREPARAMS(_cmd));
+        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
 
     // Split parameters by space
     std::vector<std::string> params = Utilities::split(_parameters, ' ');
@@ -116,7 +126,7 @@ void Command::handle_JOIN() {
 
     // Check that user is not in too many channels
     if (cm.getClientChannelCount(&_client) >= cm.getMaxChannelsForClient()) {
-        throw NoCommandException(ERR_TOOMANYCHANNELS(params[0]));
+        throw CommandException(ERR_TOOMANYCHANNELS(params[0]));
     }
 
     // Following checks are only required if the channel exists
@@ -127,7 +137,7 @@ void Command::handle_JOIN() {
             // Can leave this in? But not required by subject.
         if (chan->checkBan(&_client)) {
             std::cout << "User is banned" << std::endl;
-            throw NoCommandException(ERR_BANNEDFROMCHAN());
+            throw CommandException(ERR_BANNEDFROMCHAN());
         }
         // check that the channel is not invite only
         if (chan->getInviteOnly()) {
@@ -135,13 +145,13 @@ void Command::handle_JOIN() {
                 std::cout << "User is invited" << std::endl;
             } else {
                 std::cout << "User is not invited" << std::endl;
-                throw NoCommandException(ERR_INVITEONLYCHAN());
+                throw CommandException(ERR_INVITEONLYCHAN());
             }
         }
         // check that the channel is not full
         if (!chan->checkCanAddMoreClients()) {
             std::cout << "Channel is full" << std::endl;
-            throw NoCommandException(ERR_CHANNELISFULL());
+            throw CommandException(ERR_CHANNELISFULL());
         }
         // check that the channel mask is good ???
             // This is listed as a future feature so ignore for now
@@ -154,7 +164,7 @@ void Command::handle_JOIN() {
                 chan->addClient(&_client);
             } else {
                 std::cout << "Password is incorrect" << std::endl;
-                throw NoCommandException(ERR_PASSWDMISMATCH());
+                throw CommandException(ERR_PASSWDMISMATCH());
             }
         } else {
             // Channel does not require a password
@@ -187,7 +197,50 @@ void Command::handle_MODE() {
 }
 
 void Command::handle_NAMES() {}
-void Command::handle_NICK() {}
+
+
+
+bool isAValidNickname(std::string str)
+{
+    std::string set = "|^_-{}[]";
+
+    for (size_t i = 0; i < str.size(); ++i)
+    {
+        if (!std::isalnum(str[i]) && set.find_first_of(str[i]) == std::string::npos)
+        {
+            std::cout << str[i] << " -> NOPE" << std::endl;
+            return (false);
+        }
+    }
+    return (true);
+}
+
+
+void Command::handle_NICK() 
+{
+
+    std::vector<std::string> params = Utilities::split(_parameters, ' ');
+
+    if (params.size() < 1)
+        throw(CommandException(ERR_NONICKNAMEGIVEN()));
+    else if (params.size() == 1)
+    {
+        if (!params[0].empty())
+            params[0].erase(params[0].size() - 1); //removing the trailing \r 
+        if (!isAValidNickname(params[0]))
+            throw(CommandException(ERR_ERRONEUSNICKNAME(params[0])));
+
+        // //if nickname already exists
+        // if ()
+    }
+    else
+        return ; // no error if too many parameters ?
+    
+}
+
+
+
+
 void Command::handle_NOTICE() {}
 void Command::handle_PART() {}
 
@@ -200,7 +253,7 @@ void Command::handle_PING()
 void Command::handle_PRIVMSG() {
     // Initial error checking
     if (_parameters.size() <= 1)
-        throw NoCommandException(ERR_NEEDMOREPARAMS(_cmd));
+        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
 
     size_t firstSpacePos = _parameters.find(' ');
     if (firstSpacePos == std::string::npos)
@@ -225,7 +278,7 @@ void Command::handle_PRIVMSG() {
         } else {
             // Channel does not exist
             std::cout << "Channel does not exist" << std::endl;
-            throw NoCommandException(ERR_CANNOTSENDTOCHAN(recipeints));
+            throw CommandException(ERR_CANNOTSENDTOCHAN(recipeints));
         }
     } else {
         // User
@@ -235,7 +288,43 @@ void Command::handle_PRIVMSG() {
 }
 
 void Command::handle_TOPIC() {}
-void Command::handle_USER() {}
+
+
+
+void Command::handle_USER()
+{
+    //Splitting the parameters string into a vector of strings,
+    //in order to extract username, hostname and realname
+
+    size_t colonPos = _parameters.find(':');
+    std::string tmpParams = _parameters.substr(0, colonPos);
+
+    std::vector<std::string> params;
+    params = Utilities::split(tmpParams, ' ');
+    if (params.size() > 0)
+        params.push_back(_parameters.substr(colonPos + 1));
+
+    //Setting username, hostname, realname
+    if (params.size() == 1)
+    {
+        _client.setUsername(params[0]);
+        _client.setHostname("localhost");
+        _client.setRealname("localhost");        
+    }
+    else if (params.size() >= 4)
+    {
+        _client.setUsername(params[0]);
+        _client.setHostname(params[2]);
+        _client.setRealname(params[3]);
+    }
+    else
+        throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
+
+}
+
+
+
+
 void Command::handle_VERSION() {}
 void Command::handle_WHO() {}
 void Command::handle_WHOIS() {}

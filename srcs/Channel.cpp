@@ -152,7 +152,7 @@ std::string Channel::getClientNicknames(void) {
     for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
         if (it != _clients.begin())
             ss << ", ";
-        ss << it->first->getNick();
+        ss << it->first->getNickname();
     }
     return ss.str();
 };

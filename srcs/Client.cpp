@@ -7,7 +7,7 @@
 
 Client::Client(int sock_val, Dispatch& d,
     std::set<Client *> & clients, ChannelManager& cm)
-    : _socket(sock_val), _d(d), _clients(clients), _cm(cm), _nick("default")
+    : _socket(sock_val), _d(d), _clients(clients), _cm(cm), _nickname("default")
 {
     if (_socket == -1) {
         throw ServerException("Error creating client socket");
@@ -50,7 +50,6 @@ void Client::receive_message(void)
     if (std::find(_messageStr.begin(), _messageStr.end(), '\n') == _messageStr.end())
         return ;
 
-    Command command(*this);
 
 
     std::vector<std::string> strVec = Utilities::clientSplit(_messageStr, '\n');
@@ -59,6 +58,7 @@ void Client::receive_message(void)
         if (std::find(it->begin(), it->end(), '\n') != it->end())
         {
             // should call parsing function here rather than just printing.
+            Command command(*this);
             std::cout << "Received(" << _socket << "): " << *it;
             command.doCmd(*it);
         }
@@ -70,9 +70,10 @@ void Client::receive_message(void)
     // send_message("Message received\n");
 }
 
-/*************************************/
-/*                GETTERS            */
-/*************************************/
+
+/****************************************/
+/*                GETTERS               */
+/****************************************/
 
 int Client::getSocket(void) const
 {
@@ -84,7 +85,7 @@ std::string Client::getHostname(void) const
     return (_hostname);
 }
 
-std::set<Client *> &Client::getClinents(void) const
+std::set<Client *> &Client::getClients(void) const
 {
     return (_clients);
 }
@@ -93,14 +94,40 @@ ChannelManager &Client::getCM(void) const {
     return (_cm);
 };
 
-std::string Client::getNick(void) const {
-    return (_nick);
+std::string Client::getNickname(void) const {
+    return (_nickname);
 };
+
+std::string Client::getUsername(void) const
+{
+    return (_username);
+}
+
+std::string Client::getRealname(void) const
+{
+    return (_realname);
+}
+
 
 /*************************************/
 /*                SETTERS            */
 /*************************************/
 
-void Client::setNick(std::string nick) {
-    _nick = nick;
+void Client::setNickname(std::string nick) {
+    _nickname = nick;
 };
+
+void Client::setHostname(std::string hostname)
+{
+    _hostname = hostname;
+}
+
+void Client::setUsername(std::string username)
+{
+    _username = username;
+}
+
+void Client::setRealname(std::string realname)
+{
+    _realname = realname;
+}
