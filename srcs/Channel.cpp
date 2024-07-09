@@ -108,20 +108,6 @@ void Channel::removeInvite(Client *client) {
     _invites.erase(client);
 };
 
-// Ban methods
-
-bool Channel::checkBan(Client *client) {
-    return (_bans.find(client) != _bans.end());
-};
-
-void Channel::addBan(Client *client) {
-    _bans.insert(client);
-};
-
-void Channel::removeBan(Client *client) {
-    _bans.erase(client);
-};
-
 /**********************************************************/
 /*                        GETTERS                         */
 /**********************************************************/
