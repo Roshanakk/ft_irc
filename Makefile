@@ -17,7 +17,7 @@ NOCOLOR:=\033[0m
 
 SRCS = 	main.cpp \
 		ServerException.cpp \
-		NoCommandException.cpp \
+		CommandException.cpp \
 		Dispatch.cpp \
 		Server.cpp \
 		Client.cpp \

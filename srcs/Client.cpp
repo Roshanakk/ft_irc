@@ -53,7 +53,6 @@ void Client::receive_message(void)
     if (std::find(_messageStr.begin(), _messageStr.end(), '\n') == _messageStr.end())
         return ;
 
-    Command command(*this);
 
 
     std::vector<std::string> strVec = Utilities::clientSplit(_messageStr, '\n');
@@ -62,6 +61,7 @@ void Client::receive_message(void)
         if (std::find(it->begin(), it->end(), '\n') != it->end())
         {
             // should call parsing function here rather than just printing.
+            Command command(*this);
             std::cout << "Received(" << _socket << "): " << *it;
             command.doCmd(*it);
         }
@@ -73,6 +73,11 @@ void Client::receive_message(void)
     send_message("Message received\n");
 }
 
+
+/**************************************************/
+/*                GETTERS & SETTERS               */
+/**************************************************/
+
 int Client::getSocket(void) const
 {
     return (_socket);
@@ -81,4 +86,29 @@ int Client::getSocket(void) const
 std::string Client::getHostname(void) const
 {
     return (_hostname);
+}
+
+std::string Client::getUsername(void) const
+{
+    return (_username);
+}
+
+std::string Client::getRealname(void) const
+{
+    return (_realname);
+}
+
+void Client::setHostname(std::string hostname)
+{
+    _hostname = hostname;
+}
+
+void Client::setUsername(std::string username)
+{
+    _username = username;
+}
+
+void Client::setRealname(std::string realname)
+{
+    _realname = realname;
 }

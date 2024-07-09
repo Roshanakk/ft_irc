@@ -28,9 +28,15 @@ class Client : public AIO_Event
 		void send_message(std::string message);
 		void receive_message(void);
 
-		//GETTERS
+		//GETTERS & SETTERS
 		int getSocket(void) const;
 		std::string getHostname(void) const;
+		std::string getUsername(void) const;
+		std::string getRealname(void) const;
+
+		void setHostname(std::string hostname);
+		void setUsername(std::string username);
+		void setRealname(std::string realname);
 
 	private:
 		Client(void);
@@ -42,4 +48,9 @@ class Client : public AIO_Event
 		std::set<Channel *>& _channels;
 
 		std::string _hostname;
+		std::string _username;
+		std::string _realname;
+
+		std::string _nickname;
+
 };

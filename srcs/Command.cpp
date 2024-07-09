@@ -73,6 +73,7 @@ void Command::doCmd(std::string & line)
     std::string cmd = line.substr(0, firstSpacePos);
     std::string parameters = line.substr(firstSpacePos);
     parameters.erase(std::remove(parameters.begin(), parameters.end(), '\n'));
+    parameters.erase(0, 1);
 
     _cmdLine.push_back(cmd);
     _cmdLine.push_back(parameters);
@@ -84,9 +85,14 @@ void Command::doCmd(std::string & line)
             ++i;
 
         if (i == NB_CMDS)
-            throw(NoCommandException(ERR_UNKNOWNCOMMAND(_client.getHostname(), _cmdLine[0])));
+            throw(CommandException(ERR_UNKNOWNCOMMAND(_client.getHostname(), _cmdLine[0])));
         else
+        {
+            // std::cout << "CMD = " << i << std::endl;
+            // std::cout << "_cmdLine[1] = " << _cmdLine[1] << std::endl;
+
             (this->*(_fctCmds[i]))();
+        }
     }
     catch(const std::exception& e)
     {
@@ -100,7 +106,12 @@ void Command::doCmd(std::string & line)
 /*                COMMANDS               */
 /*****************************************/
 
-void Command::handle_CAP() {}
+void Command::handle_CAP() 
+{
+    // std::cout << "Cap command" << std::endl;
+}
+
+
 void Command::handle_INFO() {}
 void Command::handle_INVITE() {}
 
@@ -114,20 +125,99 @@ void Command::handle_KICK() {}
 void Command::handle_KILL() {}
 void Command::handle_MODE() {}
 void Command::handle_NAMES() {}
-void Command::handle_NICK() {}
+
+
+
+bool isAValidNickname(std::string str)
+{
+    std::string set = "|^_-{}[]";
+
+    for (size_t i = 0; i < str.size(); ++i)
+    {
+        if (!std::isalnum(str[i]) && set.find_first_of(str[i]) == std::string::npos)
+        {
+            std::cout << str[i] << " -> NOPE" << std::endl;
+            return (false);
+        }
+    }
+    return (true);
+}
+
+
+void Command::handle_NICK() 
+{
+
+    std::vector<std::string> params = Utilities::split(_cmdLine[1], ' ');
+
+    if (params.size() < 1)
+        throw(CommandException(ERR_NONICKNAMEGIVEN()));
+    else if (params.size() == 1)
+    {
+        if (!params[0].empty())
+            params[0].erase(params[0].size() - 1); //removing the trailing \r 
+        if (!isAValidNickname(params[0]))
+            throw(CommandException(ERR_ERRONEUSNICKNAME(params[0])));
+
+        // //if nickname already exists
+        // if ()
+    }
+    else
+        return ; // no error if too many parameters ?
+    
+}
+
+
+
+
 void Command::handle_NOTICE() {}
 void Command::handle_PART() {}
 
 void Command::handle_PING()
 {
-    std::string pong = "PONG";
+    std::string pong = "PONG ";
 
     send(_client.getSocket(), pong.c_str(), pong.size(), 0);
 }
 
 void Command::handle_PRIVMSG() {}
 void Command::handle_TOPIC() {}
-void Command::handle_USER() {}
+
+
+
+void Command::handle_USER()
+{
+    //Splitting the parameters string into a vector of strings,
+    //in order to extract username, hostname and realname
+
+    size_t colonPos = _cmdLine[1].find(':');
+    std::string tmpParams = _cmdLine[1].substr(0, colonPos);
+
+    std::vector<std::string> params;
+    params = Utilities::split(tmpParams, ' ');
+    if (params.size() > 0)
+        params.push_back(_cmdLine[1].substr(colonPos + 1));
+
+    //Setting username, hostname, realname
+    if (params.size() == 1)
+    {
+        _client.setUsername(params[0]);
+        _client.setHostname("localhost");
+        _client.setRealname("localhost");        
+    }
+    else if (params.size() >= 4)
+    {
+        _client.setUsername(params[0]);
+        _client.setHostname(params[2]);
+        _client.setRealname(params[3]);
+    }
+    else
+        throw(CommandException(ERR_NEEDMOREPARAMS(_cmdLine[0])));
+
+}
+
+
+
+
 void Command::handle_VERSION() {}
 void Command::handle_WHO() {}
 void Command::handle_WHOIS() {}
