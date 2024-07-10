@@ -37,10 +37,6 @@ class Channel {
 		bool checkInvite(Client *client);
 		void addInvite(Client *client);
 		void removeInvite(Client *client);
-		// Ban methods
-		bool checkBan(Client *client);
-		void addBan(Client *client);
-		void removeBan(Client *client);
 
 		// Getters //
 		std::string getName(void) const;
@@ -61,7 +57,6 @@ class Channel {
 		std::string _topic;
 		std::map<Client *, bool> _clients;
 		int _maxClients;
-		std::set<Client *> _bans;
 		std::set<Client *> _invites;
 
 		// Mode flags

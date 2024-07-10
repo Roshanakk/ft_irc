@@ -44,6 +44,18 @@ void ChannelManager::removeChannel(std::string name) {
   }
 };
 
+
+void ChannelManager::removeClientFromAllChannels(Client *client) {
+  if (client == NULL) {
+    return;
+  }
+
+  for (std::set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
+    (*it)->removeInvite(client);
+    (*it)->removeClient(client);
+  }
+};
+
 // GETTERS //
 
 size_t ChannelManager::getNumChannels(void) {

@@ -44,6 +44,9 @@ void Dispatch::run(void) {
     AIO_Event *event = static_cast<AIO_Event *>(_events[i].data.ptr);
     if (_events[i].events & EPOLLIN) {
       event->receive_message();
+      if (event->shouldDelete()) {
+        delete event;
+      }
     }
     if (_events[i].events & EPOLLOUT) {
       event->send_message("");
