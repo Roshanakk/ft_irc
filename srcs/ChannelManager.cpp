@@ -38,10 +38,27 @@ void ChannelManager::removeChannel(std::string name) {
   // Look for channel by name
   for (std::set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
     if ((*it)->getName() == name) {
+      _channels.erase(*it);
       delete *it;
       return;
     }
   }
+};
+
+void ChannelManager::removeEmptyChannels() {
+  std::vector<Channel *> channelsToDelete;
+
+  for (std::set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
+    if ((*it)->getChanSize() == 0) {
+      channelsToDelete.push_back(*it);
+    }
+  }
+
+  for (std::vector<Channel *>::iterator it = channelsToDelete.begin(); it != channelsToDelete.end(); it++) {
+    _channels.erase(*it);
+    delete *it;
+  }
+
 };
 
 
@@ -53,6 +70,27 @@ void ChannelManager::removeClientFromAllChannels(Client *client) {
   for (std::set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
     (*it)->removeInvite(client);
     (*it)->removeClient(client);
+  }
+  removeEmptyChannels();
+  std::cout << "returning from removeClientFromAllChannels\n";
+};
+
+void ChannelManager::removeClientFromChannel(std::string name, Client *client) {
+  if (client == NULL) {
+    return;
+  }
+
+  for (std::set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
+    // Look for channel by name and remove client
+    if ((*it)->getName() == name) {
+      std::cout << "found channel: " << name << " and will remove client\n";
+      (*it)->removeInvite(client);
+      (*it)->removeClient(client);
+      if ((*it)->getChanSize() == 0) {
+        removeChannel((*it)->getName());
+      }
+      return;
+    }
   }
 };
 

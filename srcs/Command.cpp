@@ -171,7 +171,7 @@ void Command::handle_JOIN() {
         std::cout << "Channel does not exist, creating channel" << std::endl;
         cm.addChannel(params[0], &_client);
     }
-    // std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
+    std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
 }
 
 void Command::handle_LIST() {}

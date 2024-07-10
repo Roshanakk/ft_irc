@@ -11,7 +11,9 @@ Channel::Channel(std::string name)
 Channel::Channel(const Channel & src) 
     : _name(src._name), _key(src._key), _maxClients(-1) {}
 
-Channel::~Channel() {}
+Channel::~Channel() {
+    std::cout << "Channel destructor called" << std::endl;
+}
 
 
 /**********************************************************/
