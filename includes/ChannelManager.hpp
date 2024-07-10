@@ -18,6 +18,8 @@ class ChannelManager {
 		void removeClientFromAllChannels(Client *client);
     void removeClientFromChannel(std::string name, Client *client);
     void removeEmptyChannels();
+    bool checkIfChannelExists(std::string name);
+    bool checkIfClientInChannel(std::string name, Client *client);
 
     // Getters //
     size_t getNumChannels(void);

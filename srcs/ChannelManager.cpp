@@ -94,6 +94,26 @@ void ChannelManager::removeClientFromChannel(std::string name, Client *client) {
   }
 };
 
+bool ChannelManager::checkIfChannelExists(std::string name) {
+  // Look for channel by name
+  for (std::set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
+    if ((*it)->getName() == name) {
+      return true;
+    }
+  }
+  return false;
+};
+
+bool ChannelManager::checkIfClientInChannel(std::string name, Client *client) {
+  // Look for channel by name
+  for (std::set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
+    if ((*it)->getName() == name) {
+      return (*it)->checkIfClientInChannel(client);
+    }
+  }
+  return false;
+};
+
 // GETTERS //
 
 size_t ChannelManager::getNumChannels(void) {

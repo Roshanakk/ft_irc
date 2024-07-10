@@ -75,6 +75,10 @@ bool Channel::shouldDelete(void) {
     return (_clients.size() == 0);
 };
 
+bool Channel::checkIfClientInChannel(Client *client) {
+    return (_clients.find(client) != _clients.end());
+};
+
 // Message methods
 
 void Channel::forwardMessage(std::string message, Client *sender) {
