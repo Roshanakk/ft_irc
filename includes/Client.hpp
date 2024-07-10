@@ -18,6 +18,13 @@
 class Dispatch;
 class ChannelManager;
 
+typedef enum e_status
+{
+	PASS_NEEDED, // no password given yet
+	PASS_CORRECT, // pass ok, no user/nick
+	PASS_REGISTERED // pass/user/nick ok
+} t_status;
+
 class Client : public AIO_Event 
 {
 	public:
@@ -27,10 +34,11 @@ class Client : public AIO_Event
 		~Client(void);
 
 		// METHODS
+		std::string getPrefix();
 		void send_message(std::string message);
 		void receive_message(void);
 
-		//GETTERS & SETTERS
+		//GETTERS
 		int getSocket(void) const;
 		std::set<Client *> &getClients(void) const;
 		ChannelManager &getCM(void) const;
@@ -38,11 +46,20 @@ class Client : public AIO_Event
 		std::string getUsername(void) const;
 		std::string getRealname(void) const;
 		std::string getNickname(void) const;
+		e_status getStatus(void) const;
+		bool isAuth(void) const;
 
+		Dispatch& getDispatch() const;
+
+		//SETTERS
 		void setHostname(std::string hostname);
 		void setUsername(std::string username);
 		void setRealname(std::string realname);
 		void setNickname(std::string nickname);
+		void setStatus(e_status status);
+		void setPassAuth(void);
+		void setNickAuth(void);
+		void setUserAuth(void);
 
 	private:
 		Client(void);
@@ -56,5 +73,11 @@ class Client : public AIO_Event
 		std::string _username;
 		std::string _realname;
 		std::string _nickname;
+
+		bool _passAuth;
+		bool _nickAuth;
+		bool _userAuth;
+
+		e_status _status;
 
 };

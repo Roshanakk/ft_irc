@@ -36,4 +36,5 @@ class Server : public AIO_Event
 		Dispatch& _d;
 		std::set<Client *>& _clients;
 		ChannelManager& _cm;
+
 };

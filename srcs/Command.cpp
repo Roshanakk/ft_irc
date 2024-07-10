@@ -8,15 +8,16 @@ Command::Command(Client & client)
     : _client(client)
 {
 
-    std::string listCmds[21] = {"CAP", "INFO", "INVITE", "JOIN", "LIST", "KICK",
+    std::string listCmds[22] = {"CAP", "INFO", "INVITE", "JOIN", "LIST", "KICK",
                 "KILL", "MODE", "NAMES", "NICK", "NOTICE", 
-                "PART", "PING", "PRIVMSG", "TOPIC", "USER",
+                "PART", "PASS", "PING", "PRIVMSG", "TOPIC", "USER",
                 "VERSION", "WHO", "WHOIS", "WHOWAS", "NB_CMDS" };
 
-    void  (Command::*fctCmds[21])() = {&Command::handle_CAP, &Command::handle_INFO, &Command::handle_INVITE,
-                                &Command::handle_JOIN, &Command::handle_LIST, &Command::handle_KICK, &Command::handle_KILL, &Command::handle_MODE,
-                                &Command::handle_NAMES, &Command::handle_NICK, &Command::handle_NOTICE, &Command::handle_PART,
-                                &Command::handle_PING, &Command::handle_PRIVMSG, &Command::handle_TOPIC, &Command::handle_USER,
+    void  (Command::*fctCmds[22])() = {&Command::handle_CAP, &Command::handle_INFO, &Command::handle_INVITE,
+                                &Command::handle_JOIN, &Command::handle_LIST, &Command::handle_KICK, &Command::handle_KILL, 
+                                &Command::handle_MODE, &Command::handle_NAMES, &Command::handle_NICK, &Command::handle_NOTICE, 
+                                &Command::handle_PART, &Command::handle_PASS, &Command::handle_PING, &Command::handle_PRIVMSG, 
+                                &Command::handle_TOPIC, &Command::handle_USER,
                                 &Command::handle_VERSION, &Command::handle_WHO, &Command::handle_WHOIS, &Command::handle_WHOWAS};
 
     for (size_t i = 0; i < NB_CMDS; ++i)
@@ -204,6 +205,8 @@ bool isAValidNickname(std::string str)
 {
     std::string set = "|^_-{}[]";
 
+    if (std::isdigit(str[0]) || str[0] == '-')
+        return (false);
     for (size_t i = 0; i < str.size(); ++i)
     {
         if (!std::isalnum(str[i]) && set.find_first_of(str[i]) == std::string::npos)
@@ -218,31 +221,95 @@ bool isAValidNickname(std::string str)
 
 void Command::handle_NICK() 
 {
-
     std::vector<std::string> params = Utilities::split(_parameters, ' ');
+    std::string oldNickname;
 
-    if (params.size() < 1)
+    //if user mode is +r
+    //throw(CommandException(ERR_RESTRICTED()))
+
+    if (_client.getStatus() == PASS_NEEDED)
+        throw(CommandException(ERR_PASSWDNEEDED()));
+
+    if (_client.getNickname().empty() && params.size() < 1)
         throw(CommandException(ERR_NONICKNAMEGIVEN()));
+    else if (params.size() < 1)
+        _client.send_message(_client.getNickname() + "\r\n");
     else if (params.size() == 1)
     {
-        if (!params[0].empty())
-            params[0].erase(params[0].size() - 1); //removing the trailing \r 
-        if (!isAValidNickname(params[0]))
-            throw(CommandException(ERR_ERRONEUSNICKNAME(params[0])));
+        std::string nickname = params[0];
+        if (!isAValidNickname(nickname))
+            throw(CommandException(ERR_ERRONEUSNICKNAME(nickname)));
 
-        // //if nickname already exists
-        // if ()
+        std::set<Client *> & allClients = _client.getClients();
+        std::set<Client *>::iterator it = allClients.begin();
+
+        //Checking if the nickname is already used by another user
+        while (it != allClients.end() && nickname != (*it)->getNickname())
+            ++it;
+
+        if (it != allClients.end())
+        {
+            if (_client.getNickname() == "default") // if it is the first connection (first NICK call)
+                _client.setNickname(nickname + '_');
+            else                                    // if the user tries to change his nickname (user already connected)
+                throw(CommandException(ERR_NICKNAMEINUSE(nickname)));
+        }
+        else
+        {
+            oldNickname = _client.getNickname();
+            _client.setNickname(nickname);
+        }
+        
     }
-    else
-        return ; // no error if too many parameters ?
-    
+
+    if (!_client.isAuth())
+    {
+        _client.setNickAuth();
+        if (_client.isAuth())
+        {
+            _client.setStatus(PASS_REGISTERED);
+            _client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
+        }
+    }
+
+    _client.send_message(RPL_NICK(_client.getPrefix(), _client.getNickname()));
+
 }
-
-
 
 
 void Command::handle_NOTICE() {}
 void Command::handle_PART() {}
+
+
+void Command::handle_PASS()
+{
+    if (_client.isAuth())
+        throw(CommandException(ERR_ALREADYREGISTRED()));
+
+    std::vector<std::string> params = Utilities::split(_parameters, ' ');
+
+    if (params.size() < 1)
+        throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
+    
+    std::string password = params[0];
+
+    if (password == _client.getDispatch().getPassword())
+    {
+        _client.setPassAuth();
+        _client.setStatus(PASS_CORRECT);
+    }
+    else
+        throw(CommandException(ERR_PASSWDMISMATCH()));
+
+    if (!_client.isAuth())
+    {
+        _client.setPassAuth();
+        if (_client.isAuth())
+            _client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
+    }
+
+
+}
 
 void Command::handle_PING()
 {
@@ -296,6 +363,9 @@ void Command::handle_USER()
     //Splitting the parameters string into a vector of strings,
     //in order to extract username, hostname and realname
 
+    if (_client.isAuth())
+        throw(CommandException(ERR_ALREADYREGISTRED()));
+
     size_t colonPos = _parameters.find(':');
     std::string tmpParams = _parameters.substr(0, colonPos);
 
@@ -314,11 +384,22 @@ void Command::handle_USER()
     else if (params.size() >= 4)
     {
         _client.setUsername(params[0]);
-        _client.setHostname(params[2]);
+        _client.setHostname(params[1]);
         _client.setRealname(params[3]);
     }
     else
         throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
+
+    if (!_client.isAuth())
+    {
+        _client.setUserAuth();
+        if (_client.isAuth())
+        {
+            _client.setStatus(PASS_REGISTERED);
+            _client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
+        }
+    }
+
 
 }
 

@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 
   ChannelManager cm = ChannelManager();
   std::set<Client *> clients;
-  Dispatch d;
+  Dispatch d(passStr);
   Server s(d, port, clients, cm);
 
   d.add(s);

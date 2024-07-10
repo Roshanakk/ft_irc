@@ -7,7 +7,8 @@
 
 Client::Client(int sock_val, Dispatch& d,
     std::set<Client *> & clients, ChannelManager& cm)
-    : _socket(sock_val), _d(d), _clients(clients), _cm(cm), _nickname("default")
+    : _socket(sock_val), _d(d), _clients(clients), _cm(cm), _nickname(""),
+        _passAuth(false), _nickAuth(false), _userAuth(false), _status(PASS_NEEDED)
 {
     if (_socket == -1) {
         throw ServerException("Error creating client socket");
@@ -24,6 +25,15 @@ Client::~Client(void) {
 /****************************************/
 /*                METHODS               */
 /****************************************/
+
+std::string Client::getPrefix()
+{
+    std::string prefix = ":" + _nickname + "!" + _username;
+    if (!_hostname.empty())
+        prefix = prefix + "@" + _hostname;
+    return (prefix);
+}   
+
 
 void Client::send_message(std::string message)
 {
@@ -108,6 +118,24 @@ std::string Client::getRealname(void) const
     return (_realname);
 }
 
+bool Client::isAuth(void) const
+{
+    if (_passAuth && _nickAuth && _userAuth)
+        return (true);
+    return (false);
+}
+
+
+e_status Client::getStatus(void) const
+{
+    return (_status);
+}
+
+Dispatch& Client::getDispatch() const
+{
+    return (_d);
+}
+
 
 /*************************************/
 /*                SETTERS            */
@@ -130,4 +158,24 @@ void Client::setUsername(std::string username)
 void Client::setRealname(std::string realname)
 {
     _realname = realname;
+}
+
+void Client::setPassAuth(void)
+{
+    _passAuth = true;
+}
+
+void Client::setNickAuth(void)
+{
+    _nickAuth = true;
+}
+
+void Client::setUserAuth(void)
+{
+    _userAuth = true;
+}
+
+void Client::setStatus(e_status status)
+{
+    _status = status;
 }
