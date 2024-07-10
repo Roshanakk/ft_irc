@@ -61,7 +61,6 @@ void ChannelManager::removeEmptyChannels() {
 
 };
 
-
 void ChannelManager::removeClientFromAllChannels(Client *client) {
   if (client == NULL) {
     return;
@@ -72,36 +71,6 @@ void ChannelManager::removeClientFromAllChannels(Client *client) {
     (*it)->removeClient(client);
   }
   removeEmptyChannels();
-  std::cout << "returning from removeClientFromAllChannels\n";
-};
-
-void ChannelManager::removeClientFromChannel(std::string name, Client *client) {
-  if (client == NULL) {
-    return;
-  }
-
-  for (std::set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
-    // Look for channel by name and remove client
-    if ((*it)->getName() == name) {
-      std::cout << "found channel: " << name << " and will remove client\n";
-      (*it)->removeInvite(client);
-      (*it)->removeClient(client);
-      if ((*it)->getChanSize() == 0) {
-        removeChannel((*it)->getName());
-      }
-      return;
-    }
-  }
-};
-
-bool ChannelManager::checkIfChannelExists(std::string name) {
-  // Look for channel by name
-  for (std::set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
-    if ((*it)->getName() == name) {
-      return true;
-    }
-  }
-  return false;
 };
 
 bool ChannelManager::checkIfClientInChannel(std::string name, Client *client) {

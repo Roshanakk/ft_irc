@@ -239,30 +239,21 @@ void Command::handle_NICK()
 
 void Command::handle_NOTICE() {}
 void Command::handle_PART() {
-    // Initial error checking
     if (_parameters.size() <= 1)
         throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
 
-    // Split parameters by space
     std::vector<std::string> params = Utilities::split(_parameters, ' ');
 
     ChannelManager& cm = _client.getCM();
     Channel *chan = cm.getChannel(params[0]);
 
     if (chan != NULL) {
-        // Channel exists
-        std::cout << "Channel exists" << std::endl;
         if (chan->checkIfClientInChannel(&_client)) {
-            std::cout << "Client is in channel" << std::endl;
             chan->removeClient(&_client);
-            std::cout << "new channel size: " << chan->getChanSize() << std::endl;
         } else {
-            std::cout << "Client is not in channel" << std::endl;
             throw CommandException(ERR_NOTONCHANNEL(params[0]));
         }
     } else {
-        // Channel does not exist
-        std::cout << "Channel does not exist" << std::endl;
         throw CommandException(ERR_NOSUCHCHANNEL(params[0]));
     }
     cm.removeEmptyChannels();
@@ -294,6 +285,11 @@ void Command::handle_PRIVMSG() {
         // Channel
         ChannelManager& cm = _client.getCM();
         Channel *chan = cm.getChannel(recipeints);
+
+
+// NOTE We need to check that a user is in a channel before sending 
+// a message to that channel.
+
         if (chan != NULL) {
             // Channel exists
             std::cout << "Channel exists" << std::endl;
