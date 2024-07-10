@@ -7,8 +7,8 @@
 
 Client::Client(int sock_val, Dispatch& d,
     std::set<Client *> & clients, ChannelManager& cm)
-    : _socket(sock_val), _d(d), _clients(clients), _cm(cm), _nickname("default")
-{
+    : _socket(sock_val), _d(d), _clients(clients), _cm(cm), _nickname("default"),
+    _shouldDelete(false) {
     if (_socket == -1) {
         throw ServerException("Error creating client socket");
     }
@@ -17,6 +17,12 @@ Client::Client(int sock_val, Dispatch& d,
 
 Client::~Client(void) {
     std::cout << "Client destructor called" << std::endl;
+    _cm.removeClientFromAllChannels(this);
+    // If shouldDelete is set to true, then the client has disconnected and we should handle deletion
+    // If shouldDelete is false, then the client is being deleted as part of the server shutdown.
+    // This way we can avoid double deletion.
+    if (_shouldDelete)
+        _clients.erase(this);
     close(_socket);
 };
 
@@ -41,6 +47,7 @@ void Client::receive_message(void)
     else if (numbytes == 0) //If client disconnected
     {
         std::cout << "Client (" << _socket << ") disconnected" << std::endl;
+        _shouldDelete = true;
         _d.remove(*this);
         close(_socket);
         return ;
@@ -68,6 +75,10 @@ void Client::receive_message(void)
         }
     }
     // send_message("Message received\n");
+}
+
+bool Client::shouldDelete(void) const {
+    return (_shouldDelete);
 }
 
 

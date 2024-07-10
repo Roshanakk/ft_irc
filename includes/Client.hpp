@@ -29,6 +29,7 @@ class Client : public AIO_Event
 		// METHODS
 		void send_message(std::string message);
 		void receive_message(void);
+		bool shouldDelete(void) const;
 
 		//GETTERS & SETTERS
 		int getSocket(void) const;
@@ -56,5 +57,6 @@ class Client : public AIO_Event
 		std::string _username;
 		std::string _realname;
 		std::string _nickname;
+		bool _shouldDelete;
 
 };

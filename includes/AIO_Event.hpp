@@ -10,7 +10,7 @@ class AIO_Event {
     virtual void send_message(std::string message) = 0;
     virtual void receive_message(void) = 0;
     virtual int getSocket(void) const = 0;
+    virtual bool shouldDelete(void) const = 0;
 
-    private:
-
+  private:
 };
