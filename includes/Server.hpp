@@ -24,6 +24,9 @@ class Server : public AIO_Event
 		// METHODS
 		void send_message(std::string message);
 		void receive_message(void);
+		bool shouldDelete(void) const;
+
+		// Getter
 		int getSocket(void) const;
 
 	private:
@@ -36,5 +39,5 @@ class Server : public AIO_Event
 		Dispatch& _d;
 		std::set<Client *>& _clients;
 		ChannelManager& _cm;
-
+		bool _shouldDelete;
 };

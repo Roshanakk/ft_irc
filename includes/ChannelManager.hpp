@@ -15,6 +15,9 @@ class ChannelManager {
 
     void addChannel(std::string name, Client *client = NULL);
     void removeChannel(std::string name);
+		void removeClientFromAllChannels(Client *client);
+    void removeEmptyChannels();
+    bool checkIfClientInChannel(std::string name, Client *client);
 
     // Getters //
     size_t getNumChannels(void);
@@ -22,10 +25,6 @@ class ChannelManager {
     Channel *getChannel(std::string name);
 		int getClientChannelCount(Client *client);
     int getMaxChannelsForClient(void);
-
-    // To be implemented
-		// void removeClientFromAllChannels(Client *client);
-			// remove the client from the channel map
 
   private:
     std::set<Channel *> _channels;

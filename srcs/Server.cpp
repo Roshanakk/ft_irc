@@ -8,7 +8,7 @@
 
 Server::Server(Dispatch& d, int port, 
     std::set<Client *> & clients, ChannelManager & cm)
-    : _port(port), _d(d), _clients(clients), _cm(cm)
+    : _port(port), _d(d), _clients(clients), _cm(cm), _shouldDelete(false)
 {
     //Creating server socket
     _socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -91,7 +91,10 @@ void Server::receive_message(void)
 }
 
 
-int Server::getSocket(void) const
-{
+int Server::getSocket(void) const {
     return _socket;
+};
+
+bool Server::shouldDelete(void) const {
+    return (_shouldDelete);
 };

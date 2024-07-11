@@ -37,6 +37,7 @@ class Client : public AIO_Event
 		std::string getPrefix();
 		void send_message(std::string message);
 		void receive_message(void);
+		bool shouldDelete(void) const;
 
 		//GETTERS
 		int getSocket(void) const;
@@ -73,6 +74,7 @@ class Client : public AIO_Event
 		std::string _username;
 		std::string _realname;
 		std::string _nickname;
+		bool _shouldDelete;
 
 		bool _passAuth;
 		bool _nickAuth;

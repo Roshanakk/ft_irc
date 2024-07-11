@@ -135,11 +135,7 @@ void Command::handle_JOIN() {
         // channel exists. start channel checks
         std::cout << "Channel exists" << std::endl;
         // check that user is not banned from channel
-            // Can leave this in? But not required by subject.
-        if (chan->checkBan(&_client)) {
-            std::cout << "User is banned" << std::endl;
-            throw CommandException(ERR_BANNEDFROMCHAN());
-        }
+            // This is a check in the protocol but not required by the subject.
         // check that the channel is not invite only
         if (chan->getInviteOnly()) {
             if (chan->checkInvite(&_client)) {
@@ -154,8 +150,8 @@ void Command::handle_JOIN() {
             std::cout << "Channel is full" << std::endl;
             throw CommandException(ERR_CHANNELISFULL());
         }
-        // check that the channel mask is good ???
-            // This is listed as a future feature so ignore for now
+        // check that the channel mask is good
+            // This is in the protocol for ops only. Not required by the subject.
         // check password
         if (chan->requiresKey()) {
             // Channel requires a password
@@ -176,7 +172,7 @@ void Command::handle_JOIN() {
         std::cout << "Channel does not exist, creating channel" << std::endl;
         cm.addChannel(params[0], &_client);
     }
-    // std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
+    std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
 }
 
 void Command::handle_LIST() {}
@@ -278,7 +274,26 @@ void Command::handle_NICK()
 
 
 void Command::handle_NOTICE() {}
-void Command::handle_PART() {}
+void Command::handle_PART() {
+    if (_parameters.size() <= 1)
+        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+
+    std::vector<std::string> params = Utilities::split(_parameters, ' ');
+
+    ChannelManager& cm = _client.getCM();
+    Channel *chan = cm.getChannel(params[0]);
+
+    if (chan != NULL) {
+        if (chan->checkIfClientInChannel(&_client)) {
+            chan->removeClient(&_client);
+        } else {
+            throw CommandException(ERR_NOTONCHANNEL(params[0]));
+        }
+    } else {
+        throw CommandException(ERR_NOSUCHCHANNEL(params[0]));
+    }
+    cm.removeEmptyChannels();
+}
 
 
 void Command::handle_PASS()
@@ -337,11 +352,21 @@ void Command::handle_PRIVMSG() {
         // Channel
         ChannelManager& cm = _client.getCM();
         Channel *chan = cm.getChannel(recipeints);
+
+
+// NOTE We need to check that a user is in a channel before sending 
+// a message to that channel.
+
         if (chan != NULL) {
             // Channel exists
             std::cout << "Channel exists" << std::endl;
-            // Send message to all clients in channel
-            chan->forwardMessage(message, &_client);
+            if (!chan->checkIfClientInChannel(&_client)) {
+                // Send message to all clients in channel
+                chan->forwardMessage(message, &_client);
+            } else {
+                // User is not in channel
+                throw CommandException(ERR_CANNOTSENDTOCHAN(recipeints));
+            }
         } else {
             // Channel does not exist
             std::cout << "Channel does not exist" << std::endl;

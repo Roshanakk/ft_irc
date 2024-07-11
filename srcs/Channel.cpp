@@ -11,7 +11,9 @@ Channel::Channel(std::string name)
 Channel::Channel(const Channel & src) 
     : _name(src._name), _key(src._key), _maxClients(-1) {}
 
-Channel::~Channel() {}
+Channel::~Channel() {
+    std::cout << "Channel destructor called" << std::endl;
+}
 
 
 /**********************************************************/
@@ -73,6 +75,10 @@ bool Channel::shouldDelete(void) {
     return (_clients.size() == 0);
 };
 
+bool Channel::checkIfClientInChannel(Client *client) {
+    return (_clients.find(client) != _clients.end());
+};
+
 // Message methods
 
 void Channel::forwardMessage(std::string message, Client *sender) {
@@ -106,20 +112,6 @@ void Channel::addInvite(Client *client) {
 
 void Channel::removeInvite(Client *client) {
     _invites.erase(client);
-};
-
-// Ban methods
-
-bool Channel::checkBan(Client *client) {
-    return (_bans.find(client) != _bans.end());
-};
-
-void Channel::addBan(Client *client) {
-    _bans.insert(client);
-};
-
-void Channel::removeBan(Client *client) {
-    _bans.erase(client);
 };
 
 /**********************************************************/
