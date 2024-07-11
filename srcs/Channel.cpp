@@ -11,7 +11,9 @@ Channel::Channel(std::string name)
 Channel::Channel(const Channel & src) 
     : _name(src._name), _key(src._key), _maxClients(-1) {}
 
-Channel::~Channel() {}
+Channel::~Channel() {
+    std::cout << "Channel destructor called" << std::endl;
+}
 
 
 /**********************************************************/
@@ -71,6 +73,10 @@ bool Channel::checkCanAddMoreClients(void) {
 bool Channel::shouldDelete(void) {
     // return 1 if the channel should be deleted (ie. no clients)
     return (_clients.size() == 0);
+};
+
+bool Channel::checkIfClientInChannel(Client *client) {
+    return (_clients.find(client) != _clients.end());
 };
 
 // Message methods
