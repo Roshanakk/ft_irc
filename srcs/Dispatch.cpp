@@ -1,8 +1,8 @@
 #include <Dispatch.hpp>
 
 // Constructors //
-Dispatch::Dispatch(void)
-: _sigint_received(false), _epollfd(epoll_create1(0)) {
+Dispatch::Dispatch(std::string password)
+: _sigint_received(false), _epollfd(epoll_create1(0)), _serverPassword(password) {
   if (_epollfd == -1) {
     throw ServerException("Error: failed to create epoll instance.");
   }
@@ -76,4 +76,10 @@ void Dispatch::setAsSignalHandler() {
     perror("signal");
     return ;
   }            
+}
+
+
+std::string Dispatch::getPassword() const
+{
+  return (_serverPassword);
 }

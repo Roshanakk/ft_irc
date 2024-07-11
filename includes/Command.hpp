@@ -27,15 +27,16 @@ typedef enum e_cmd
 	NICK, //    9
 	NOTICE, //  10
 	PART, //    11
-	PING, //    12
-	PRIVMSG, //  13
-	TOPIC, //   14
-	USER, //    15
-	VERSION, // 16
-	WHO, //     17
-	WHOIS, //   18
-	WHOWAS, //  19
-	NB_CMDS //  20
+	PASS, //    12
+	PING, //    13
+	PRIVMSG, //  14
+	TOPIC, //   15
+	USER, //    16
+	VERSION, // 17
+	WHO, //     18
+	WHOIS, //   19
+	WHOWAS, //  20
+	NB_CMDS //  21
 } t_cmd; 
 
 class Command
@@ -64,6 +65,7 @@ class Command
 		void handle_NICK();
 		void handle_NOTICE();
 		void handle_PART();
+		void handle_PASS();
 		void handle_PING();
 		void handle_PRIVMSG();
 		void handle_TOPIC();
@@ -75,8 +77,8 @@ class Command
 
 
 	private:
-		std::string _listCmds[21];
-		void  (Command::*_fctCmds[21])();
+		std::string _listCmds[22];
+		void  (Command::*_fctCmds[22])();
 		Client & _client;
 		std::string _cmd;
 		std::string _parameters;

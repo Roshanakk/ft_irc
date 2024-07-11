@@ -44,6 +44,7 @@
 #define ERR_UMODEUNKNOWNFLAG() (":Unknown MODE flag\r\n")
 #define ERR_USERSDONTMATCH() (":Cant change mode for other users\r\n")
 
+#define ERR_RESTRICTED() (":Your connection is restricted!")
 // Command Responses (Section 6.2 of RFC 1459)
 // Responses can be variable, not defining right now. 
 // This may not be as straightforward as the error replies.
@@ -57,3 +58,6 @@
 // #define RPL_YOURHOST() "002 :Your host is <servername>, running version <ver>"
 // #define RPL_CREATED() "003 This server was created <date>"
 // #define RPL_MYINFO() "004 RPL_MYINFO <servername> <version> <available user modes> <available channel modes>"NB_CMDS
+
+#define RPL_NICK(prefix, nickname) (prefix + " NICK " + nickname + "\r\n")
+#define ERR_PASSWDNEEDED() ("Password needed\r\n")

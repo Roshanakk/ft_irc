@@ -15,7 +15,7 @@
 class Dispatch {
   public:
 
-    Dispatch(void);
+    Dispatch(std::string serverPassword);
     ~Dispatch(void);
 
     // Member Functions //
@@ -27,8 +27,13 @@ class Dispatch {
 		static void recv_signal(int signal);
 		void setAsSignalHandler();
 
+    //GETTER
+    std::string getPassword() const;
+
   private:
     bool _sigint_received;
     int _epollfd;
     struct epoll_event _events[MAX_EVENTS];
+
+    std::string _serverPassword;
 };

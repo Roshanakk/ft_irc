@@ -81,11 +81,13 @@ void Server::receive_message(void)
 
     // This portion will need to be sent in addition to rpl 002 003 and 004
     // Will not be in this function; should be in 
-    std::string host = "host";
-    std::string nick = "nick";
-    std::string prefix = "prefix";
-    std::string response = (RPL_WELCOME(host, nick, prefix));
-    send(sockfd, response.c_str(), response.size(), 0);
+    // std::string host = "host";
+    // std::string nick = "nick";
+    // std::string prefix = "prefix";
+
+    
+    // std::string response = (RPL_WELCOME(host, nick, prefix));
+    // send(sockfd, response.c_str(), response.size(), 0);
 }
 
 
