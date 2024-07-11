@@ -293,8 +293,13 @@ void Command::handle_PRIVMSG() {
         if (chan != NULL) {
             // Channel exists
             std::cout << "Channel exists" << std::endl;
-            // Send message to all clients in channel
-            chan->forwardMessage(message, &_client);
+            if (!chan->checkIfClientInChannel(&_client)) {
+                // Send message to all clients in channel
+                chan->forwardMessage(message, &_client);
+            } else {
+                // User is not in channel
+                throw CommandException(ERR_CANNOTSENDTOCHAN(recipeints));
+            }
         } else {
             // Channel does not exist
             std::cout << "Channel does not exist" << std::endl;
