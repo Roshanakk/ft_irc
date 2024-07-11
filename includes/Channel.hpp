@@ -29,6 +29,7 @@ class Channel {
 		bool checkCanAddMoreClients(void);
 		bool shouldDelete(void);
 		bool checkIfClientInChannel(Client *client);
+		bool checkIfClientIsOp(Client *client);
 		// Message methods
 		void forwardMessage(std::string message, Client *sender);
 		// Key methods

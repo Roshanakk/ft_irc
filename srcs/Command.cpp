@@ -120,59 +120,66 @@ void Command::handle_JOIN() {
         throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
 
     // Split parameters by space
-    std::vector<std::string> params = Utilities::split(_parameters, ' ');
+    std::vector<std::string> paramsVec = Utilities::split(_parameters, ' ');
 
+    std::vector<std::string> channelsVec = Utilities::split(paramsVec[0], ',');
+    std::vector<std::string> passwordsVec;
+    if (paramsVec.size() > 1)
+        passwordsVec = Utilities::split(paramsVec[1], ',');
     ChannelManager& cm = _client.getCM();
-    Channel *chan = cm.getChannel(params[0]);
 
-    // Check that user is not in too many channels
-    if (cm.getClientChannelCount(&_client) >= cm.getMaxChannelsForClient()) {
-        throw CommandException(ERR_TOOMANYCHANNELS(params[0]));
-    }
+    for (size_t i = 0; i < channelsVec.size(); ++i) {
+        Channel *chan = cm.getChannel(channelsVec[i]);
 
-    // Following checks are only required if the channel exists
-    if (chan != NULL) {
-        // channel exists. start channel checks
-        std::cout << "Channel exists" << std::endl;
-        // check that user is not banned from channel
-            // This is a check in the protocol but not required by the subject.
-        // check that the channel is not invite only
-        if (chan->getInviteOnly()) {
-            if (chan->checkInvite(&_client)) {
-                std::cout << "User is invited" << std::endl;
-            } else {
-                std::cout << "User is not invited" << std::endl;
-                throw CommandException(ERR_INVITEONLYCHAN());
+        // Check that user is not in too many channels
+        if (cm.getClientChannelCount(&_client) >= cm.getMaxChannelsForClient()) {
+            throw CommandException(ERR_TOOMANYCHANNELS(channelsVec[i]));
+        }
+
+        // Following checks are only required if the channel exists
+        if (chan != NULL) {
+            // channel exists. start channel checks
+            std::cout << "Channel exists" << std::endl;
+            // check that user is not banned from channel
+                // This is a check in the protocol but not required by the subject.
+            // check that the channel is not invite only
+            if (chan->getInviteOnly()) {
+                if (chan->checkInvite(&_client)) {
+                    std::cout << "User is invited" << std::endl;
+                } else {
+                    std::cout << "User is not invited" << std::endl;
+                    throw CommandException(ERR_INVITEONLYCHAN());
+                }
             }
-        }
-        // check that the channel is not full
-        if (!chan->checkCanAddMoreClients()) {
-            std::cout << "Channel is full" << std::endl;
-            throw CommandException(ERR_CHANNELISFULL());
-        }
-        // check that the channel mask is good
-            // This is in the protocol for ops only. Not required by the subject.
-        // check password
-        if (chan->requiresKey()) {
-            // Channel requires a password
-                // NOTE: no spaces are allowed in the password so we can just chck params[1]
-            if (params.size() > 1 && chan->checkKey(params[1])) {
-                std::cout << "Password is correct" << std::endl;
-                chan->addClient(&_client);
+            // check that the channel is not full
+            if (!chan->checkCanAddMoreClients()) {
+                std::cout << "Channel is full" << std::endl;
+                throw CommandException(ERR_CHANNELISFULL());
+            }
+            // check that the channel mask is good
+                // This is in the protocol for ops only. Not required by the subject.
+            // check password
+            if (chan->requiresKey()) {
+                // Channel requires a password
+                    // NOTE: no spaces are allowed in the password so we can just chck channelsVec[1]
+                if (paramsVec.size() > 1 && chan->checkKey(passwordsVec[i])) {
+                    std::cout << "Password is correct" << std::endl;
+                    chan->addClient(&_client);
+                } else {
+                    std::cout << "Password is incorrect" << std::endl;
+                    throw CommandException(ERR_PASSWDMISMATCH());
+                }
             } else {
-                std::cout << "Password is incorrect" << std::endl;
-                throw CommandException(ERR_PASSWDMISMATCH());
+                // Channel does not require a password
+                chan->addClient(&_client);
             }
         } else {
-            // Channel does not require a password
-            chan->addClient(&_client);
+            // Channel does not exist. Create channel and add client to channel.
+            std::cout << "Channel does not exist, creating channel" << std::endl;
+            cm.addChannel(channelsVec[i], &_client);
         }
-    } else {
-        // Channel does not exist. Create channel and add client to channel.
-        std::cout << "Channel does not exist, creating channel" << std::endl;
-        cm.addChannel(params[0], &_client);
+        std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
     }
-    std::cout << "Number of channels: " << cm.getNumChannels() << std::endl;
 }
 
 void Command::handle_LIST() {}
@@ -360,11 +367,9 @@ void Command::handle_PRIVMSG() {
         if (chan != NULL) {
             // Channel exists
             std::cout << "Channel exists" << std::endl;
-            if (!chan->checkIfClientInChannel(&_client)) {
-                // Send message to all clients in channel
+            if (chan->checkIfClientInChannel(&_client)) {
                 chan->forwardMessage(message, &_client);
             } else {
-                // User is not in channel
                 throw CommandException(ERR_CANNOTSENDTOCHAN(recipeints));
             }
         } else {
