@@ -381,6 +381,8 @@ void Command::handle_PRIVMSG() {
 }
 
 void Command::handle_QUIT() {
+    // this sets the shouldDelete flag to true which is actually deleted 
+    // in the dispatch run command.
     std::cout << "Client quitting" << std::endl;
     _client.setShouldDelete(true);
 }
