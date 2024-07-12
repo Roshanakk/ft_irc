@@ -85,13 +85,13 @@ void Command::doCmd(std::string & line)
 
         if (i == NB_CMDS)
             throw(CommandException(ERR_UNKNOWNCOMMAND(_client.getHostname(), _cmd)));
-        else
-        {
-            // std::cout << "CMD = " << i << std::endl;
-            // std::cout << "_cmdLine[1] = " << _cmdLine[1] << std::endl;
-
-            (this->*(_fctCmds[i]))();
+        if (_client.getStatus() != PASS_REGISTERED && _cmd != "PASS" && _cmd != "NICK" && _cmd != "USER") {
+            if (_client.getStatus() == PASS_NEEDED)
+                throw(CommandException(ERR_PASSWDNEEDED()));
+            else
+                throw(CommandException(ERR_NOTREGISTERED()));
         }
+        (this->*(_fctCmds[i]))();
     }
     catch(const std::exception& e)
     {
@@ -359,10 +359,6 @@ void Command::handle_PRIVMSG() {
         // Channel
         ChannelManager& cm = _client.getCM();
         Channel *chan = cm.getChannel(recipeints);
-
-
-// NOTE We need to check that a user is in a channel before sending 
-// a message to that channel.
 
         if (chan != NULL) {
             // Channel exists
