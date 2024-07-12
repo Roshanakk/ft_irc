@@ -61,6 +61,7 @@ class Client : public AIO_Event
 		void setPassAuth(void);
 		void setNickAuth(void);
 		void setUserAuth(void);
+		void setShouldDelete(bool shouldDelete);
 
 	private:
 		Client(void);

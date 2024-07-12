@@ -8,16 +8,16 @@ Command::Command(Client & client)
     : _client(client)
 {
 
-    std::string listCmds[22] = {"CAP", "INFO", "INVITE", "JOIN", "LIST", "KICK",
+    std::string listCmds[23] = {"CAP", "INFO", "INVITE", "JOIN", "LIST", "KICK",
                 "KILL", "MODE", "NAMES", "NICK", "NOTICE", 
-                "PART", "PASS", "PING", "PRIVMSG", "TOPIC", "USER",
+                "PART", "PASS", "PING", "PRIVMSG", "QUIT", "TOPIC", "USER",
                 "VERSION", "WHO", "WHOIS", "WHOWAS", "NB_CMDS" };
 
-    void  (Command::*fctCmds[22])() = {&Command::handle_CAP, &Command::handle_INFO, &Command::handle_INVITE,
+    void  (Command::*fctCmds[23])() = {&Command::handle_CAP, &Command::handle_INFO, &Command::handle_INVITE,
                                 &Command::handle_JOIN, &Command::handle_LIST, &Command::handle_KICK, &Command::handle_KILL, 
                                 &Command::handle_MODE, &Command::handle_NAMES, &Command::handle_NICK, &Command::handle_NOTICE, 
                                 &Command::handle_PART, &Command::handle_PASS, &Command::handle_PING, &Command::handle_PRIVMSG, 
-                                &Command::handle_TOPIC, &Command::handle_USER,
+                                &Command::handle_QUIT, &Command::handle_TOPIC, &Command::handle_USER,
                                 &Command::handle_VERSION, &Command::handle_WHO, &Command::handle_WHOIS, &Command::handle_WHOWAS};
 
     for (size_t i = 0; i < NB_CMDS; ++i)
@@ -378,6 +378,11 @@ void Command::handle_PRIVMSG() {
         // Send message to user
         // _client.forwardMessage(_cmdLine[1], &_client);
     }
+}
+
+void Command::handle_QUIT() {
+    std::cout << "Client quitting" << std::endl;
+    _client.setShouldDelete(true);
 }
 
 void Command::handle_TOPIC() {}

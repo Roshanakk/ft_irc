@@ -190,3 +190,8 @@ void Client::setStatus(e_status status)
 {
     _status = status;
 }
+
+void Client::setShouldDelete(bool shouldDelete)
+{
+    _shouldDelete = shouldDelete;
+}
