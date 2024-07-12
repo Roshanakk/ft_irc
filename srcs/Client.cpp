@@ -24,7 +24,7 @@ Client::~Client(void) {
     // This way we can avoid double deletion.
     if (_shouldDelete)
         _clients.erase(this);
-    close(_socket);
+    close(_socket); 
 };
 
 
@@ -147,6 +147,15 @@ Dispatch& Client::getDispatch() const
     return (_d);
 }
 
+// Client * getMatchingClient(std::string username)
+// {  
+// 	for (std::set<Channel *>::iterator it = .begin(); it != _channels.end(); it++) {
+// 	if ((*it)->getName() == name) {
+// 		return *it;
+// 	}
+// 	}
+// 	return NULL;
+// };
 
 /*************************************/
 /*                SETTERS            */

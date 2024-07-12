@@ -131,3 +131,8 @@ int ChannelManager::getClientChannelCount(Client *client) {
 int ChannelManager::getMaxChannelsForClient(void) {
   return _maxChannelsForClient;
 };
+
+std::set<Channel *> ChannelManager::getChannels() const
+{
+  return (_channels);
+}

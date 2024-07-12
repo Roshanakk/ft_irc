@@ -52,6 +52,9 @@ class Client : public AIO_Event
 
 		Dispatch& getDispatch() const;
 
+		Client * getMatchingClient(std::string username) const;
+
+
 		//SETTERS
 		void setHostname(std::string hostname);
 		void setUsername(std::string username);

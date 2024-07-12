@@ -37,7 +37,7 @@ void Channel::addClient(Client *client) {
     if (client == NULL)
         return ;
 
-    if (_clients.size() == true)
+    if (_clients.size() == false)
         // add the client as a channel operator
         _clients.insert(std::make_pair(client, true));
     else
