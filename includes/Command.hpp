@@ -29,14 +29,15 @@ typedef enum e_cmd
 	PART, //    11
 	PASS, //    12
 	PING, //    13
-	PRIVMSG, //  14
-	TOPIC, //   15
-	USER, //    16
-	VERSION, // 17
-	WHO, //     18
-	WHOIS, //   19
-	WHOWAS, //  20
-	NB_CMDS //  21
+	PRIVMSG, // 14
+	QUIT, //    15
+	TOPIC, //   16
+	USER, //    17
+	VERSION, // 18
+	WHO, //     19
+	WHOIS, //   20
+	WHOWAS, //  21
+	NB_CMDS //  22
 } t_cmd; 
 
 class Command
@@ -68,6 +69,7 @@ class Command
 		void handle_PASS();
 		void handle_PING();
 		void handle_PRIVMSG();
+		void handle_QUIT();
 		void handle_TOPIC();
 		void handle_USER();
 		void handle_VERSION();
