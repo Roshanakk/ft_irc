@@ -187,17 +187,18 @@ void Command::handle_KICK() {}
 void Command::handle_KILL() {}
 void Command::handle_MODE() {
     // Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>]
-        //    o - give/take channel operator privileges;
-        //    p - private channel flag;
-        //    s - secret channel flag;
-        //    i - invite-only channel flag;
-        //    t - topic settable by channel operator only flag;
-        //    n - no messages to channel from clients on the outside;
-        //    m - moderated channel;
-        //    l - set the user limit to channel;
-        //    b - set a ban mask to keep users out;
-        //    v - give/take the ability to speak on a moderated channel;
-        //    k - set a channel key (password).
+    // MODE - Change the channel’s mode:
+    //   i: Set/remove Invite-only channel
+    //   t: Set/remove the restrictions of the TOPIC command to channel operators
+    //   k: Set/remove the channel key (password)
+    //   o: Give/take channel operator privilege
+    //   l: Set/remove the user limit to channel
+
+    // Need to check if there are parameters. If not, throw an exception.
+    // Check that the client is a channel operator for this channel
+    // Check that the client is in the channel
+    // Check that the channel exists
+    //     
 }
 
 void Command::handle_NAMES() {}

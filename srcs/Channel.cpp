@@ -80,10 +80,19 @@ bool Channel::checkIfClientInChannel(Client *client) {
 };
 
 bool Channel::checkIfClientIsOp(Client *client) {
+    // Check null
+    if (client == NULL)
+        return (false);
     std::map<Client*, bool>::iterator it = _clients.find(client);
+    // Check if client is in the channel
+    if (it == _clients.end()) {
+        return (false);
+    }
+    // Only return true if the client is an operator
     if (it != _clients.end()) {
         return (it->second);
     }
+    // catchall
     return (false);
 };
 
