@@ -41,6 +41,10 @@ class Channel {
 		void removeInvite(Client *client);
 		//Operator methods
 		bool checkIfClientOperator(Client *client);
+		//Ban Methods
+		void banUser(Client *client);
+		// bool isBanned(Client *client);
+
 
 		// Getters //
 		std::string getName(void) const;
@@ -55,6 +59,8 @@ class Channel {
 		void setInviteOnly(bool inviteOnly);
 		void setTopic(std::string topic);
 
+
+
 	private:
 		std::string _name;
 		std::string _key;
@@ -62,6 +68,8 @@ class Channel {
 		std::map<Client *, bool> _clients;
 		int _maxClients;
 		std::set<Client *> _invites;
+
+		std::set<Client *> _bannedClients;
 
 		// Mode flags
 		bool _inviteOnly;

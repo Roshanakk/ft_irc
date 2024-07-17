@@ -19,6 +19,7 @@
 #define ERR_ERRONEUSNICKNAME(nick) (nick + " :Erroneus nickname\r\n")
 #define ERR_NICKNAMEINUSE(nick) (nick + " :Nickname is already in use\r\n")
 #define ERR_NICKCOLLISION(nick) (nick + " :Nickname collision KILL\r\n")
+
 #define ERR_USERNOTINCHANNEL(nick, channel) (nick + " " + channel + " :They aren't on that channel\r\n")
 #define ERR_NOTONCHANNEL(channel) (channel + " :You're not on that channel\r\n")
 #define ERR_USERONCHANNEL(nick, channel) (nick + " " + channel + " :is already on channel\r\n")
@@ -62,4 +63,4 @@
 #define RPL_NICK(prefix, nickname) (prefix + " NICK " + nickname + "\r\n")
 #define ERR_PASSWDNEEDED() ("Password needed\r\n")
 
-#define ERR_
+#define RPL_KICK(user_prefix, channel, kicked, reason) (user_prefix + " KICK " + channel + " " + kicked + " " + reason + "\r\n")

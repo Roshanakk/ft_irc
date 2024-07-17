@@ -207,41 +207,25 @@ Channel * Command::getMatchingChannel(std::string & username, std::set<Channel *
 
 void Command::handle_KICK() 
 {
-//    Parameters: <channel> *( "," <channel> ) <user> *( "," <user> )
-//                [<comment>]
-
-
-	//COMMENTAIRE apres le ':'
-	//a voir si on associe le commentaire au parametre "banned",
-	//pour recevoir la cause du ban si on essaye de renvoyer un message
-
 	//"you are banned" message, par ex quand on essaye de renvoyer un message
-
-
+	//if there are several channels and that a few of them dont exist ? (try catch ?)
 
 	int spacePos = _parameters.find(' ');
+	int colonPos = _parameters.find(':');
 
 	std::vector<std::string> paramChannelNames = Utilities::split(_parameters.substr(0, spacePos), ',');
-	std::string paramUsername = _parameters.substr(spacePos + 1);
-	paramUsername = paramUsername.substr(0, paramUsername.size() - 2); //removing the trailing ' :'
-
-	for (size_t i = 0; i < paramChannelNames.size(); ++i)
-	{
-		std::cout << "paramChannelNames[i] = " << paramChannelNames[i] << '$' << std::endl;
-
-	}
-	std::cout << "user name = " << paramUsername << '$' << std::endl;
+	std::string paramUsername = _parameters.substr(spacePos + 1, colonPos - spacePos - 2); //removing the colon and the SPACE before it
+	std::string reason = "";
+	if (_parameters[colonPos + 1]) // if there is a comment
+		reason = _parameters.substr(colonPos + 1);
+	
 
 
 	//Checking number and types of parameters 
 	if (_parameters.empty())
 		throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
 	if (paramChannelNames.empty() || paramUsername.empty())
-	{
-		// std::cout << "C'est ICI L'ERREUR " << std::endl;
 		throw(CommandException(ERR_NOSUCHNICK(_parameters[0])));
-	}
-
 
 
 	// Checking if ALL given channel names exist
@@ -251,73 +235,43 @@ void Command::handle_KICK()
 	for (std::vector<std::string>::iterator it = paramChannelNames.begin(); 
 		it != paramChannelNames.end(); ++it)
 	{
-		
 		std::set<Channel *>::iterator it2 = channels.begin();
 		while (it2 != channels.end() && *it != (*it2)->getName())
 			++it2;
-
-		try
-		{
-			if (it2 == channels.end()) 
-				throw(CommandException(ERR_NOSUCHNICK(*it)));
-		}
-		catch(const std::exception& e)
-		{
-			_client.send_message(e.what());
-		}
-		
+		if (it2 == channels.end()) 
+			throw(CommandException(ERR_NOSUCHNICK(*it)));
 	}
 
 
 	//Checking if the given username exist
 	std::set<Client *>& allUsers = _client.getClients();
-
 	std::set<Client *>::iterator it2 = allUsers.begin();
+
 	while (it2 != allUsers.end() && paramUsername != (*it2)->getNickname())
 		++it2;
-
-	try
-	{
-		if (it2 == allUsers.end()) 
-			throw(CommandException(ERR_NOSUCHNICK(paramUsername)));
-	}
-	catch(const std::exception& e)
-	{
-		_client.send_message(e.what());
-	}
+	if (it2 == allUsers.end()) 
+		throw(CommandException(ERR_NOSUCHNICK(paramUsername)));
 	
 
 
-
 	//Checking if client is operator and if the user to kick is in the channels
-
 	Client * paramUser = getMatchingClient(paramUsername);
-
 
 	for (size_t i = 0; i < paramChannelNames.size(); ++i)
 	{
 		Channel * paramChannel;
 		paramChannel = getMatchingChannel(paramChannelNames[i], channels);
 
-		try
-		{
-			if (!paramChannel->checkIfClientOperator(&_client))
-				throw(CommandException(ERR_CHANOPRIVSNEEDED(paramChannel->getName())));
+		if (!paramChannel->checkIfClientOperator(&_client))
+			throw(CommandException(ERR_CHANOPRIVSNEEDED(paramChannel->getName())));
+		if (!paramChannel->checkIfClientInChannel(paramUser))
+			throw(CommandException(ERR_USERNOTINCHANNEL(paramUsername, paramChannel->getName())));
 
-			if (!paramChannel->checkIfClientInChannel(paramUser))
-				throw(CommandException(ERR_USERNOTINCHANNEL(paramUsername, paramChannel->getName())));
-		}
-		catch(const std::exception& e)
-		{
-			_client.send_message(e.what());
-		}
-		
-		paramChannel->removeClient(paramUser);
-
+		paramChannel->banUser(paramUser);
+		_client.send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
+		(*paramUser).send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
 	}
 
-
-	
 }
 
 

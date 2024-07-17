@@ -132,6 +132,21 @@ bool Channel::checkIfClientOperator(Client *client)
     return (_clients[client]);
 }
 
+//Ban methods
+
+void Channel::banUser(Client *client)
+{
+    _bannedClients.insert(client);
+    removeClient(client);
+}
+
+// bool Channel::isBanned(Client *client)
+// {
+//     if (find(_bannedClients.begin(), _bannedClients.end(), client) != _bannedClients.end())
+//         return (true);
+//     return (false);
+// }
+
 
 /**********************************************************/
 /*                        GETTERS                         */
