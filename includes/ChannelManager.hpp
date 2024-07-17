@@ -26,6 +26,10 @@ class ChannelManager {
 		int getClientChannelCount(Client *client);
     int getMaxChannelsForClient(void);
 
+    std::set<Channel *> getChannels() const;
+
+
+
   private:
     std::set<Channel *> _channels;
     int _maxChannelsForClient;

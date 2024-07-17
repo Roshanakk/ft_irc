@@ -37,7 +37,7 @@ void Channel::addClient(Client *client) {
     if (client == NULL)
         return ;
 
-    if (_clients.size() == true)
+    if (_clients.size() == false)
         // add the client as a channel operator
         _clients.insert(std::make_pair(client, true));
     else
@@ -124,6 +124,30 @@ void Channel::removeInvite(Client *client) {
     _invites.erase(client);
 };
 
+
+//Operator method
+
+bool Channel::checkIfClientOperator(Client *client)
+{
+    return (_clients[client]);
+}
+
+//Ban methods
+
+void Channel::banUser(Client *client)
+{
+    _bannedClients.insert(client);
+    removeClient(client);
+}
+
+// bool Channel::isBanned(Client *client)
+// {
+//     if (find(_bannedClients.begin(), _bannedClients.end(), client) != _bannedClients.end())
+//         return (true);
+//     return (false);
+// }
+
+
 /**********************************************************/
 /*                        GETTERS                         */
 /**********************************************************/
@@ -158,6 +182,7 @@ std::string Channel::getClientNicknames(void) {
     }
     return ss.str();
 };
+
 
 /**********************************************************/
 /*                        SETTERS                         */
