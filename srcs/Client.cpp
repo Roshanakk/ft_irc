@@ -201,3 +201,7 @@ bool Client::operator <(const Client& rhs) const
 }
 
 
+void Client::setShouldDelete(bool shouldDelete)
+{
+    _shouldDelete = shouldDelete;
+}

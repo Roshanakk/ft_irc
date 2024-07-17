@@ -79,13 +79,23 @@ bool Channel::checkIfClientInChannel(Client *client) {
     return (_clients.find(client) != _clients.end());
 };
 
+bool Channel::checkIfClientIsOp(Client *client) {
+    std::map<Client*, bool>::iterator it = _clients.find(client);
+    if (it != _clients.end()) {
+        return (it->second);
+    }
+    return (false);
+};
+
 // Message methods
 
 void Channel::forwardMessage(std::string message, Client *sender) {
     for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
         if (it->first != sender) {
             std::cout << "Sending message to client: " << it->first->getSocket() << std::endl;
-            it->first->send_message("PRIVMSG " + _name + " :" + message + "\r\n");
+            it->first->send_message(":" \
+                + sender->getNickname() + " PRIVMSG " + _name + " :" \
+                + message + "\r\n");
         }
     }
 };

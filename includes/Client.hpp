@@ -63,6 +63,7 @@ class Client : public AIO_Event
 		void setPassAuth(void);
 		void setNickAuth(void);
 		void setUserAuth(void);
+		void setShouldDelete(bool shouldDelete);
 
 		//OPERATOR OVERLOAD TO BE ABLE TO USE MAP
 		bool operator <(const Client& rhs) const;
