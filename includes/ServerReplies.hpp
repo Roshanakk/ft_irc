@@ -61,3 +61,5 @@
 
 #define RPL_NICK(prefix, nickname) (prefix + " NICK " + nickname + "\r\n")
 #define ERR_PASSWDNEEDED() ("Password needed\r\n")
+
+#define ERR_

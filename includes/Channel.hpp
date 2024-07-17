@@ -38,6 +38,8 @@ class Channel {
 		bool checkInvite(Client *client);
 		void addInvite(Client *client);
 		void removeInvite(Client *client);
+		//Operator methods
+		bool checkIfClientOperator(Client *client);
 
 		// Getters //
 		std::string getName(void) const;

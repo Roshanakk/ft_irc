@@ -12,6 +12,7 @@
 #include "Utilities.hpp"
 
 class Client;
+class Channel;
 
 typedef enum e_cmd
 {
@@ -45,7 +46,7 @@ class Command
 
 	public:
 		//CONSTRUCTORS & DESTRUCTOR
-		Command(Client & client);
+		Command(Client & client, std::set<Client *>& _client);
 		~Command();
 
 		//GENERAL MANAGING
@@ -75,11 +76,14 @@ class Command
 		void handle_WHOIS();
 		void handle_WHOWAS();
 
+		Client * getMatchingClient(std::string & username) const;
+		Channel * getMatchingChannel(std::string & username, std::set<Channel *> & channels) const;
 
 	private:
 		std::string _listCmds[22];
 		void  (Command::*_fctCmds[22])();
 		Client & _client;
+		std::set<Client *>& _clients;
 		std::string _cmd;
 		std::string _parameters;
 		//std::vector<std::string> _cmdLine; // First string is the command, second one is the rest,

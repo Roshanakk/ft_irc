@@ -75,7 +75,7 @@ void Client::receive_message(void)
         if (std::find(it->begin(), it->end(), '\n') != it->end())
         {
             // should call parsing function here rather than just printing.
-            Command command(*this);
+            Command command(*this, _clients);
             std::cout << "Received(" << _socket << "): " << *it;
             command.doCmd(*it);
         }
@@ -147,16 +147,6 @@ Dispatch& Client::getDispatch() const
     return (_d);
 }
 
-// Client * getMatchingClient(std::string username)
-// {  
-// 	for (std::set<Channel *>::iterator it = .begin(); it != _channels.end(); it++) {
-// 	if ((*it)->getName() == name) {
-// 		return *it;
-// 	}
-// 	}
-// 	return NULL;
-// };
-
 /*************************************/
 /*                SETTERS            */
 /*************************************/
@@ -199,3 +189,15 @@ void Client::setStatus(e_status status)
 {
     _status = status;
 }
+
+
+/********************************************/
+/*             OPERATOR OVERLOAD            */
+/********************************************/
+
+bool Client::operator <(const Client& rhs) const
+{
+    return (_nickname < rhs._nickname);
+}
+
+

@@ -52,7 +52,6 @@ class Client : public AIO_Event
 
 		Dispatch& getDispatch() const;
 
-		Client * getMatchingClient(std::string username) const;
 
 
 		//SETTERS
@@ -64,6 +63,14 @@ class Client : public AIO_Event
 		void setPassAuth(void);
 		void setNickAuth(void);
 		void setUserAuth(void);
+
+		//OPERATOR OVERLOAD TO BE ABLE TO USE MAP
+		bool operator <(const Client& rhs) const;
+	
+		bool operator() (const Client& lhs, const Client& rhs) const
+		{
+			return lhs._nickname < rhs._nickname;
+		}
 
 	private:
 		Client(void);

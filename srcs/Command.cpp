@@ -4,8 +4,8 @@
 /*                CONSTRUCTORS & DESTRUCTOR               */
 /**********************************************************/
 
-Command::Command(Client & client)
-	: _client(client)
+Command::Command(Client & client, std::set<Client *>& clients)
+	: _client(client), _clients(clients)
 {
 
 	std::string listCmds[22] = {"CAP", "INFO", "INVITE", "JOIN", "LIST", "KICK",
@@ -178,73 +178,145 @@ void Command::handle_JOIN() {
 void Command::handle_LIST() {}
 
 
+Client * Command::getMatchingClient(std::string & username) const
+{  
+	for (std::set<Client *>::iterator it = _clients.begin(); it != _clients.end(); it++) 
+    {
+        if (username == (*it)->getNickname()) 
+            return *it;
+	}
+	return NULL;
+};
+
+Channel * Command::getMatchingChannel(std::string & username, std::set<Channel *> & channels) const
+{
+	for (std::set<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) 
+    {
+        if (username == (*it)->getName()) 
+            return *it;
+	}
+	return NULL;    
+}
+
 void Command::handle_KICK() 
 {
 //    Parameters: <channel> *( "," <channel> ) <user> *( "," <user> )
 //                [<comment>]
 
-	//check # and remove them
 
-	//CHECK IF client is an OPERATOR
+	//COMMENTAIRE apres le ':'
+	//a voir si on associe le commentaire au parametre "banned",
+	//pour recevoir la cause du ban si on essaye de renvoyer un message
+
+	//"you are banned" message, par ex quand on essaye de renvoyer un message
 
 
-	std::vector<std::string> paramChanNames;
-	std::vector<std::string> paramUserNames;
 
-	//checking number and types of parameters 
+	int spacePos = _parameters.find(' ');
+
+	std::vector<std::string> paramChannelNames = Utilities::split(_parameters.substr(0, spacePos), ',');
+	std::string paramUsername = _parameters.substr(spacePos + 1);
+	paramUsername = paramUsername.substr(0, paramUsername.size() - 2); //removing the trailing ' :'
+
+	for (size_t i = 0; i < paramChannelNames.size(); ++i)
+	{
+		std::cout << "paramChannelNames[i] = " << paramChannelNames[i] << '$' << std::endl;
+
+	}
+	std::cout << "user name = " << paramUsername << '$' << std::endl;
+
+
+	//Checking number and types of parameters 
 	if (_parameters.empty())
 		throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
-	if (paramChanNames.empty() || paramUserNames.empty()
-		|| (paramChanNames.size() > 1 && paramChanNames.size() < paramUserNames.size())
-		|| paramChanNames.size() > paramUserNames.size())
+	if (paramChannelNames.empty() || paramUsername.empty())
+	{
+		// std::cout << "C'est ICI L'ERREUR " << std::endl;
 		throw(CommandException(ERR_NOSUCHNICK(_parameters[0])));
+	}
 
-	//checking if ALL the given channel names exist
+
+
+	// Checking if ALL given channel names exist
 	ChannelManager & cm = _client.getCM();
 	std::set<Channel *> channels = cm.getChannels();
-	for (std::vector<std::string>::iterator it = paramChanNames.begin(); 
-		it != paramChanNames.end(); ++it)
+
+	for (std::vector<std::string>::iterator it = paramChannelNames.begin(); 
+		it != paramChannelNames.end(); ++it)
 	{
-		std::set<Channel *>::iterator it2 = channels.begin();
-		while (it2 != channels.end() && *it == (*it2)->getName())
-			++it2;
 		
-		// if the given channel name 'it' exists in the channels set
-		if (it2 != channels.end()) 
-			throw(CommandException(ERR_NOSUCHCHANNEL(*it)));
-	}
-
-	//checking if ALL the given usernames exist
-	std::set<Client *>& allClients = _client.getClients();
-	for (std::vector<std::string>::iterator it = paramUserNames.begin(); 
-		it != paramUserNames.end(); ++it)
-	{
-		std::set<Client *>::iterator it2 = allClients.begin();
-		while (it2 != allClients.end() && *it == (*it2)->getNickname())
+		std::set<Channel *>::iterator it2 = channels.begin();
+		while (it2 != channels.end() && *it != (*it2)->getName())
 			++it2;
 
-		// if the given user name 'it' exists in the clients set
-		if (it2 != allClients.end()) 
-			throw(CommandException(ERR_NOSUCHNICK(*it)));
+		try
+		{
+			if (it2 == channels.end()) 
+				throw(CommandException(ERR_NOSUCHNICK(*it)));
+		}
+		catch(const std::exception& e)
+		{
+			_client.send_message(e.what());
+		}
+		
 	}
 
 
-	//checking if the first user is in the channel
+	//Checking if the given username exist
+	std::set<Client *>& allUsers = _client.getClients();
 
-	std::string firstUsername = paramUserNames[0];
+	std::set<Client *>::iterator it2 = allUsers.begin();
+	while (it2 != allUsers.end() && paramUsername != (*it2)->getNickname())
+		++it2;
+
+	try
+	{
+		if (it2 == allUsers.end()) 
+			throw(CommandException(ERR_NOSUCHNICK(paramUsername)));
+	}
+	catch(const std::exception& e)
+	{
+		_client.send_message(e.what());
+	}
+	
 
 
-///////////GETMATCHINGCLIENT dans CLIENT.CPP
 
-	// std::set<Channel *>::iterator firstChan = channels.begin();
+	//Checking if client is operator and if the user to kick is in the channels
 
-	// if (!(*firstChan)->checkIfClientInChannel()
-	// 	throw(CommandException(ERR_USERNOTINCHANNEL()))
+	Client * paramUser = getMatchingClient(paramUsername);
 
+
+	for (size_t i = 0; i < paramChannelNames.size(); ++i)
+	{
+		Channel * paramChannel;
+		paramChannel = getMatchingChannel(paramChannelNames[i], channels);
+
+		try
+		{
+			if (!paramChannel->checkIfClientOperator(&_client))
+				throw(CommandException(ERR_CHANOPRIVSNEEDED(paramChannel->getName())));
+
+			if (!paramChannel->checkIfClientInChannel(paramUser))
+				throw(CommandException(ERR_USERNOTINCHANNEL(paramUsername, paramChannel->getName())));
+		}
+		catch(const std::exception& e)
+		{
+			_client.send_message(e.what());
+		}
+		
+		paramChannel->removeClient(paramUser);
+
+	}
+
+
+	
 }
 
 
 void Command::handle_KILL() {}
+
+
 void Command::handle_MODE() {
 	// Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>]
 		//    o - give/take channel operator privileges;
@@ -312,8 +384,9 @@ void Command::handle_NICK()
 
 		if (it != allClients.end())
 		{
-			if (_client.getNickname() == "default") // if it is the first connection (first NICK call)
-				_client.setNickname(nickname + '_');
+			// if it is the first connection (first NICK call)
+			if (_client.getNickname() == "default")
+				_client.setNickname(nickname + "_");
 			else                                    // if the user tries to change his nickname (user already connected)
 				throw(CommandException(ERR_NICKNAMEINUSE(nickname)));
 		}

@@ -16,6 +16,18 @@ std::vector<std::string> Utilities::split(const std::string& str, char delim) {
     return retVec;
 }
 
+std::vector<std::string> Utilities::kickSplit(const std::string& str, char delim) {
+    std::vector<std::string> retVec;
+    std::istringstream iss(str);
+    std::string line;
+
+    while (std::getline(iss, line, delim)) {
+        retVec.push_back(line.substr(1));
+    }
+
+    return retVec;
+}
+
 std::vector<std::string> Utilities::clientSplit(const std::string& str, char delim) {
     std::vector<std::string> retVec;
     size_t start = 0;

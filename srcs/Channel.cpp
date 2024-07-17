@@ -114,6 +114,15 @@ void Channel::removeInvite(Client *client) {
     _invites.erase(client);
 };
 
+
+//Operator method
+
+bool Channel::checkIfClientOperator(Client *client)
+{
+    return (_clients[client]);
+}
+
+
 /**********************************************************/
 /*                        GETTERS                         */
 /**********************************************************/
@@ -148,6 +157,7 @@ std::string Channel::getClientNicknames(void) {
     }
     return ss.str();
 };
+
 
 /**********************************************************/
 /*                        SETTERS                         */
