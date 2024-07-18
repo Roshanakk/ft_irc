@@ -37,7 +37,7 @@ void Channel::addClient(Client *client) {
     if (client == NULL)
         return ;
 
-    if (_clients.size() == true)
+    if (_clients.size() != true)
         // add the client as a channel operator
         _clients.insert(std::make_pair(client, true));
     else
@@ -81,8 +81,9 @@ bool Channel::checkIfClientInChannel(Client *client) {
 
 bool Channel::checkIfClientIsOp(Client *client) {
     // Check null
-    if (client == NULL)
+    if (client == NULL) {
         return (false);
+    }
     std::map<Client*, bool>::iterator it = _clients.find(client);
     // Check if client is in the channel
     if (it == _clients.end()) {

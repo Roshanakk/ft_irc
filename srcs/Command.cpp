@@ -217,7 +217,7 @@ void Command::handle_MODE() {
     if (!chan->checkIfClientInChannel(&_client))
         throw CommandException(ERR_NOTONCHANNEL(paramsVec[0]));
     if (!chan->checkIfClientIsOp(&_client))
-        throw CommandException(ERR_CHANOPRIVSNEEDED());
+        throw CommandException(ERR_CHANOPRIVSNEEDED(paramsVec[0]));
 
     // Check the mode and perform the appropriate action
     // come in the form of +il-k for example. The positives first as a group, then the negatives
@@ -225,15 +225,29 @@ void Command::handle_MODE() {
     // then check if the character is in our list of commands (freenode throws an error if it's not)
     // Do each command, while checking if there is a - because then we will switch the command mode
     // finish the commands in the same manner as the positives
-    // bool positive = true;
-    // for (size_t i = 1; i < paramsVec[1].size(); ++i) {
-    //     if (paramsVec[1][i] == '+') {
-    //         positive = true;
-    //     } else if (paramsVec[1][i] == '-') {
-    //         positive = false;
-    //     }
-    //    if (positive) 
-
+    bool positive = true;
+    for (size_t i = 0; i < paramsVec[1].size(); ++i) {
+        if (paramsVec[1][i] == '+') {
+            positive = true;
+            continue ;
+        } else if (paramsVec[1][i] == '-') {
+            positive = false;
+            continue ;
+        }
+        if (paramsVec[1][i] == 'i') {
+            handle_MODE_i(positive);
+        } else if (paramsVec[1][i] == 't') {
+            handle_MODE_t(positive);
+        } else if (paramsVec[1][i] == 'k') {
+            handle_MODE_k(positive);
+        } else if (paramsVec[1][i] == 'o') {
+            handle_MODE_o(positive);
+        } else if (paramsVec[1][i] == 'l') {
+            handle_MODE_l(positive);
+        } else {
+            // do nothing.
+        }
+    }
 }
 
 void Command::handle_NAMES() {}
