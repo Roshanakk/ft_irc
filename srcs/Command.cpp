@@ -105,13 +105,10 @@ void Command::doCmd(std::string & line)
 /*                COMMANDS               */
 /*****************************************/
 
-void Command::handle_CAP() 
-{
-	// std::cout << "Cap command" << std::endl;
-}
-
+void Command::handle_CAP() {}
 
 void Command::handle_INFO() {}
+
 void Command::handle_INVITE() {}
 
 void Command::handle_JOIN() {
@@ -274,9 +271,7 @@ void Command::handle_KICK()
 
 }
 
-
 void Command::handle_KILL() {}
-
 
 void Command::handle_MODE() {
 	// Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>]
@@ -296,7 +291,6 @@ void Command::handle_MODE() {
 void Command::handle_NAMES() {}
 
 
-
 bool isAValidNickname(std::string str)
 {
 	std::string set = "|^_-{}[]";
@@ -313,7 +307,6 @@ bool isAValidNickname(std::string str)
 	}
 	return (true);
 }
-
 
 void Command::handle_NICK() 
 {
@@ -373,8 +366,8 @@ void Command::handle_NICK()
 
 }
 
-
 void Command::handle_NOTICE() {}
+
 void Command::handle_PART() {
 	if (_parameters.size() <= 1)
 		throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
@@ -395,7 +388,6 @@ void Command::handle_PART() {
 	}
 	cm.removeEmptyChannels();
 }
-
 
 void Command::handle_PASS()
 {
@@ -483,8 +475,6 @@ void Command::handle_QUIT() {
 
 void Command::handle_TOPIC() {}
 
-
-
 void Command::handle_USER()
 {
 	//Splitting the parameters string into a vector of strings,
@@ -530,10 +520,11 @@ void Command::handle_USER()
 
 }
 
-
-
-
 void Command::handle_VERSION() {}
+
 void Command::handle_WHO() {}
+
 void Command::handle_WHOIS() {}
-void Command::handle_WHOWAS() {}
+
+void Command::handle_WHOWAS()
+{}
