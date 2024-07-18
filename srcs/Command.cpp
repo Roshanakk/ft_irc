@@ -226,26 +226,40 @@ void Command::handle_MODE() {
     // Do each command, while checking if there is a - because then we will switch the command mode
     // finish the commands in the same manner as the positives
     bool positive = true;
+    size_t argNum = 2;
     for (size_t i = 0; i < paramsVec[1].size(); ++i) {
-        if (paramsVec[1][i] == '+') {
-            positive = true;
-            continue ;
-        } else if (paramsVec[1][i] == '-') {
-            positive = false;
-            continue ;
-        }
-        if (paramsVec[1][i] == 'i') {
-            handle_MODE_i(positive);
-        } else if (paramsVec[1][i] == 't') {
-            handle_MODE_t(positive);
-        } else if (paramsVec[1][i] == 'k') {
-            handle_MODE_k(positive);
-        } else if (paramsVec[1][i] == 'o') {
-            handle_MODE_o(positive);
-        } else if (paramsVec[1][i] == 'l') {
-            handle_MODE_l(positive);
-        } else {
-            // do nothing.
+        switch (paramsVec[1][i]) {
+            case '+':
+                positive = true;
+                break;
+            case '-':
+                positive = false;
+                break;
+            case 'i':
+                handle_MODE_i(positive, chan);
+                break;
+            case 't':
+                handle_MODE_t(positive, chan);
+                break;
+            case 'k':
+                handle_MODE_k(positive, chan,
+                    (positive && argNum < paramsVec.size() 
+                    ? paramsVec[argNum++] : "") );
+                break;
+            case 'o':
+                handle_MODE_o(positive, chan,
+                    (argNum < paramsVec.size() 
+                    ? paramsVec[argNum++] : "") );
+                break;
+            case 'l':
+                handle_MODE_l(positive, chan,
+                    (positive && argNum < paramsVec.size() 
+                    ? paramsVec[argNum++] : "") );
+                break;
+            default:
+                // inform client that the mode is not recognized
+                _client.send_message(ERR_UNKNOWNMODE(_client.getNickname(), paramsVec[1][i]));
+                break;
         }
     }
 }
@@ -497,27 +511,35 @@ void Command::handle_WHOWAS() {}
 
 // Mode flags
 
-void Command::handle_MODE_i(bool posFlag) {
+void Command::handle_MODE_i(bool posFlag, Channel *chan) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "i" << std::endl;
+    if (chan->getInviteOnly() && posFlag) {
+        throw CommandException(ERR_INVITEONLYCHAN());
+    }
+    (void)chan;
 };
 
-void Command::handle_MODE_t(bool posFlag) {
+void Command::handle_MODE_t(bool posFlag, Channel *chan) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "t" << std::endl;
+    (void)chan;
 };
 
-void Command::handle_MODE_k(bool posFlag) {
+void Command::handle_MODE_k(bool posFlag, Channel *chan, std::string arg) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
-              << "k" << std::endl;
+              << "k " << arg << std::endl;
+    (void)chan;
 };
 
-void Command::handle_MODE_o(bool posFlag) {
+void Command::handle_MODE_o(bool posFlag, Channel *chan, std::string arg) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
-              << "o" << std::endl;
+              << "o " << arg << std::endl;
+    (void)chan;
 };
 
-void Command::handle_MODE_l(bool posFlag) {
+void Command::handle_MODE_l(bool posFlag, Channel *chan, std::string arg) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
-              << "l" << std::endl;
+              << "l " << arg << std::endl;
+    (void)chan;
 };

@@ -33,7 +33,7 @@
 #define ERR_YOUREBANNEDCREEP() (":You are banned from this server\r\n")
 #define ERR_KEYSET(channel) (channel + " :Channel key already set\r\n")
 #define ERR_CHANNELISFULL(channel) (channel + " :Cannot join channel (+l)\r\n")
-#define ERR_UNKNOWNMODE(mode) (mode + " :is unknown mode char to me\r\n")
+#define ERR_UNKNOWNMODE(nick, mode) (":ft_irc 472 " + nick + " " + mode + " :is not a recognised channel mode.\r\n")
 #define ERR_INVITEONLYCHAN(channel) (channel + " :Cannot join channel (+i)\r\n")
 #define ERR_BANNEDFROMCHAN(channel) (channel + " :Cannot join channel (+b)\r\n")
 #define ERR_BADCHANNELKEY(channel) (channel + " :Cannot join channel (+k)\r\n")
@@ -43,7 +43,6 @@
 #define ERR_NOOPERHOST() (":No O-lines for your host\r\n")
 #define ERR_UMODEUNKNOWNFLAG() (":Unknown MODE flag\r\n")
 #define ERR_USERSDONTMATCH() (":Cant change mode for other users\r\n")
-
 #define ERR_RESTRICTED() (":Your connection is restricted!")
 // Command Responses (Section 6.2 of RFC 1459)
 // Responses can be variable, not defining right now. 
