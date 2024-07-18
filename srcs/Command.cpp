@@ -524,38 +524,53 @@ void Command::handle_VERSION() {}
 
 void Command::handle_WHO() {}
 
-void Command::handle_WHOIS() {}
 
-void Command::handle_WHOWAS()
+void Command::handle_WHOIS()
 {
-	// Parameters: <nickname> *( "," <nickname> ) [ <count> [ <target> ] ]
-
-	// historyMap history = _client.getHistoryMap();
-
-	// // std::cout << _parameters << std::endl;
-	// // if (_parameters.empty())
-	// // 	throw(CommandException(ERR_NONICKNAMEGIVEN()));
-	
-
-	// // int spacePos = _parameters.find(' ');
-	// // std::string nicknamesStr = _parameters.substr(0, spacePos);
-
-	// // std::vector<std::string> nicknamesVec = Utilities::split(nicknamesStr, ',');
-
-
-
-	// std::string nickname = "popo";
-
-	// if (history.find(nickname) == history.end())
-	// 	throw(CommandException(ERR_WASNOSUCHNICK(nickname)));
-	
-	// for (size_t i = 0; i < history[nickname].size(); ++i)
-	// 	std::cout << history[nickname][i]->getHostname() << std::endl;
-
 
 }
 
 
-//NICK and USER : PASS status check
-//nickname doesnt change
-//try catch in KICK
+void Command::handle_WHOWAS()
+{
+// 	// Parameters: <nickname> *( "," <nickname> ) [ <count> [ <target> ] ]
+
+// 	historyMap history = _client.getHistoryMap();
+
+// 	// std::cout << _parameters << std::endl;
+// 	if (_parameters.empty())
+// 		throw(CommandException(ERR_NONICKNAMEGIVEN()));
+	
+
+// 	int spacePos = _parameters.find(' ');
+// 	std::string nickStr = _parameters.substr(0, spacePos);
+
+// 	std::vector<std::string> nickVec = Utilities::split(nickStr, ',');
+
+
+// 	for (size_t i = 0; i < nickVec.size(); ++i)
+// 	{
+// 		std::string nickname = nickVec[i];
+
+// 		if (history.find(nickname) == history.end())
+// 			throw(CommandException(ERR_WASNOSUCHNICK(nickname)));
+		
+// 		// for (size_t i = 0; i < history[nickname].size(); ++i)
+// 		// 	std::cout << history[nickname][i]->getHostname() << std::endl;
+		
+// 		_client.send_message(RPL_WHOWASUSER(_client.getNickname(),
+// 											nickname,
+// 											history[nickname][i]->getHostname(),
+// 											history[nickname][i]->getRealname()));
+
+// 		// _client.send_message(RPL_WHOWASUSER(history[nickname][i]->getNickname(),
+// 		// 									history[nickname][i]->getUsername(),
+// 		// 									history[nickname][i]->getHostname(),
+// 		// 									history[nickname][i]->getRealname()));
+	
+// 		_client.send_message(RPL_ENDOFWHOWAS(history[nickname][i]->getNickname()));
+// 	}
+
+
+
+}

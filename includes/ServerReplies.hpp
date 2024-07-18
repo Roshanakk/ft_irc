@@ -64,3 +64,7 @@
 #define ERR_PASSWDNEEDED() ("Password needed\r\n")
 
 #define RPL_KICK(user_prefix, channel, kicked, reason) (user_prefix + " KICK " + channel + " " + kicked + " " + reason + "\r\n")
+
+#define RPL_WHOWASUSER(nickname, whowasNick, whowasHost, realname) ("ft_irc: 314 " + nickname + " " + whowasNick + " " + whowasHost + " :" + realname + "\r\n")
+
+#define RPL_ENDOFWHOWAS(nickname) (nickname + " :End of WHOWAS\r\n")
