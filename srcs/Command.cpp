@@ -227,16 +227,21 @@ void Command::handle_MODE() {
     // finish the commands in the same manner as the positives
     bool positive = true;
     size_t argNum = 2;
+    std::string channelModeIsStr = ":" + _client.getNickname() + "!~" + _client.getUsername() + "@" + _client.getHostname() + " MODE " + chan->getName() + " ";
     for (size_t i = 0; i < paramsVec[1].size(); ++i) {
         switch (paramsVec[1][i]) {
             case '+':
                 positive = true;
+                channelModeIsStr += "+";
                 break;
             case '-':
                 positive = false;
+                channelModeIsStr += "-";
                 break;
             case 'i':
-                handle_MODE_i(positive, chan);
+                if (handle_MODE_i(positive, chan)) {
+                    channelModeIsStr += "i";
+                }
                 break;
             case 't':
                 handle_MODE_t(positive, chan);
@@ -262,6 +267,9 @@ void Command::handle_MODE() {
                 break;
         }
     }
+    // check that the mode is not empty and is not only + or - or that a - isnt added as the last character
+    channelModeIsStr += "\r\n";
+    _client.send_message(channelModeIsStr);
 }
 
 void Command::handle_NAMES() {}
@@ -511,35 +519,43 @@ void Command::handle_WHOWAS() {}
 
 // Mode flags
 
-void Command::handle_MODE_i(bool posFlag, Channel *chan) {
+bool Command::handle_MODE_i(bool posFlag, Channel *chan) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "i" << std::endl;
-    if (chan->getInviteOnly() && posFlag) {
-        throw CommandException(ERR_INVITEONLYCHAN());
+    if (!chan)
+        // error check for channel address.
+        return false;
+    if (chan->getInviteOnly() != posFlag) {
+        chan->setInviteOnly(posFlag);
+        return true;
     }
-    (void)chan;
+    return false;
 };
 
-void Command::handle_MODE_t(bool posFlag, Channel *chan) {
+bool Command::handle_MODE_t(bool posFlag, Channel *chan) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "t" << std::endl;
     (void)chan;
+    return false;
 };
 
-void Command::handle_MODE_k(bool posFlag, Channel *chan, std::string arg) {
+bool Command::handle_MODE_k(bool posFlag, Channel *chan, std::string arg) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "k " << arg << std::endl;
     (void)chan;
+    return false;
 };
 
-void Command::handle_MODE_o(bool posFlag, Channel *chan, std::string arg) {
+bool Command::handle_MODE_o(bool posFlag, Channel *chan, std::string arg) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "o " << arg << std::endl;
     (void)chan;
+    return false;
 };
 
-void Command::handle_MODE_l(bool posFlag, Channel *chan, std::string arg) {
+bool Command::handle_MODE_l(bool posFlag, Channel *chan, std::string arg) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "l " << arg << std::endl;
     (void)chan;
+    return false;
 };

@@ -78,11 +78,11 @@ class Command
 		void handle_WHOWAS();
 
 		// Commands specific to MODE
-		void handle_MODE_i(bool posFlag, Channel *chan);
-		void handle_MODE_t(bool posFlag, Channel *chan);
-		void handle_MODE_k(bool posFlag, Channel *chan, std::string arg);
-		void handle_MODE_o(bool posFlag, Channel *chan, std::string arg);
-		void handle_MODE_l(bool posFlag, Channel *chan, std::string arg);
+		bool handle_MODE_i(bool posFlag, Channel *chan);
+		bool handle_MODE_t(bool posFlag, Channel *chan);
+		bool handle_MODE_k(bool posFlag, Channel *chan, std::string arg);
+		bool handle_MODE_o(bool posFlag, Channel *chan, std::string arg);
+		bool handle_MODE_l(bool posFlag, Channel *chan, std::string arg);
 
 
 	private:
