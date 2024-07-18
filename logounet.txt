@@ -1,0 +1,356 @@
+<< CAP LS
+<< NICK titi
+<< USER rraffi-k rraffi-k irc.freenode.net :Roxane RAFFI KHANSARI
+>> :*.freenode.net NOTICE * :*** Looking up your ident...
+>> :*.freenode.net NOTICE * :*** Looking up your hostname...
+>> :*.freenode.net CAP * LS :account-notify account-tag away-notify batch cap-notify chghost draft/relaymsg echo-message extended-join inspircd.org/poison inspircd.org/standard-replies invite-notify labeled-response message-tags multi-prefix sasl server-time setname userhost-in-names 
+<< CAP REQ :multi-prefix
+>> PING :HjNoH^r^\q
+<< PONG :HjNoH^r^\q
+>> :*.freenode.net CAP titi ACK :multi-prefix
+<< CAP END
+>> :*.freenode.net NOTICE titi :*** Could not resolve your hostname: Nameserver failure; using your IP address (62.210.33.224) instead.
+>> :titi!rraffi-k@62.210.33.224 NICK :311ATQXRL
+>> :*.freenode.net 433 titi titi :Nickname overruled.
+<< NICK titi_
+>> PING :|[niE^xPq}
+<< PONG :|[niE^xPq}
+>> :*.freenode.net NOTICE titi_ :*** Ident lookup timed out, using ~rraffi-k instead.
+>> :*.freenode.net 001 titi_ :Welcome to the freenode IRC Network titi_!~rraffi-k@62.210.33.224
+<< MODE titi_ +i
+>> :*.freenode.net 002 titi_ :Your host is *.freenode.net, running version InspIRCd-3
+>> :*.freenode.net 003 titi_ :This server was created 05:19:49 Jan 21 2024
+>> :*.freenode.net 004 titi_ *.freenode.net InspIRCd-3 BDHILRSTWcdghikorswxz ABCDEFIJKLMNOPQRSTUWXYZbcdefhijklmnoprstuvwz :BEFIJLWXYZbdefhjklovw
+>> :*.freenode.net 005 titi_ ACCEPT=30 AWAYLEN=200 BOT=B CALLERID=g CASEMAPPING=ascii CHANLIMIT=#:20 CHANMODES=IXZbew,k,BEFJLWdfjl,ACDKMNOPQRSTUcimnprstuz CHANNELLEN=64 CHANTYPES=# ELIST=CMNTU ESILENCE=CcdiNnPpTtx EXCEPTS=e :are supported by this server
+>> :*.freenode.net 005 titi_ EXTBAN=,ACNOQRSTUacjmnpruwz HOSTLEN=64 INVEX=I KEYLEN=32 KICKLEN=255 LINELEN=512 MAXLIST=I:100,X:100,b:100,e:100,w:100 MAXTARGETS=20 MODES=20 MONITOR=30 NAMELEN=128 NAMESX NETWORK=freenode :are supported by this server
+>> :*.freenode.net 005 titi_ NICKLEN=30 PREFIX=(Yohv)!@%+ REMOVE SAFELIST SECURELIST=60 SILENCE=32 STATUSMSG=!@%+ TOPICLEN=390 UHNAMES USERIP USERLEN=10 USERMODES=,,s,BDHILRSTWcdghikorwxz VBANLIST :are supported by this server
+>> :*.freenode.net 005 titi_ VLIST=b WATCH=32 WHOX :are supported by this server
+>> :*.freenode.net 251 titi_ :There are 17 users and 5427 invisible on 10 servers
+>> :*.freenode.net 252 titi_ 7 :operator(s) online
+>> :*.freenode.net 253 titi_ 8 :unknown connections
+>> :*.freenode.net 254 titi_ 9782 :channels formed
+>> :*.freenode.net 255 titi_ :I have 2062 clients and 1 servers
+>> :*.freenode.net 265 titi_ :Current local users: 2062  Max: 4584
+>> :*.freenode.net 266 titi_ :Current global users: 5444  Max: 7589
+>> :*.freenode.net 375 titi_ :*.freenode.net message of the day
+>> :*.freenode.net 372 titi_ :  Welcome to the
+>> :*.freenode.net 372 titi_ :          __                               _
+>> :*.freenode.net 372 titi_ :         / _|_ __ ___  ___ _ __   ___   __| | ___
+>> :*.freenode.net 372 titi_ :        | |_| '__/ _ \/ _ \ '_ \ / _ \ / _` |/ _ \
+>> :*.freenode.net 372 titi_ :        |  _| | |  __/  __/ | | | (_) | (_| |  __/
+>> :*.freenode.net 372 titi_ :        |_| |_|  \___|\___|_| |_|\___/ \__,_|\___|
+>> :*.freenode.net 372 titi_ :                                   AUTONOMOUS ZONE
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Connect to us on:
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Hostname: irc.freenode.net / chat.freenode.net
+>> :*.freenode.net 372 titi_ :  Plaintext: 6660-6669
+>> :*.freenode.net 372 titi_ :  TLS/SSL: 6697,7000,7070
+>> :*.freenode.net 372 titi_ :  Webchat: https://webchat.freenode.net
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  By connecting to freenode you indicate that you have read and accept our
+>> :*.freenode.net 372 titi_ :  policies and guidelines as set out on https://freenode.net and agree to
+>> :*.freenode.net 372 titi_ :  be scanned for an open proxy.
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  If you are looking for assistance, please try:
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  #help                    - Help with general IRC and Services.
+>> :*.freenode.net 372 titi_ :  #chanhelp                - Help with channels and channel services.
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Checkout some of our communities and services:
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  #trivia                  - All new trivia channel.
+>> :*.freenode.net 372 titi_ :  #freenode-radio          - Freenode's very own radio channel.
+>> :*.freenode.net 372 titi_ :  #freenode                - Chat about freenode.
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Type /join #<channel>
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Thank you for using freenode!
+>> :*.freenode.net 376 titi_ :End of message of the day.
+>> :*.freenode.net 396 titi_ freenode-3dg.s40.6vib9m.IP :is now your displayed host
+>> :titi_!~rraffi-k@freenode-3dg.s40.6vib9m.IP MODE titi_ :+wRix
+>> :Harambe!~Harambe@freenode/service/Harambe PRIVMSG titi_ :VERSION
+>> :Global!services@services.freenode.net NOTICE titi_ :[Random News - Oct 27 04:08:42 2023 UTC] 🎉 Join us in #trivia for a thrilling trivia showdown! Test your knowledge and have a blast with us! 🧠💡
+<< WHOIS titi
+>> :*.freenode.net 401 titi_ titi :No such nick
+--> event empty
+>> :*.freenode.net 318 titi_ titi :End of /WHOIS list.
+--> event empty
+<< NOTICE Harambe :VERSION irssi v1.2.3-1ubuntu4
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< CAP LS
+<< NICK titi
+<< USER rraffi-k rraffi-k irc.freenode.net :Roxane RAFFI KHANSARI
+>> :*.freenode.net NOTICE * :*** Looking up your ident...
+>> :*.freenode.net NOTICE * :*** Looking up your hostname...
+>> :*.freenode.net CAP * LS :account-notify account-tag away-notify batch cap-notify chghost draft/relaymsg echo-message extended-join inspircd.org/poison inspircd.org/standard-replies invite-notify labeled-response message-tags multi-prefix sasl server-time setname userhost-in-names 
+<< CAP REQ :multi-prefix
+>> PING :HjNoH^r^\q
+<< PONG :HjNoH^r^\q
+>> :*.freenode.net CAP titi ACK :multi-prefix
+<< CAP END
+>> :*.freenode.net NOTICE titi :*** Could not resolve your hostname: Nameserver failure; using your IP address (62.210.33.224) instead.
+>> :titi!rraffi-k@62.210.33.224 NICK :311ATQXRL
+>> :*.freenode.net 433 titi titi :Nickname overruled.
+<< NICK titi_
+>> PING :|[niE^xPq}
+<< PONG :|[niE^xPq}
+>> :*.freenode.net NOTICE titi_ :*** Ident lookup timed out, using ~rraffi-k instead.
+>> :*.freenode.net 001 titi_ :Welcome to the freenode IRC Network titi_!~rraffi-k@62.210.33.224
+<< MODE titi_ +i
+>> :*.freenode.net 002 titi_ :Your host is *.freenode.net, running version InspIRCd-3
+>> :*.freenode.net 003 titi_ :This server was created 05:19:49 Jan 21 2024
+>> :*.freenode.net 004 titi_ *.freenode.net InspIRCd-3 BDHILRSTWcdghikorswxz ABCDEFIJKLMNOPQRSTUWXYZbcdefhijklmnoprstuvwz :BEFIJLWXYZbdefhjklovw
+>> :*.freenode.net 005 titi_ ACCEPT=30 AWAYLEN=200 BOT=B CALLERID=g CASEMAPPING=ascii CHANLIMIT=#:20 CHANMODES=IXZbew,k,BEFJLWdfjl,ACDKMNOPQRSTUcimnprstuz CHANNELLEN=64 CHANTYPES=# ELIST=CMNTU ESILENCE=CcdiNnPpTtx EXCEPTS=e :are supported by this server
+>> :*.freenode.net 005 titi_ EXTBAN=,ACNOQRSTUacjmnpruwz HOSTLEN=64 INVEX=I KEYLEN=32 KICKLEN=255 LINELEN=512 MAXLIST=I:100,X:100,b:100,e:100,w:100 MAXTARGETS=20 MODES=20 MONITOR=30 NAMELEN=128 NAMESX NETWORK=freenode :are supported by this server
+>> :*.freenode.net 005 titi_ NICKLEN=30 PREFIX=(Yohv)!@%+ REMOVE SAFELIST SECURELIST=60 SILENCE=32 STATUSMSG=!@%+ TOPICLEN=390 UHNAMES USERIP USERLEN=10 USERMODES=,,s,BDHILRSTWcdghikorwxz VBANLIST :are supported by this server
+>> :*.freenode.net 005 titi_ VLIST=b WATCH=32 WHOX :are supported by this server
+>> :*.freenode.net 251 titi_ :There are 17 users and 5427 invisible on 10 servers
+>> :*.freenode.net 252 titi_ 7 :operator(s) online
+>> :*.freenode.net 253 titi_ 8 :unknown connections
+>> :*.freenode.net 254 titi_ 9782 :channels formed
+>> :*.freenode.net 255 titi_ :I have 2062 clients and 1 servers
+>> :*.freenode.net 265 titi_ :Current local users: 2062  Max: 4584
+>> :*.freenode.net 266 titi_ :Current global users: 5444  Max: 7589
+>> :*.freenode.net 375 titi_ :*.freenode.net message of the day
+>> :*.freenode.net 372 titi_ :  Welcome to the
+>> :*.freenode.net 372 titi_ :          __                               _
+>> :*.freenode.net 372 titi_ :         / _|_ __ ___  ___ _ __   ___   __| | ___
+>> :*.freenode.net 372 titi_ :        | |_| '__/ _ \/ _ \ '_ \ / _ \ / _` |/ _ \
+>> :*.freenode.net 372 titi_ :        |  _| | |  __/  __/ | | | (_) | (_| |  __/
+>> :*.freenode.net 372 titi_ :        |_| |_|  \___|\___|_| |_|\___/ \__,_|\___|
+>> :*.freenode.net 372 titi_ :                                   AUTONOMOUS ZONE
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Connect to us on:
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Hostname: irc.freenode.net / chat.freenode.net
+>> :*.freenode.net 372 titi_ :  Plaintext: 6660-6669
+>> :*.freenode.net 372 titi_ :  TLS/SSL: 6697,7000,7070
+>> :*.freenode.net 372 titi_ :  Webchat: https://webchat.freenode.net
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  By connecting to freenode you indicate that you have read and accept our
+>> :*.freenode.net 372 titi_ :  policies and guidelines as set out on https://freenode.net and agree to
+>> :*.freenode.net 372 titi_ :  be scanned for an open proxy.
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  If you are looking for assistance, please try:
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  #help                    - Help with general IRC and Services.
+>> :*.freenode.net 372 titi_ :  #chanhelp                - Help with channels and channel services.
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Checkout some of our communities and services:
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  #trivia                  - All new trivia channel.
+>> :*.freenode.net 372 titi_ :  #freenode-radio          - Freenode's very own radio channel.
+>> :*.freenode.net 372 titi_ :  #freenode                - Chat about freenode.
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Type /join #<channel>
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Thank you for using freenode!
+>> :*.freenode.net 376 titi_ :End of message of the day.
+>> :*.freenode.net 396 titi_ freenode-3dg.s40.6vib9m.IP :is now your displayed host
+>> :titi_!~rraffi-k@freenode-3dg.s40.6vib9m.IP MODE titi_ :+wRix
+>> :Harambe!~Harambe@freenode/service/Harambe PRIVMSG titi_ :VERSION
+>> :Global!services@services.freenode.net NOTICE titi_ :[Random News - Oct 27 04:08:42 2023 UTC] 🎉 Join us in #trivia for a thrilling trivia showdown! Test your knowledge and have a blast with us! 🧠💡
+<< WHOIS titi
+>> :*.freenode.net 401 titi_ titi :No such nick
+--> event empty
+>> :*.freenode.net 318 titi_ titi :End of /WHOIS list.
+--> event empty
+<< NOTICE Harambe :VERSION irssi v1.2.3-1ubuntu4
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< CAP LS
+<< NICK titi
+<< USER rraffi-k rraffi-k irc.freenode.net :Roxane RAFFI KHANSARI
+>> :*.freenode.net NOTICE * :*** Looking up your ident...
+>> :*.freenode.net NOTICE * :*** Looking up your hostname...
+>> :*.freenode.net CAP * LS :account-notify account-tag away-notify batch cap-notify chghost draft/relaymsg echo-message extended-join inspircd.org/poison inspircd.org/standard-replies invite-notify labeled-response message-tags multi-prefix sasl server-time setname userhost-in-names 
+<< CAP REQ :multi-prefix
+>> PING :HjNoH^r^\q
+<< PONG :HjNoH^r^\q
+>> :*.freenode.net CAP titi ACK :multi-prefix
+<< CAP END
+>> :*.freenode.net NOTICE titi :*** Could not resolve your hostname: Nameserver failure; using your IP address (62.210.33.224) instead.
+>> :titi!rraffi-k@62.210.33.224 NICK :311ATQXRL
+>> :*.freenode.net 433 titi titi :Nickname overruled.
+<< NICK titi_
+>> PING :|[niE^xPq}
+<< PONG :|[niE^xPq}
+>> :*.freenode.net NOTICE titi_ :*** Ident lookup timed out, using ~rraffi-k instead.
+>> :*.freenode.net 001 titi_ :Welcome to the freenode IRC Network titi_!~rraffi-k@62.210.33.224
+<< MODE titi_ +i
+>> :*.freenode.net 002 titi_ :Your host is *.freenode.net, running version InspIRCd-3
+>> :*.freenode.net 003 titi_ :This server was created 05:19:49 Jan 21 2024
+>> :*.freenode.net 004 titi_ *.freenode.net InspIRCd-3 BDHILRSTWcdghikorswxz ABCDEFIJKLMNOPQRSTUWXYZbcdefhijklmnoprstuvwz :BEFIJLWXYZbdefhjklovw
+>> :*.freenode.net 005 titi_ ACCEPT=30 AWAYLEN=200 BOT=B CALLERID=g CASEMAPPING=ascii CHANLIMIT=#:20 CHANMODES=IXZbew,k,BEFJLWdfjl,ACDKMNOPQRSTUcimnprstuz CHANNELLEN=64 CHANTYPES=# ELIST=CMNTU ESILENCE=CcdiNnPpTtx EXCEPTS=e :are supported by this server
+>> :*.freenode.net 005 titi_ EXTBAN=,ACNOQRSTUacjmnpruwz HOSTLEN=64 INVEX=I KEYLEN=32 KICKLEN=255 LINELEN=512 MAXLIST=I:100,X:100,b:100,e:100,w:100 MAXTARGETS=20 MODES=20 MONITOR=30 NAMELEN=128 NAMESX NETWORK=freenode :are supported by this server
+>> :*.freenode.net 005 titi_ NICKLEN=30 PREFIX=(Yohv)!@%+ REMOVE SAFELIST SECURELIST=60 SILENCE=32 STATUSMSG=!@%+ TOPICLEN=390 UHNAMES USERIP USERLEN=10 USERMODES=,,s,BDHILRSTWcdghikorwxz VBANLIST :are supported by this server
+>> :*.freenode.net 005 titi_ VLIST=b WATCH=32 WHOX :are supported by this server
+>> :*.freenode.net 251 titi_ :There are 17 users and 5427 invisible on 10 servers
+>> :*.freenode.net 252 titi_ 7 :operator(s) online
+>> :*.freenode.net 253 titi_ 8 :unknown connections
+>> :*.freenode.net 254 titi_ 9782 :channels formed
+>> :*.freenode.net 255 titi_ :I have 2062 clients and 1 servers
+>> :*.freenode.net 265 titi_ :Current local users: 2062  Max: 4584
+>> :*.freenode.net 266 titi_ :Current global users: 5444  Max: 7589
+>> :*.freenode.net 375 titi_ :*.freenode.net message of the day
+>> :*.freenode.net 372 titi_ :  Welcome to the
+>> :*.freenode.net 372 titi_ :          __                               _
+>> :*.freenode.net 372 titi_ :         / _|_ __ ___  ___ _ __   ___   __| | ___
+>> :*.freenode.net 372 titi_ :        | |_| '__/ _ \/ _ \ '_ \ / _ \ / _` |/ _ \
+>> :*.freenode.net 372 titi_ :        |  _| | |  __/  __/ | | | (_) | (_| |  __/
+>> :*.freenode.net 372 titi_ :        |_| |_|  \___|\___|_| |_|\___/ \__,_|\___|
+>> :*.freenode.net 372 titi_ :                                   AUTONOMOUS ZONE
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Connect to us on:
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Hostname: irc.freenode.net / chat.freenode.net
+>> :*.freenode.net 372 titi_ :  Plaintext: 6660-6669
+>> :*.freenode.net 372 titi_ :  TLS/SSL: 6697,7000,7070
+>> :*.freenode.net 372 titi_ :  Webchat: https://webchat.freenode.net
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  By connecting to freenode you indicate that you have read and accept our
+>> :*.freenode.net 372 titi_ :  policies and guidelines as set out on https://freenode.net and agree to
+>> :*.freenode.net 372 titi_ :  be scanned for an open proxy.
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  If you are looking for assistance, please try:
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  #help                    - Help with general IRC and Services.
+>> :*.freenode.net 372 titi_ :  #chanhelp                - Help with channels and channel services.
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Checkout some of our communities and services:
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  #trivia                  - All new trivia channel.
+>> :*.freenode.net 372 titi_ :  #freenode-radio          - Freenode's very own radio channel.
+>> :*.freenode.net 372 titi_ :  #freenode                - Chat about freenode.
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Type /join #<channel>
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Thank you for using freenode!
+>> :*.freenode.net 376 titi_ :End of message of the day.
+>> :*.freenode.net 396 titi_ freenode-3dg.s40.6vib9m.IP :is now your displayed host
+>> :titi_!~rraffi-k@freenode-3dg.s40.6vib9m.IP MODE titi_ :+wRix
+>> :Harambe!~Harambe@freenode/service/Harambe PRIVMSG titi_ :VERSION
+>> :Global!services@services.freenode.net NOTICE titi_ :[Random News - Oct 27 04:08:42 2023 UTC] 🎉 Join us in #trivia for a thrilling trivia showdown! Test your knowledge and have a blast with us! 🧠💡
+<< WHOIS titi
+>> :*.freenode.net 401 titi_ titi :No such nick
+--> event empty
+>> :*.freenode.net 318 titi_ titi :End of /WHOIS list.
+--> event empty
+<< NOTICE Harambe :VERSION irssi v1.2.3-1ubuntu4
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< CAP LS
+<< NICK titi
+<< USER rraffi-k rraffi-k irc.freenode.net :Roxane RAFFI KHANSARI
+>> :*.freenode.net NOTICE * :*** Looking up your ident...
+>> :*.freenode.net NOTICE * :*** Looking up your hostname...
+>> :*.freenode.net CAP * LS :account-notify account-tag away-notify batch cap-notify chghost draft/relaymsg echo-message extended-join inspircd.org/poison inspircd.org/standard-replies invite-notify labeled-response message-tags multi-prefix sasl server-time setname userhost-in-names 
+<< CAP REQ :multi-prefix
+>> PING :HjNoH^r^\q
+<< PONG :HjNoH^r^\q
+>> :*.freenode.net CAP titi ACK :multi-prefix
+<< CAP END
+>> :*.freenode.net NOTICE titi :*** Could not resolve your hostname: Nameserver failure; using your IP address (62.210.33.224) instead.
+>> :titi!rraffi-k@62.210.33.224 NICK :311ATQXRL
+>> :*.freenode.net 433 titi titi :Nickname overruled.
+<< NICK titi_
+>> PING :|[niE^xPq}
+<< PONG :|[niE^xPq}
+>> :*.freenode.net NOTICE titi_ :*** Ident lookup timed out, using ~rraffi-k instead.
+>> :*.freenode.net 001 titi_ :Welcome to the freenode IRC Network titi_!~rraffi-k@62.210.33.224
+<< MODE titi_ +i
+>> :*.freenode.net 002 titi_ :Your host is *.freenode.net, running version InspIRCd-3
+>> :*.freenode.net 003 titi_ :This server was created 05:19:49 Jan 21 2024
+>> :*.freenode.net 004 titi_ *.freenode.net InspIRCd-3 BDHILRSTWcdghikorswxz ABCDEFIJKLMNOPQRSTUWXYZbcdefhijklmnoprstuvwz :BEFIJLWXYZbdefhjklovw
+>> :*.freenode.net 005 titi_ ACCEPT=30 AWAYLEN=200 BOT=B CALLERID=g CASEMAPPING=ascii CHANLIMIT=#:20 CHANMODES=IXZbew,k,BEFJLWdfjl,ACDKMNOPQRSTUcimnprstuz CHANNELLEN=64 CHANTYPES=# ELIST=CMNTU ESILENCE=CcdiNnPpTtx EXCEPTS=e :are supported by this server
+>> :*.freenode.net 005 titi_ EXTBAN=,ACNOQRSTUacjmnpruwz HOSTLEN=64 INVEX=I KEYLEN=32 KICKLEN=255 LINELEN=512 MAXLIST=I:100,X:100,b:100,e:100,w:100 MAXTARGETS=20 MODES=20 MONITOR=30 NAMELEN=128 NAMESX NETWORK=freenode :are supported by this server
+>> :*.freenode.net 005 titi_ NICKLEN=30 PREFIX=(Yohv)!@%+ REMOVE SAFELIST SECURELIST=60 SILENCE=32 STATUSMSG=!@%+ TOPICLEN=390 UHNAMES USERIP USERLEN=10 USERMODES=,,s,BDHILRSTWcdghikorwxz VBANLIST :are supported by this server
+>> :*.freenode.net 005 titi_ VLIST=b WATCH=32 WHOX :are supported by this server
+>> :*.freenode.net 251 titi_ :There are 17 users and 5427 invisible on 10 servers
+>> :*.freenode.net 252 titi_ 7 :operator(s) online
+>> :*.freenode.net 253 titi_ 8 :unknown connections
+>> :*.freenode.net 254 titi_ 9782 :channels formed
+>> :*.freenode.net 255 titi_ :I have 2062 clients and 1 servers
+>> :*.freenode.net 265 titi_ :Current local users: 2062  Max: 4584
+>> :*.freenode.net 266 titi_ :Current global users: 5444  Max: 7589
+>> :*.freenode.net 375 titi_ :*.freenode.net message of the day
+>> :*.freenode.net 372 titi_ :  Welcome to the
+>> :*.freenode.net 372 titi_ :          __                               _
+>> :*.freenode.net 372 titi_ :         / _|_ __ ___  ___ _ __   ___   __| | ___
+>> :*.freenode.net 372 titi_ :        | |_| '__/ _ \/ _ \ '_ \ / _ \ / _` |/ _ \
+>> :*.freenode.net 372 titi_ :        |  _| | |  __/  __/ | | | (_) | (_| |  __/
+>> :*.freenode.net 372 titi_ :        |_| |_|  \___|\___|_| |_|\___/ \__,_|\___|
+>> :*.freenode.net 372 titi_ :                                   AUTONOMOUS ZONE
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Connect to us on:
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Hostname: irc.freenode.net / chat.freenode.net
+>> :*.freenode.net 372 titi_ :  Plaintext: 6660-6669
+>> :*.freenode.net 372 titi_ :  TLS/SSL: 6697,7000,7070
+>> :*.freenode.net 372 titi_ :  Webchat: https://webchat.freenode.net
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  By connecting to freenode you indicate that you have read and accept our
+>> :*.freenode.net 372 titi_ :  policies and guidelines as set out on https://freenode.net and agree to
+>> :*.freenode.net 372 titi_ :  be scanned for an open proxy.
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  If you are looking for assistance, please try:
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  #help                    - Help with general IRC and Services.
+>> :*.freenode.net 372 titi_ :  #chanhelp                - Help with channels and channel services.
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Checkout some of our communities and services:
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  #trivia                  - All new trivia channel.
+>> :*.freenode.net 372 titi_ :  #freenode-radio          - Freenode's very own radio channel.
+>> :*.freenode.net 372 titi_ :  #freenode                - Chat about freenode.
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Type /join #<channel>
+>> :*.freenode.net 372 titi_ : 
+>> :*.freenode.net 372 titi_ :  Thank you for using freenode!
+>> :*.freenode.net 376 titi_ :End of message of the day.
+>> :*.freenode.net 396 titi_ freenode-3dg.s40.6vib9m.IP :is now your displayed host
+>> :titi_!~rraffi-k@freenode-3dg.s40.6vib9m.IP MODE titi_ :+wRix
+>> :Harambe!~Harambe@freenode/service/Harambe PRIVMSG titi_ :VERSION
+>> :Global!services@services.freenode.net NOTICE titi_ :[Random News - Oct 27 04:08:42 2023 UTC] 🎉 Join us in #trivia for a thrilling trivia showdown! Test your knowledge and have a blast with us! 🧠💡
+<< WHOIS titi
+>> :*.freenode.net 401 titi_ titi :No such nick
+--> event empty
+>> :*.freenode.net 318 titi_ titi :End of /WHOIS list.
+--> event empty
+<< NOTICE Harambe :VERSION irssi v1.2.3-1ubuntu4
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< QUIT :leaving

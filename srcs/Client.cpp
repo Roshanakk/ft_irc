@@ -6,10 +6,10 @@
 
 
 Client::Client(int sock_val, Dispatch& d,
-    std::set<Client *> & clients, ChannelManager& cm)
+    std::set<Client *> & clients, ChannelManager& cm, historyMap & history)
     : _socket(sock_val), _d(d), _clients(clients), _cm(cm), _nickname(""),
         _shouldDelete(false), _passAuth(false), _nickAuth(false), _userAuth(false), 
-        _status(PASS_NEEDED) {
+        _status(PASS_NEEDED), _history(history) {
     if (_socket == -1) {
         throw ServerException("Error creating client socket");
     }
@@ -18,6 +18,11 @@ Client::Client(int sock_val, Dispatch& d,
 
 Client::~Client(void) {
     std::cout << "Client destructor called" << std::endl;
+
+
+    _history[_nickname].push_back(new ClientHistory(_hostname, _username, _realname, _nickname));
+
+
     _cm.removeClientFromAllChannels(this);
     // If shouldDelete is set to true, then the client has disconnected and we should handle deletion
     // If shouldDelete is false, then the client is being deleted as part of the server shutdown.
@@ -146,6 +151,12 @@ Dispatch& Client::getDispatch() const
 {
     return (_d);
 }
+
+historyMap Client::getHistoryMap(void) const
+{
+    return (_history);
+}
+
 
 /*************************************/
 /*                SETTERS            */

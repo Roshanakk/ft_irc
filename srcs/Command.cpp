@@ -311,7 +311,7 @@ bool isAValidNickname(std::string str)
 void Command::handle_NICK() 
 {
 	std::vector<std::string> params = Utilities::split(_parameters, ' ');
-	std::string oldNickname;
+	std::string oldPrefix;
 
 	//if user mode is +r
 	//throw(CommandException(ERR_RESTRICTED()))
@@ -346,7 +346,7 @@ void Command::handle_NICK()
 		}
 		else
 		{
-			oldNickname = _client.getNickname();
+			oldPrefix = _client.getPrefix();
 			_client.setNickname(nickname);
 		}
 		
@@ -362,7 +362,7 @@ void Command::handle_NICK()
 		}
 	}
 
-	_client.send_message(RPL_NICK(_client.getPrefix(), _client.getNickname()));
+	_client.send_message(RPL_NICK(oldPrefix, _client.getNickname()));
 
 }
 
@@ -527,4 +527,35 @@ void Command::handle_WHO() {}
 void Command::handle_WHOIS() {}
 
 void Command::handle_WHOWAS()
-{}
+{
+	// Parameters: <nickname> *( "," <nickname> ) [ <count> [ <target> ] ]
+
+	// historyMap history = _client.getHistoryMap();
+
+	// // std::cout << _parameters << std::endl;
+	// // if (_parameters.empty())
+	// // 	throw(CommandException(ERR_NONICKNAMEGIVEN()));
+	
+
+	// // int spacePos = _parameters.find(' ');
+	// // std::string nicknamesStr = _parameters.substr(0, spacePos);
+
+	// // std::vector<std::string> nicknamesVec = Utilities::split(nicknamesStr, ',');
+
+
+
+	// std::string nickname = "popo";
+
+	// if (history.find(nickname) == history.end())
+	// 	throw(CommandException(ERR_WASNOSUCHNICK(nickname)));
+	
+	// for (size_t i = 0; i < history[nickname].size(); ++i)
+	// 	std::cout << history[nickname][i]->getHostname() << std::endl;
+
+
+}
+
+
+//NICK and USER : PASS status check
+//nickname doesnt change
+//try catch in KICK
