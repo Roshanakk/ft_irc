@@ -77,6 +77,13 @@ class Command
 		void handle_WHOIS();
 		void handle_WHOWAS();
 
+		// Commands specific to MODE
+		void handle_MODE_i(bool posFlag);
+		void handle_MODE_t(bool posFlag);
+		void handle_MODE_k(bool posFlag);
+		void handle_MODE_o(bool posFlag);
+		void handle_MODE_l(bool posFlag);
+
 
 	private:
 		std::string _listCmds[22];

@@ -186,6 +186,9 @@ void Command::handle_LIST() {}
 void Command::handle_KICK() {}
 void Command::handle_KILL() {}
 void Command::handle_MODE() {
+    // NOTE: Normally the mode command can be used on users, but in our implementation and according to the subject,
+    // we only need to implement it for channels.
+    //
     // Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>]
     // MODE - Change the channel’s mode:
     //   i: Set/remove Invite-only channel
@@ -195,10 +198,42 @@ void Command::handle_MODE() {
     //   l: Set/remove the user limit to channel
 
     // Need to check if there are parameters. If not, throw an exception.
-    // Check that the client is a channel operator for this channel
-    // Check that the client is in the channel
-    // Check that the channel exists
-    //     
+    if (_parameters.size() <= 1)
+        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+
+    // basic parsing so get the channel or user we're modifying.
+        // after split there should be at least 2 elements. 
+        // First should be the channel or user, and the second should be the mode.
+    std::vector<std::string> paramsVec = Utilities::split(_parameters, ' ');
+    if (paramsVec.size() < 2)
+        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+    if (paramsVec[0][0] != '#')
+        throw CommandException(ERR_NOSUCHCHANNEL(paramsVec[0]));
+
+    // Check that the client is in the channel and is a channel operator for this channel
+    Channel *chan = _client.getCM().getChannel(paramsVec[0]);
+    if (chan == NULL)
+        throw CommandException(ERR_NOSUCHCHANNEL(paramsVec[0]));
+    if (!chan->checkIfClientInChannel(&_client))
+        throw CommandException(ERR_NOTONCHANNEL(paramsVec[0]));
+    if (!chan->checkIfClientIsOp(&_client))
+        throw CommandException(ERR_CHANOPRIVSNEEDED());
+
+    // Check the mode and perform the appropriate action
+    // come in the form of +il-k for example. The positives first as a group, then the negatives
+    // first check if the first character is a + or a -
+    // then check if the character is in our list of commands (freenode throws an error if it's not)
+    // Do each command, while checking if there is a - because then we will switch the command mode
+    // finish the commands in the same manner as the positives
+    // bool positive = true;
+    // for (size_t i = 1; i < paramsVec[1].size(); ++i) {
+    //     if (paramsVec[1][i] == '+') {
+    //         positive = true;
+    //     } else if (paramsVec[1][i] == '-') {
+    //         positive = false;
+    //     }
+    //    if (positive) 
+
 }
 
 void Command::handle_NAMES() {}
@@ -444,3 +479,31 @@ void Command::handle_VERSION() {}
 void Command::handle_WHO() {}
 void Command::handle_WHOIS() {}
 void Command::handle_WHOWAS() {}
+
+
+// Mode flags
+
+void Command::handle_MODE_i(bool posFlag) {
+    std::cout << "Mode " << (posFlag ? "+" : "-") 
+              << "i" << std::endl;
+};
+
+void Command::handle_MODE_t(bool posFlag) {
+    std::cout << "Mode " << (posFlag ? "+" : "-") 
+              << "t" << std::endl;
+};
+
+void Command::handle_MODE_k(bool posFlag) {
+    std::cout << "Mode " << (posFlag ? "+" : "-") 
+              << "k" << std::endl;
+};
+
+void Command::handle_MODE_o(bool posFlag) {
+    std::cout << "Mode " << (posFlag ? "+" : "-") 
+              << "o" << std::endl;
+};
+
+void Command::handle_MODE_l(bool posFlag) {
+    std::cout << "Mode " << (posFlag ? "+" : "-") 
+              << "l" << std::endl;
+};
