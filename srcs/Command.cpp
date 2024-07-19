@@ -105,13 +105,10 @@ void Command::doCmd(std::string & line)
 /*                COMMANDS               */
 /*****************************************/
 
-void Command::handle_CAP() 
-{
-	// std::cout << "Cap command" << std::endl;
-}
-
+void Command::handle_CAP() {}
 
 void Command::handle_INFO() {}
+
 void Command::handle_INVITE() {}
 
 void Command::handle_JOIN() {
@@ -195,11 +192,11 @@ Client * Command::getMatchingClient(std::string & username) const
 	return NULL;
 };
 
-Channel * Command::getMatchingChannel(std::string & username, std::set<Channel *> & channels) const
+Channel * Command::getMatchingChannel(std::string & channelName, std::set<Channel *> & channels) const
 {
 	for (std::set<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) 
     {
-        if (username == (*it)->getName()) 
+        if (channelName == (*it)->getName()) 
             return *it;
 	}
 	return NULL;    
@@ -207,6 +204,9 @@ Channel * Command::getMatchingChannel(std::string & username, std::set<Channel *
 
 void Command::handle_KICK() 
 {
+
+	// Parameters: <channel> *( "," <channel> ) <user> *( "," <user> ) [<comment>]
+
 	//"you are banned" message, par ex quand on essaye de renvoyer un message
 	//if there are several channels and that a few of them dont exist ? (try catch ?)
 
@@ -274,9 +274,7 @@ void Command::handle_KICK()
 
 }
 
-
 void Command::handle_KILL() {}
-
 
 void Command::handle_MODE() {
 	// Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>]
@@ -296,7 +294,6 @@ void Command::handle_MODE() {
 void Command::handle_NAMES() {}
 
 
-
 bool isAValidNickname(std::string str)
 {
 	std::string set = "|^_-{}[]";
@@ -314,11 +311,13 @@ bool isAValidNickname(std::string str)
 	return (true);
 }
 
-
 void Command::handle_NICK() 
 {
+	// Parameters: <nickname>
+
+
 	std::vector<std::string> params = Utilities::split(_parameters, ' ');
-	std::string oldNickname;
+	std::string oldPrefix;
 
 	//if user mode is +r
 	//throw(CommandException(ERR_RESTRICTED()))
@@ -353,7 +352,7 @@ void Command::handle_NICK()
 		}
 		else
 		{
-			oldNickname = _client.getNickname();
+			oldPrefix = _client.getPrefix();
 			_client.setNickname(nickname);
 		}
 		
@@ -369,12 +368,12 @@ void Command::handle_NICK()
 		}
 	}
 
-	_client.send_message(RPL_NICK(_client.getPrefix(), _client.getNickname()));
+	_client.send_message(RPL_NICK(oldPrefix, _client.getNickname()));
 
 }
 
-
 void Command::handle_NOTICE() {}
+
 void Command::handle_PART() {
 	if (_parameters.size() <= 1)
 		throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
@@ -395,7 +394,6 @@ void Command::handle_PART() {
 	}
 	cm.removeEmptyChannels();
 }
-
 
 void Command::handle_PASS()
 {
@@ -481,12 +479,59 @@ void Command::handle_QUIT() {
     _client.setShouldDelete(true);
 }
 
-void Command::handle_TOPIC() {}
+void Command::handle_TOPIC() 
+{
+	// Parameters: <channel> [ <topic> ]
 
+	std::string topicCmd = "461 TOPIC TOPIC";
 
+	if (_parameters.empty())
+		throw(CommandException(ERR_NEEDMOREPARAMS(topicCmd)));
+
+	int firstSpacePos = _parameters.find(' ');
+	std::string channelName = _parameters.substr(0, firstSpacePos);
+
+	int colonPos = _parameters.find(':');
+	std::string topic = _parameters.substr(colonPos + 1);
+
+	ChannelManager & cm = _client.getCM();
+	std::set<Channel *> channels = cm.getChannels();
+	Channel * channel = getMatchingChannel(channelName, channels);
+
+	if (channel == NULL)
+		throw(CommandException(ERR_NOSUCHCHANNEL(channelName)));
+
+	if (topic.empty()) //if there is no topic parameter
+	{
+		if ((channel->getTopic()).empty())
+			_client.send_message(RPL_NOTOPIC(channel->getName()));
+		else
+		{
+			Client * topicSetter = channel->getTopicSetter();
+			_client.send_message(RPL_TOPIC(topicSetter->getPrefix(), channel->getName(), channel->getTopic()));
+		}
+	}
+	else //if there is a topic parameter
+	{
+		if (!channel->checkIfClientInChannel(&_client))
+			throw(CommandException(ERR_NOTONCHANNEL(channel->getName())));
+
+		if (channel->onlyOperCanChangeTopic() && !channel->checkIfClientOperator(&_client))
+			throw(CommandException(ERR_CHANOPRIVSNEEDED(channel->getName())));
+		else
+		{
+			channel->setTopic(topic);
+			channel->setTopicSetter(&_client);
+			_client.send_message(RPL_TOPIC(_client.getPrefix(), channel->getName(), channel->getTopic()));
+		}
+
+	}
+}
 
 void Command::handle_USER()
 {
+	//Parameters: <user> <mode> <unused> <realname>
+
 	//Splitting the parameters string into a vector of strings,
 	//in order to extract username, hostname and realname
 
@@ -530,10 +575,59 @@ void Command::handle_USER()
 
 }
 
-
-
-
 void Command::handle_VERSION() {}
+
 void Command::handle_WHO() {}
-void Command::handle_WHOIS() {}
-void Command::handle_WHOWAS() {}
+
+
+void Command::handle_WHOIS()
+{
+	// Parameters: [ <target> ] <mask> *( "," <mask> )
+
+
+}
+
+
+void Command::handle_WHOWAS()
+{
+// 	// Parameters: <nickname> *( "," <nickname> ) [ <count> [ <target> ] ]
+
+// 	historyMap history = _client.getHistoryMap();
+
+// 	// std::cout << _parameters << std::endl;
+// 	if (_parameters.empty())
+// 		throw(CommandException(ERR_NONICKNAMEGIVEN()));
+	
+
+// 	int spacePos = _parameters.find(' ');
+// 	std::string nickStr = _parameters.substr(0, spacePos);
+
+// 	std::vector<std::string> nickVec = Utilities::split(nickStr, ',');
+
+
+// 	for (size_t i = 0; i < nickVec.size(); ++i)
+// 	{
+// 		std::string nickname = nickVec[i];
+
+// 		if (history.find(nickname) == history.end())
+// 			throw(CommandException(ERR_WASNOSUCHNICK(nickname)));
+		
+// 		// for (size_t i = 0; i < history[nickname].size(); ++i)
+// 		// 	std::cout << history[nickname][i]->getHostname() << std::endl;
+		
+// 		_client.send_message(RPL_WHOWASUSER(_client.getNickname(),
+// 											nickname,
+// 											history[nickname][i]->getHostname(),
+// 											history[nickname][i]->getRealname()));
+
+// 		// _client.send_message(RPL_WHOWASUSER(history[nickname][i]->getNickname(),
+// 		// 									history[nickname][i]->getUsername(),
+// 		// 									history[nickname][i]->getHostname(),
+// 		// 									history[nickname][i]->getRealname()));
+	
+// 		_client.send_message(RPL_ENDOFWHOWAS(history[nickname][i]->getNickname()));
+// 	}
+
+
+
+}

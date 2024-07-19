@@ -27,9 +27,13 @@ int main(int argc, char **argv) {
   std::cout << "Password: " << passStr << std::endl;
 
   ChannelManager cm = ChannelManager();
+
+  std::map<std::string, std::vector<ClientHistory *> > history;
+
   std::set<Client *> clients;
   Dispatch d(passStr);
-  Server s(d, port, clients, cm);
+  Server s(d, port, clients, cm, history);
+
 
   d.add(s);
 
