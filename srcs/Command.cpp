@@ -228,6 +228,8 @@ void Command::handle_MODE() {
     bool positive = true;
     size_t argNum = 2;
     std::string channelModeIsStr = ":" + _client.getNickname() + "!~" + _client.getUsername() + "@" + _client.getHostname() + " MODE " + chan->getName() + " ";
+    size_t strSize = channelModeIsStr.size();
+    std::string modeArgs = " ";
     for (size_t i = 0; i < paramsVec[1].size(); ++i) {
         switch (paramsVec[1][i]) {
             case '+':
@@ -268,8 +270,13 @@ void Command::handle_MODE() {
         }
     }
     // check that the mode is not empty and is not only + or - or that a - isnt added as the last character
-    channelModeIsStr += "\r\n";
-    _client.send_message(channelModeIsStr);
+    if (channelModeIsStr[channelModeIsStr.size() - 1] == '+' || channelModeIsStr[channelModeIsStr.size() - 1] == '-')
+        channelModeIsStr.erase(channelModeIsStr.size() - 1);
+    if (channelModeIsStr.size() > strSize) {
+        channelModeIsStr += modeArgs;
+        channelModeIsStr += "\r\n";
+        _client.send_message(channelModeIsStr + modeArgs);
+    }
 }
 
 void Command::handle_NAMES() {}
