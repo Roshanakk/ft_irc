@@ -5,8 +5,8 @@
 /**********************************************************/
 
 Channel::Channel(std::string name) 
-    : _name(name), _key(""), _topic(""), _maxClients(-1),
-    _inviteOnly(false) {}
+    : _name(name), _key(""), _topic(""), _maxClients(-1), _topicSetter(NULL),
+    _inviteOnly(false), _onlyOperTopic(false) {}
 
 Channel::Channel(const Channel & src) 
     : _name(src._name), _key(src._key), _maxClients(-1) {}
@@ -45,7 +45,7 @@ void Channel::addClient(Client *client) {
     
     this->removeInvite(client);
     if (this->getTopic().size() > 0) {
-        client->send_message(RPL_TOPIC(this->getName(), this->getTopic()));
+        client->send_message(RPL_TOPIC(client->getPrefix(), this->getName(), this->getTopic()));
     } else {
         client->send_message(RPL_NOTOPIC(this->getName()));
     }
@@ -184,6 +184,17 @@ std::string Channel::getClientNicknames(void) {
 };
 
 
+bool Channel::onlyOperCanChangeTopic(void) const
+{
+    return(_onlyOperTopic);
+}
+
+Client * Channel::getTopicSetter(void) const
+{
+    return (_topicSetter);
+}
+
+
 /**********************************************************/
 /*                        SETTERS                         */
 /**********************************************************/
@@ -210,3 +221,8 @@ void Channel::setInviteOnly(bool inviteOnly) {
 void Channel::setTopic(std::string topic) {
     _topic = topic;
 };
+
+void Channel::setTopicSetter(Client * topicSetter)
+{
+    _topicSetter = topicSetter;
+}

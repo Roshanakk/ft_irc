@@ -192,11 +192,11 @@ Client * Command::getMatchingClient(std::string & username) const
 	return NULL;
 };
 
-Channel * Command::getMatchingChannel(std::string & username, std::set<Channel *> & channels) const
+Channel * Command::getMatchingChannel(std::string & channelName, std::set<Channel *> & channels) const
 {
 	for (std::set<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) 
     {
-        if (username == (*it)->getName()) 
+        if (channelName == (*it)->getName()) 
             return *it;
 	}
 	return NULL;    
@@ -204,6 +204,9 @@ Channel * Command::getMatchingChannel(std::string & username, std::set<Channel *
 
 void Command::handle_KICK() 
 {
+
+	// Parameters: <channel> *( "," <channel> ) <user> *( "," <user> ) [<comment>]
+
 	//"you are banned" message, par ex quand on essaye de renvoyer un message
 	//if there are several channels and that a few of them dont exist ? (try catch ?)
 
@@ -310,6 +313,9 @@ bool isAValidNickname(std::string str)
 
 void Command::handle_NICK() 
 {
+	// Parameters: <nickname>
+
+
 	std::vector<std::string> params = Utilities::split(_parameters, ' ');
 	std::string oldPrefix;
 
@@ -473,10 +479,59 @@ void Command::handle_QUIT() {
     _client.setShouldDelete(true);
 }
 
-void Command::handle_TOPIC() {}
+void Command::handle_TOPIC() 
+{
+	// Parameters: <channel> [ <topic> ]
+
+	std::string topicCmd = "461 TOPIC TOPIC";
+
+	if (_parameters.empty())
+		throw(CommandException(ERR_NEEDMOREPARAMS(topicCmd)));
+
+	int firstSpacePos = _parameters.find(' ');
+	std::string channelName = _parameters.substr(0, firstSpacePos);
+
+	int colonPos = _parameters.find(':');
+	std::string topic = _parameters.substr(colonPos + 1);
+
+	ChannelManager & cm = _client.getCM();
+	std::set<Channel *> channels = cm.getChannels();
+	Channel * channel = getMatchingChannel(channelName, channels);
+
+	if (channel == NULL)
+		throw(CommandException(ERR_NOSUCHCHANNEL(channelName)));
+
+	if (topic.empty()) //if there is no topic parameter
+	{
+		if ((channel->getTopic()).empty())
+			_client.send_message(RPL_NOTOPIC(channel->getName()));
+		else
+		{
+			Client * topicSetter = channel->getTopicSetter();
+			_client.send_message(RPL_TOPIC(topicSetter->getPrefix(), channel->getName(), channel->getTopic()));
+		}
+	}
+	else //if there is a topic parameter
+	{
+		if (!channel->checkIfClientInChannel(&_client))
+			throw(CommandException(ERR_NOTONCHANNEL(channel->getName())));
+
+		if (channel->onlyOperCanChangeTopic() && !channel->checkIfClientOperator(&_client))
+			throw(CommandException(ERR_CHANOPRIVSNEEDED(channel->getName())));
+		else
+		{
+			channel->setTopic(topic);
+			channel->setTopicSetter(&_client);
+			_client.send_message(RPL_TOPIC(_client.getPrefix(), channel->getName(), channel->getTopic()));
+		}
+
+	}
+}
 
 void Command::handle_USER()
 {
+	//Parameters: <user> <mode> <unused> <realname>
+
 	//Splitting the parameters string into a vector of strings,
 	//in order to extract username, hostname and realname
 
@@ -527,6 +582,8 @@ void Command::handle_WHO() {}
 
 void Command::handle_WHOIS()
 {
+	// Parameters: [ <target> ] <mask> *( "," <mask> )
+
 
 }
 
