@@ -167,7 +167,7 @@ void Command::handle_JOIN() {
                     chan->addClient(&_client);
                 } else {
                     std::cout << "Password is incorrect" << std::endl;
-                    throw CommandException(ERR_PASSWDMISMATCH());
+                    throw CommandException(ERR_BADCHANNELKEY(_client.getNickname(), chan->getName()));
                 }
             } else {
                 // Channel does not require a password
@@ -246,22 +246,33 @@ void Command::handle_MODE() {
                 }
                 break;
             case 't':
-                handle_MODE_t(positive, chan);
+                if (handle_MODE_t(positive, chan)) {
+                    channelModeIsStr += "t";
+                }
                 break;
             case 'k':
-                handle_MODE_k(positive, chan,
+                if (handle_MODE_k(positive, chan,
                     (positive && argNum < paramsVec.size() 
-                    ? paramsVec[argNum++] : "") );
+                    ? paramsVec[argNum++] : ""))) {
+                    channelModeIsStr += "k";
+                    modeArgs += (paramsVec[argNum - 1] + " ");
+                }
                 break;
             case 'o':
-                handle_MODE_o(positive, chan,
+                if (handle_MODE_o(positive, chan,
                     (argNum < paramsVec.size() 
-                    ? paramsVec[argNum++] : "") );
+                    ? paramsVec[argNum++] : "") )) {
+                    channelModeIsStr += "o";
+                    modeArgs += (paramsVec[argNum - 1] + " ");
+                }
                 break;
             case 'l':
-                handle_MODE_l(positive, chan,
+                if (handle_MODE_l(positive, chan,
                     (positive && argNum < paramsVec.size() 
-                    ? paramsVec[argNum++] : "") );
+                    ? paramsVec[argNum++] : "") )) {
+                    channelModeIsStr += "l";
+                    modeArgs += (paramsVec[argNum - 1] + " ");
+                }
                 break;
             default:
                 // inform client that the mode is not recognized
@@ -549,7 +560,14 @@ bool Command::handle_MODE_t(bool posFlag, Channel *chan) {
 bool Command::handle_MODE_k(bool posFlag, Channel *chan, std::string arg) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "k " << arg << std::endl;
-    (void)chan;
+    if (!chan->requiresKey() && posFlag && arg.size() > 0) {
+        std::cout << "Setting key" << std::endl;
+        chan->setKey(arg);
+        return true;
+    } else if (posFlag == false) {
+        chan->setKey("");
+        return true;
+    }
     return false;
 };
 

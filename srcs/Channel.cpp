@@ -195,3 +195,7 @@ void Channel::setInviteOnly(bool inviteOnly) {
 void Channel::setTopic(std::string topic) {
     _topic = topic;
 };
+
+void Channel::setKey(std::string newKey) {
+    _key = newKey;
+};

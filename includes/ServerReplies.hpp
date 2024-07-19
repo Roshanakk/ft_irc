@@ -36,7 +36,7 @@
 #define ERR_UNKNOWNMODE(nick, mode) (":ft_irc 472 " + nick + " " + mode + " :is not a recognised channel mode.\r\n")
 #define ERR_INVITEONLYCHAN(channel) (channel + " :Cannot join channel (+i)\r\n")
 #define ERR_BANNEDFROMCHAN(channel) (channel + " :Cannot join channel (+b)\r\n")
-#define ERR_BADCHANNELKEY(channel) (channel + " :Cannot join channel (+k)\r\n")
+#define ERR_BADCHANNELKEY(user, channel) (":ft_irc 475 " + user + " " + channel + " :Cannot join channel (incorrect channel key)\r\n")
 #define ERR_NOPRIVILEGES() (":Permission Denied- You're not an IRC operator\r\n")
 #define ERR_CHANOPRIVSNEEDED(channel) (channel + " :You're not channel operator\r\n")
 #define ERR_CANTKILLSERVER() (":You cant kill a server!\r\n")

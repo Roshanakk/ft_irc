@@ -52,6 +52,7 @@ class Channel {
 		void setMaxClients(int maxClients);
 		void setInviteOnly(bool inviteOnly);
 		void setTopic(std::string topic);
+		void setKey(std::string newKey);
 
 	private:
 		std::string _name;
