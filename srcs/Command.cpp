@@ -322,7 +322,7 @@ void Command::handle_MODE() {
     size_t argNum = 2;
     std::string channelModeIsStr = ":" + _client.getNickname() + "!~" + _client.getUsername() + "@" + _client.getHostname() + " MODE " + chan->getName() + " :";
     size_t strSize = channelModeIsStr.size();
-    std::string modeArgs = " ";
+    std::string modeArgs = "";
     for (size_t i = 0; i < paramsVec[1].size(); ++i) {
         switch (paramsVec[1][i]) {
             case '+':
@@ -379,7 +379,7 @@ void Command::handle_MODE() {
     if (channelModeIsStr.size() > strSize) {
         channelModeIsStr += modeArgs;
         channelModeIsStr += "\r\n";
-        _client.send_message(channelModeIsStr + modeArgs);
+        _client.send_message(channelModeIsStr + (modeArgs.size() > 0 ? (" " + modeArgs) : ""));
         chan->forwardCommand(channelModeIsStr, &_client);
     }
 }
