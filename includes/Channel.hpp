@@ -32,6 +32,7 @@ class Channel {
 		bool checkIfClientIsOp(Client *client);
 		// Message methods
 		void forwardMessage(std::string message, Client *sender);
+		void forwardCommand(std::string message, Client *sender);
 		// Key methods
 		bool checkKey(std::string& key_val);
 		bool requiresKey(void);

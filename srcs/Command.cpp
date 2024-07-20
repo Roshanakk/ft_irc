@@ -392,7 +392,7 @@ void Command::handle_PART() {
     }
     std::string message = _client.getPrefix() + " PART :" + chan->getName() + "\r\n";
     _client.send_message(message);
-    chan->forwardMessage(message, &_client);
+    chan->forwardCommand(message, &_client);
     cm.removeEmptyChannels();
 }
 
