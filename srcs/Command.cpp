@@ -310,7 +310,7 @@ void Command::handle_MODE() {
         throw CommandException(ERR_NOTONCHANNEL(paramsVec[0]));
     if (!chan->checkIfClientIsOp(&_client))
         // throw CommandException(ERR_CHANOPRIVSNEEDED(_client.getNickname(), paramsVec[0]));
-        throw CommandException(ERR_CHANOPRIVSNEEDED(_client.getNickname(), ""));
+        throw CommandException(ERR_CHANOPRIVSNEEDED(_client.getNickname(), paramsVec[0]));
 
     // Check the mode and perform the appropriate action
     // come in the form of +il-k for example. The positives first as a group, then the negatives
