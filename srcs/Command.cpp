@@ -348,7 +348,8 @@ void Command::handle_MODE() {
                     (positive && argNum < paramsVec.size() 
                     ? paramsVec[argNum++] : ""))) {
                     channelModeIsStr += "k";
-                    modeArgs += (paramsVec[argNum - 1] + " ");
+                    if (positive)
+                        modeArgs += (paramsVec[argNum - 1] + " ");
                 }
                 break;
             case 'o':
@@ -364,7 +365,8 @@ void Command::handle_MODE() {
                     (positive && argNum < paramsVec.size() 
                     ? paramsVec[argNum++] : "") )) {
                     channelModeIsStr += "l";
-                    modeArgs += (paramsVec[argNum - 1] + " ");
+                    if (positive)
+                        modeArgs += (paramsVec[argNum - 1] + " ");
                 }
                 break;
             default:
@@ -738,11 +740,17 @@ bool Command::handle_MODE_o(bool posFlag, Channel *chan, std::string arg) {
 bool Command::handle_MODE_l(bool posFlag, Channel *chan, std::string arg) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "l " << arg << std::endl;
-    (void)chan;
 
     // should check if there is already a limit on the number of users.
     // then should check that the new limit is not equal to the old limit.
     // then should check if the limit is a valid number.
+
+    if (!posFlag && chan->getMaxClients() != -1) {
+        chan->setMaxClients(-1);
+        return true;
+    } else if (!posFlag) {
+        return false;
+    }
 
     for (std::string::const_iterator it = arg.begin(); it != arg.end(); ++it) {
         if (!std::isdigit(*it))
@@ -764,9 +772,6 @@ bool Command::handle_MODE_l(bool posFlag, Channel *chan, std::string arg) {
             chan->setMaxClients(newLimit);
             return true;
         }
-    } else {
-        chan->setMaxClients(-1);
     }
-
     return false;
 };
