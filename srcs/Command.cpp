@@ -376,10 +376,15 @@ void Command::handle_MODE() {
     // check that the mode is not empty and is not only + or - or that a - isnt added as the last character
     if (channelModeIsStr[channelModeIsStr.size() - 1] == '+' || channelModeIsStr[channelModeIsStr.size() - 1] == '-')
         channelModeIsStr.erase(channelModeIsStr.size() - 1);
+    // make sure there are no '+-' or '-+' in the string. If so, remove.
+    std::string::size_type pos = 0;
+    while ((pos = channelModeIsStr.find("+-", pos)) != std::string::npos || 
+        (pos = channelModeIsStr.find("-+", pos)) != std::string::npos) {
+        channelModeIsStr.erase(pos, 1);
+    }
+    // if the ending size is greater than the starting size, then we have a valid mode change
     if (channelModeIsStr.size() > strSize) {
-        channelModeIsStr += modeArgs;
-        channelModeIsStr += "\r\n";
-        _client.send_message(channelModeIsStr + (modeArgs.size() > 0 ? (" " + modeArgs) : ""));
+        _client.send_message(channelModeIsStr + (modeArgs.size() > 1 ? (" " + modeArgs) : "") + "\r\n");
         chan->forwardCommand(channelModeIsStr, &_client);
     }
 }
