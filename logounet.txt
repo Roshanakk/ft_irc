@@ -1,0 +1,191 @@
+<< CAP LS
+<< NICK jojo
+<< USER rraffi-k rraffi-k irc.freenode.net :Roxane RAFFI KHANSARI
+>> :*.freenode.net NOTICE * :*** Looking up your ident...
+>> :*.freenode.net NOTICE * :*** Looking up your hostname...
+>> :*.freenode.net CAP * LS :account-notify account-tag away-notify batch cap-notify chghost draft/relaymsg echo-message extended-join inspircd.org/poison inspircd.org/standard-replies invite-notify labeled-response message-tags multi-prefix sasl server-time setname userhost-in-names 
+<< CAP REQ :multi-prefix
+>> :*.freenode.net 433 * jojo :Nickname is already in use.
+<< NICK jojo_
+>> :*.freenode.net NOTICE * :*** Could not resolve your hostname: Nameserver failure; using your IP address (62.210.33.224) instead.
+>> :*.freenode.net CAP * ACK :multi-prefix
+<< CAP END
+>> PING :nTGN@CVZ`|
+<< PONG :nTGN@CVZ`|
+>> :*.freenode.net NOTICE jojo_ :*** Ident lookup timed out, using ~rraffi-k instead.
+>> :*.freenode.net 001 jojo_ :Welcome to the freenode IRC Network jojo_!~rraffi-k@62.210.33.224
+<< MODE jojo_ +i
+<< WHOIS jojo
+>> :*.freenode.net 002 jojo_ :Your host is *.freenode.net, running version InspIRCd-3
+>> :*.freenode.net 003 jojo_ :This server was created 09:22:41 Jun 22 2023
+>> :*.freenode.net 004 jojo_ *.freenode.net InspIRCd-3 BDHILRSTWcdghikorswxz ABCDEFIJKLMNOPQRSTUWXYZbcdefhijklmnoprstuvwz :BEFIJLWXYZbdefhjklovw
+>> :*.freenode.net 005 jojo_ ACCEPT=30 AWAYLEN=200 BOT=B CALLERID=g CASEMAPPING=ascii CHANLIMIT=#:20 CHANMODES=IXZbew,k,BEFJLWdfjl,ACDKMNOPQRSTUcimnprstuz CHANNELLEN=64 CHANTYPES=# ELIST=CMNTU ESILENCE=CcdiNnPpTtx EXCEPTS=e :are supported by this server
+>> :*.freenode.net 005 jojo_ EXTBAN=,ACNOQRSTUacjmnpruwz HOSTLEN=64 INVEX=I KEYLEN=32 KICKLEN=255 LINELEN=512 MAXLIST=I:100,X:100,b:100,e:100,w:100 MAXTARGETS=20 MODES=20 MONITOR=30 NAMELEN=128 NAMESX NETWORK=freenode :are supported by this server
+>> :*.freenode.net 005 jojo_ NICKLEN=30 PREFIX=(Yohv)!@%+ REMOVE SAFELIST SECURELIST=60 SILENCE=32 STATUSMSG=!@%+ TOPICLEN=390 UHNAMES USERIP USERLEN=10 USERMODES=,,s,BDHILRSTWcdghikorwxz VBANLIST :are supported by this server
+>> :*.freenode.net 005 jojo_ VLIST=b WATCH=32 WHOX :are supported by this server
+>> :*.freenode.net 251 jojo_ :There are 17 users and 5421 invisible on 10 servers
+>> :*.freenode.net 252 jojo_ 7 :operator(s) online
+>> :*.freenode.net 253 jojo_ 8 :unknown connections
+>> :*.freenode.net 254 jojo_ 9776 :channels formed
+>> :*.freenode.net 255 jojo_ :I have 2145 clients and 1 servers
+>> :*.freenode.net 265 jojo_ :Current local users: 2145  Max: 4101
+>> :*.freenode.net 266 jojo_ :Current global users: 5438  Max: 10281
+>> :*.freenode.net 375 jojo_ :*.freenode.net message of the day
+>> :*.freenode.net 372 jojo_ :  Welcome to the
+>> :*.freenode.net 372 jojo_ :          __                               _
+>> :*.freenode.net 372 jojo_ :         / _|_ __ ___  ___ _ __   ___   __| | ___
+>> :*.freenode.net 372 jojo_ :        | |_| '__/ _ \/ _ \ '_ \ / _ \ / _` |/ _ \
+>> :*.freenode.net 372 jojo_ :        |  _| | |  __/  __/ | | | (_) | (_| |  __/
+>> :*.freenode.net 372 jojo_ :        |_| |_|  \___|\___|_| |_|\___/ \__,_|\___|
+>> :*.freenode.net 372 jojo_ :                                   AUTONOMOUS ZONE
+>> :*.freenode.net 372 jojo_ : 
+>> :*.freenode.net 372 jojo_ :  Connect to us on:
+>> :*.freenode.net 372 jojo_ : 
+>> :*.freenode.net 372 jojo_ :  Hostname: irc.freenode.net / chat.freenode.net
+>> :*.freenode.net 372 jojo_ :  Plaintext: 6660-6669
+>> :*.freenode.net 372 jojo_ :  TLS/SSL: 6697,7000,7070
+>> :*.freenode.net 372 jojo_ :  Webchat: https://webchat.freenode.net
+>> :*.freenode.net 372 jojo_ : 
+>> :*.freenode.net 372 jojo_ :  By connecting to freenode you indicate that you have read and accept our
+>> :*.freenode.net 372 jojo_ :  policies and guidelines as set out on https://freenode.net and agree to
+>> :*.freenode.net 372 jojo_ :  be scanned for an open proxy.
+>> :*.freenode.net 372 jojo_ : 
+>> :*.freenode.net 372 jojo_ :  If you are looking for assistance, please try:
+>> :*.freenode.net 372 jojo_ : 
+>> :*.freenode.net 372 jojo_ :  #help                    - Help with general IRC and Services.
+>> :*.freenode.net 372 jojo_ :  #chanhelp                - Help with channels and channel services.
+>> :*.freenode.net 372 jojo_ : 
+>> :*.freenode.net 372 jojo_ :  Checkout some of our communities and services:
+>> :*.freenode.net 372 jojo_ : 
+>> :*.freenode.net 372 jojo_ :  #trivia                  - All new trivia channel.
+>> :*.freenode.net 372 jojo_ :  #freenode-radio          - Freenode's very own radio channel.
+>> :*.freenode.net 372 jojo_ :  #freenode                - Chat about freenode.
+>> :*.freenode.net 372 jojo_ : 
+>> :*.freenode.net 372 jojo_ :  Type /join #<channel>
+>> :*.freenode.net 372 jojo_ : 
+>> :*.freenode.net 372 jojo_ :  Thank you for using freenode!
+>> :*.freenode.net 376 jojo_ :End of message of the day.
+>> :*.freenode.net 396 jojo_ freenode-3dg.s40.6vib9m.IP :is now your displayed host
+>> :jojo_!~rraffi-k@freenode-3dg.s40.6vib9m.IP MODE jojo_ :+wRix
+>> :*.freenode.net 311 jojo_ jojo ~rraffi-k freenode-3dg.s40.6vib9m.IP * :Roxane RAFFI KHANSARI
+--> nickfind event whois
+>> :*.freenode.net 312 jojo_ jojo *.freenode.net :freenode
+--> event empty
+>> :*.freenode.net 318 jojo_ jojo :End of /WHOIS list.
+--> event empty
+>> :Global!services@services.freenode.net NOTICE jojo_ :[Random News - Oct 27 04:08:42 2023 UTC] 🎉 Join us in #trivia for a thrilling trivia showdown! Test your knowledge and have a blast with us! 🧠💡
+>> :Harambe!~Harambe@freenode/service/Harambe PRIVMSG jojo_ :VERSION
+<< WHOIS jojo
+>> :*.freenode.net 311 jojo_ jojo ~rraffi-k freenode-3dg.s40.6vib9m.IP * :Roxane RAFFI KHANSARI
+--> whois event
+>> :*.freenode.net 312 jojo_ jojo *.freenode.net :freenode
+--> whois default event
+>> :*.freenode.net 318 jojo_ jojo :End of /WHOIS list.
+--> whois end
+<< NOTICE Harambe :VERSION irssi v1.2.3-1ubuntu4
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< NICK nabuchodonosor
+>> :jojo_!~rraffi-k@freenode-3dg.s40.6vib9m.IP NICK :nabuchodonosor
+<< WHOWAS jojo
+>> :*.freenode.net 314 nabuchodonosor jojo ~rraffi-k freenode-3dg.s40.6vib9m.IP * :Roxane RAFFI KHANSARI
+--> whowas event
+>> :*.freenode.net 312 nabuchodonosor jojo *.freenode.net :Thu Jul 18 2024 15:32:50
+--> FAILED whowas
+>> :*.freenode.net 314 nabuchodonosor jojo ~rraffi-k freenode-3dg.s40.6vib9m.IP * :Roxane RAFFI KHANSARI
+>> :*.freenode.net 312 nabuchodonosor jojo *.freenode.net :Thu Jul 18 2024 15:36:25
+>> :*.freenode.net 314 nabuchodonosor jojo ~rraffi-k freenode-3dg.s40.6vib9m.IP * :Roxane RAFFI KHANSARI
+>> :*.freenode.net 312 nabuchodonosor jojo *.freenode.net :Thu Jul 18 2024 15:38:29
+>> :*.freenode.net 369 nabuchodonosor jojo :End of WHOWAS
+<< CAP LS
+<< NICK nini
+<< USER rraffi-k rraffi-k irc.freenode.net :Roxane RAFFI KHANSARI
+>> :*.freenode.net NOTICE * :*** Looking up your ident...
+>> :*.freenode.net NOTICE * :*** Looking up your hostname...
+>> :*.freenode.net CAP * LS :account-notify account-tag away-notify batch cap-notify chghost draft/relaymsg echo-message extended-join inspircd.org/poison inspircd.org/standard-replies invite-notify labeled-response message-tags multi-prefix sasl server-time setname userhost-in-names 
+<< CAP REQ :multi-prefix
+>> PING :tsSybWUyaP
+<< PONG :tsSybWUyaP
+>> :*.freenode.net CAP nini ACK :multi-prefix
+<< CAP END
+>> :*.freenode.net NOTICE nini :*** Could not resolve your hostname: Nameserver failure; using your IP address (62.210.33.224) instead.
+>> :*.freenode.net NOTICE nini :*** Ident lookup timed out, using ~rraffi-k instead.
+>> :*.freenode.net 001 nini :Welcome to the freenode IRC Network nini!~rraffi-k@62.210.33.224
+<< MODE nini +i
+>> :*.freenode.net 002 nini :Your host is *.freenode.net, running version InspIRCd-3
+>> :*.freenode.net 003 nini :This server was created 03:31:25 Dec 09 2023
+>> :*.freenode.net 004 nini *.freenode.net InspIRCd-3 BDHILRSTWcdghikorswxz ABCDEFIJKLMNOPQRSTUWXYZbcdefhijklmnoprstuvwz :BEFIJLWXYZbdefhjklovw
+>> :*.freenode.net 005 nini ACCEPT=30 AWAYLEN=200 BOT=B CALLERID=g CASEMAPPING=ascii CHANLIMIT=#:20 CHANMODES=IXZbew,k,BEFJLWdfjl,ACDKMNOPQRSTUcimnprstuz CHANNELLEN=64 CHANTYPES=# ELIST=CMNTU ESILENCE=CcdiNnPpTtx EXCEPTS=e :are supported by this server
+>> :*.freenode.net 005 nini EXTBAN=,ACNOQRSTUacjmnpruwz HOSTLEN=64 INVEX=I KEYLEN=32 KICKLEN=255 LINELEN=512 MAXLIST=I:100,X:100,b:100,e:100,w:100 MAXTARGETS=20 MODES=20 MONITOR=30 NAMELEN=128 NAMESX NETWORK=freenode :are supported by this server
+>> :*.freenode.net 005 nini NICKLEN=30 PREFIX=(Yohv)!@%+ REMOVE SAFELIST SECURELIST=60 SILENCE=32 STATUSMSG=!@%+ TOPICLEN=390 UHNAMES USERIP USERLEN=10 USERMODES=,,s,BDHILRSTWcdghikorwxz VBANLIST :are supported by this server
+>> :*.freenode.net 005 nini VLIST=b WATCH=32 WHOX :are supported by this server
+>> :*.freenode.net 251 nini :There are 17 users and 5343 invisible on 10 servers
+>> :*.freenode.net 252 nini 7 :operator(s) online
+>> :*.freenode.net 253 nini 14 :unknown connections
+>> :*.freenode.net 254 nini 9840 :channels formed
+>> :*.freenode.net 255 nini :I have 1204 clients and 1 servers
+>> :*.freenode.net 265 nini :Current local users: 1204  Max: 2710
+>> :*.freenode.net 266 nini :Current global users: 5360  Max: 7850
+>> :*.freenode.net 375 nini :*.freenode.net message of the day
+>> :*.freenode.net 372 nini :  Welcome to the
+>> :*.freenode.net 372 nini :          __                               _
+>> :*.freenode.net 372 nini :         / _|_ __ ___  ___ _ __   ___   __| | ___
+>> :*.freenode.net 372 nini :        | |_| '__/ _ \/ _ \ '_ \ / _ \ / _` |/ _ \
+>> :*.freenode.net 372 nini :        |  _| | |  __/  __/ | | | (_) | (_| |  __/
+>> :*.freenode.net 372 nini :        |_| |_|  \___|\___|_| |_|\___/ \__,_|\___|
+>> :*.freenode.net 372 nini :                                   AUTONOMOUS ZONE
+>> :*.freenode.net 372 nini : 
+>> :*.freenode.net 372 nini :  Connect to us on:
+>> :*.freenode.net 372 nini : 
+>> :*.freenode.net 372 nini :  Hostname: irc.freenode.net / chat.freenode.net
+>> :*.freenode.net 372 nini :  Plaintext: 6660-6669
+>> :*.freenode.net 372 nini :  TLS/SSL: 6697,7000,7070
+>> :*.freenode.net 372 nini :  Webchat: https://webchat.freenode.net
+>> :*.freenode.net 372 nini : 
+>> :*.freenode.net 372 nini :  By connecting to freenode you indicate that you have read and accept our
+>> :*.freenode.net 372 nini :  policies and guidelines as set out on https://freenode.net and agree to
+>> :*.freenode.net 372 nini :  be scanned for an open proxy.
+>> :*.freenode.net 372 nini : 
+>> :*.freenode.net 372 nini :  If you are looking for assistance, please try:
+>> :*.freenode.net 372 nini : 
+>> :*.freenode.net 372 nini :  #help                    - Help with general IRC and Services.
+>> :*.freenode.net 372 nini :  #chanhelp                - Help with channels and channel services.
+>> :*.freenode.net 372 nini : 
+>> :*.freenode.net 372 nini :  Checkout some of our communities and services:
+>> :*.freenode.net 372 nini : 
+>> :*.freenode.net 372 nini :  #trivia                  - All new trivia channel.
+>> :*.freenode.net 372 nini :  #freenode-radio          - Freenode's very own radio channel.
+>> :*.freenode.net 372 nini :  #freenode                - Chat about freenode.
+>> :*.freenode.net 372 nini : 
+>> :*.freenode.net 372 nini :  Type /join #<channel>
+>> :*.freenode.net 372 nini : 
+>> :*.freenode.net 372 nini :  Thank you for using freenode!
+>> :*.freenode.net 376 nini :End of message of the day.
+>> :*.freenode.net 396 nini freenode-3dg.s40.6vib9m.IP :is now your displayed host
+>> :nini!~rraffi-k@freenode-3dg.s40.6vib9m.IP MODE nini :+wRix
+>> :Global!services@services.freenode.net NOTICE nini :[Random News - Oct 27 04:08:42 2023 UTC] 🎉 Join us in #trivia for a thrilling trivia showdown! Test your knowledge and have a blast with us! 🧠💡
+>> :Harambe!~Harambe@freenode/service/Harambe PRIVMSG nini :VERSION
+<< NOTICE Harambe :VERSION irssi v1.2.3-1ubuntu4
+<< PING *.freenode.net
+>> :*.freenode.net PONG *.freenode.net :*.freenode.net
+--> lag pong
+<< JOIN #disney
+>> :nini!~rraffi-k@freenode-3dg.s40.6vib9m.IP JOIN :#disney
+>> :*.freenode.net 353 nini = #disney :@nini
+>> :*.freenode.net 366 nini #disney :End of /NAMES list.
+<< MODE #disney
+>> :*.freenode.net 324 nini #disney :+nt
+--> chanquery mode
+<< WHO #disney
+>> :*.freenode.net 329 nini #disney :1721327752
+--> event 329
+>> :*.freenode.net 352 nini #disney ~rraffi-k freenode-3dg.s40.6vib9m.IP *.freenode.net nini H@ :0 Roxane RAFFI KHANSARI
+--> silent event who
+>> :*.freenode.net 315 nini #disney :End of /WHO list.
+--> chanquery who end
+<< MODE #disney b
+>> :*.freenode.net 368 nini #disney :End of channel ban list
+--> chanquery ban end
+<< TOPIC #disney :YOUHOU
+>> :nini!~rraffi-k@freenode-3dg.s40.6vib9m.IP TOPIC #disney :YOUHOU

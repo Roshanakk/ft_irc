@@ -12,13 +12,16 @@
 #include "Dispatch.hpp"
 #include "Client.hpp"
 #include "ChannelManager.hpp"
+#include "ClientHistory.hpp"
+
+typedef std::map<std::string, std::vector<ClientHistory *> > historyMap;
 
 class Server : public AIO_Event
 {
 	public:
 		// CONSTRUCTORS & DESTRUCTOR
 		Server(Dispatch& d, int port, 
-			std::set<Client *>& clients, ChannelManager& cm);
+			std::set<Client *>& clients, ChannelManager& cm, historyMap & history);
 		~Server(void);
 
 		// METHODS
@@ -40,4 +43,5 @@ class Server : public AIO_Event
 		std::set<Client *>& _clients;
 		ChannelManager& _cm;
 		bool _shouldDelete;
+		historyMap _history;
 };

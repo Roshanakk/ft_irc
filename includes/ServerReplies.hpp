@@ -19,6 +19,7 @@
 #define ERR_ERRONEUSNICKNAME(nick) (nick + " :Erroneus nickname\r\n")
 #define ERR_NICKNAMEINUSE(nick) (nick + " :Nickname is already in use\r\n")
 #define ERR_NICKCOLLISION(nick) (nick + " :Nickname collision KILL\r\n")
+
 #define ERR_USERNOTINCHANNEL(nick, channel) (nick + " " + channel + " :They aren't on that channel\r\n")
 #define ERR_NOTONCHANNEL(channel) (channel + " :You're not on that channel\r\n")
 #define ERR_USERONCHANNEL(nick, channel) (nick + " " + channel + " :is already on channel\r\n")
@@ -51,8 +52,8 @@
 // Connection Confirmation (Not in RFC 1459)
 #define RPL_WELCOME(hostname, nick, prefix) (":" + hostname + " 001 " + nick + " :Welcome to the Internet Relay Network " + prefix + "\r\n")
 // JOIN replies (Section 4.2.1 of RFC 1459)
-#define RPL_TOPIC(channel, topic) (channel + " :" + topic + "\r\n")
-#define RPL_NOTOPIC(channel) (channel + " :No topic is set\r\n")
+#define RPL_TOPIC(prefix, channel, topic) (prefix + " TOPIC " + channel + " :" + topic + "\r\n")
+#define RPL_NOTOPIC(channel) (": 331 " + channel + " :No topic is set\r\n")
 #define RPL_NAMREPLY(channel, nick) (channel + " :" + nick + "\r\n")
 // #define RPL_YOURHOST() "002 :Your host is <servername>, running version <ver>"
 // #define RPL_CREATED() "003 This server was created <date>"
@@ -60,4 +61,9 @@
 
 #define RPL_NICK(prefix, nickname) (prefix + " NICK " + nickname + "\r\n")
 #define ERR_PASSWDNEEDED() ("Password needed\r\n")
-//#define RPL_CHANNELMODEIS(client, channel, mode, params) (":" + client + " MODE " + channel + " :" + mode + " " + params + "\r\n")
+
+#define RPL_KICK(user_prefix, channel, kicked, reason) (user_prefix + " KICK " + channel + " " + kicked + " " + reason + "\r\n")
+
+#define RPL_WHOWASUSER(nickname, whowasNick, whowasHost, realname) ("ft_irc: 314 " + nickname + " " + whowasNick + " " + whowasHost + " :" + realname + "\r\n")
+
+#define RPL_ENDOFWHOWAS(nickname) (nickname + " :End of WHOWAS\r\n")

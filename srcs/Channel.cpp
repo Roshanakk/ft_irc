@@ -5,8 +5,8 @@
 /**********************************************************/
 
 Channel::Channel(std::string name) 
-    : _name(name), _key(""), _topic(""), _maxClients(-1),
-    _inviteOnly(false) {}
+    : _name(name), _key(""), _topic(""), _maxClients(-1), _topicSetter(NULL),
+    _inviteOnly(false), _onlyOperTopic(false) {}
 
 Channel::Channel(const Channel & src) 
     : _name(src._name), _key(src._key), _maxClients(-1) {}
@@ -45,7 +45,7 @@ void Channel::addClient(Client *client) {
     
     this->removeInvite(client);
     if (this->getTopic().size() > 0) {
-        client->send_message(RPL_TOPIC(this->getName(), this->getTopic()));
+        client->send_message(RPL_TOPIC(client->getPrefix(), this->getName(), this->getTopic()));
     } else {
         client->send_message(RPL_NOTOPIC(this->getName()));
     }
@@ -143,6 +143,30 @@ void Channel::removeInvite(Client *client) {
     _invites.erase(client);
 };
 
+
+//Operator method
+
+bool Channel::checkIfClientOperator(Client *client)
+{
+    return (_clients[client]);
+}
+
+//Ban methods
+
+void Channel::banUser(Client *client)
+{
+    _bannedClients.insert(client);
+    removeClient(client);
+}
+
+// bool Channel::isBanned(Client *client)
+// {
+//     if (find(_bannedClients.begin(), _bannedClients.end(), client) != _bannedClients.end())
+//         return (true);
+//     return (false);
+// }
+
+
 /**********************************************************/
 /*                        GETTERS                         */
 /**********************************************************/
@@ -178,6 +202,18 @@ std::string Channel::getClientNicknames(void) {
     return ss.str();
 };
 
+
+bool Channel::onlyOperCanChangeTopic(void) const
+{
+    return(_onlyOperTopic);
+}
+
+Client * Channel::getTopicSetter(void) const
+{
+    return (_topicSetter);
+}
+
+
 /**********************************************************/
 /*                        SETTERS                         */
 /**********************************************************/
@@ -208,3 +244,7 @@ void Channel::setTopic(std::string topic) {
 void Channel::setKey(std::string newKey) {
     _key = newKey;
 };
+void Channel::setTopicSetter(Client * topicSetter)
+{
+    _topicSetter = topicSetter;
+}

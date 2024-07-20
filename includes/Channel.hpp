@@ -40,6 +40,13 @@ class Channel {
 		bool checkInvite(Client *client);
 		void addInvite(Client *client);
 		void removeInvite(Client *client);
+		//Operator methods
+		bool checkIfClientOperator(Client *client);
+		//Ban Methods
+		void banUser(Client *client);
+		// bool isBanned(Client *client);
+
+		bool onlyOperCanChangeTopic(void) const; 
 
 		// Getters //
 		std::string getName(void) const;
@@ -49,11 +56,16 @@ class Channel {
 		std::string getTopic() const;
 		std::string getClientNicknames(void);
 
+		Client * getTopicSetter(void) const;
+
 		// Setters //
 		void setMaxClients(int maxClients);
 		void setInviteOnly(bool inviteOnly);
 		void setTopic(std::string topic);
 		void setKey(std::string newKey);
+
+		void setTopicSetter(Client * topicSetter);
+
 
 	private:
 		std::string _name;
@@ -63,6 +75,11 @@ class Channel {
 		int _maxClients;
 		std::set<Client *> _invites;
 
+		std::set<Client *> _bannedClients;
+
+		Client * _topicSetter;
 		// Mode flags
 		bool _inviteOnly;
+
+		bool _onlyOperTopic; // bool : only operators can set or change the channel's topic 
 };
