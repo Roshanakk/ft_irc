@@ -218,6 +218,10 @@ bool Channel::getOnlyOperTopic(void) const {
     return (_onlyOperTopic);
 };
 
+int Channel::getMaxClients(void) const {
+    return (_maxClients);
+};
+
 
 /**********************************************************/
 /*                        SETTERS                         */

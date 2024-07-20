@@ -151,7 +151,7 @@ void Command::handle_JOIN() {
             // check that the channel is not full
             if (!chan->checkCanAddMoreClients()) {
                 std::cout << "Channel is full" << std::endl;
-                throw CommandException(ERR_CHANNELISFULL());
+                throw CommandException(ERR_CHANNELISFULL(_client.getNickname(), chan->getName()));
             }
             // check that the channel mask is good
                 // This is in the protocol for ops only. Not required by the subject.
@@ -739,5 +739,34 @@ bool Command::handle_MODE_l(bool posFlag, Channel *chan, std::string arg) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "l " << arg << std::endl;
     (void)chan;
+
+    // should check if there is already a limit on the number of users.
+    // then should check that the new limit is not equal to the old limit.
+    // then should check if the limit is a valid number.
+
+    for (std::string::const_iterator it = arg.begin(); it != arg.end(); ++it) {
+        if (!std::isdigit(*it))
+            return false;
+    }
+    int newLimit = 0;
+    std::istringstream iss(arg);
+    iss >> newLimit;
+    if (newLimit <= 0) {
+        std::cout << "Invalid limit" << std::endl;
+        return false;
+    }
+
+    // Now you can use newLimit as a positive integer for further logic
+    // Example: Check and set the new limit on the channel
+    if (posFlag) {
+        // Assuming a method exists in Channel to check and set user limit
+        if (chan->getMaxClients() != newLimit) {
+            chan->setMaxClients(newLimit);
+            return true;
+        }
+    } else {
+        chan->setMaxClients(-1);
+    }
+
     return false;
 };

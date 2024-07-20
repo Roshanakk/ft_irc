@@ -33,7 +33,7 @@
 #define ERR_PASSWDMISMATCH() (":Password incorrect\r\n")
 #define ERR_YOUREBANNEDCREEP() (":You are banned from this server\r\n")
 #define ERR_KEYSET(channel) (channel + " :Channel key already set\r\n")
-#define ERR_CHANNELISFULL(channel) (channel + " :Cannot join channel (+l)\r\n")
+#define ERR_CHANNELISFULL(nick, channel) (":ft_irc 471 " + nick + " " + channel + " :Cannot join channel (+l)\r\n")
 #define ERR_UNKNOWNMODE(nick, mode) (":ft_irc 472 " + nick + " " + mode + " :is not a recognised channel mode.\r\n")
 #define ERR_INVITEONLYCHAN(nick, channel) (":ft_irc 473 " + nick + " " + channel + " :Cannot join channel (+i)\r\n")
 #define ERR_BANNEDFROMCHAN(channel) (channel + " :Cannot join channel (+b)\r\n")

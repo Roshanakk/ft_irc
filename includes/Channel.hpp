@@ -57,6 +57,7 @@ class Channel {
 		std::string getClientNicknames(void);
 		bool getOnlyOperTopic(void) const;
 		Client * getTopicSetter(void) const;
+		int getMaxClients(void) const;
 
 		// Setters //
 		void setMaxClients(int maxClients);
