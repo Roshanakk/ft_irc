@@ -208,12 +208,13 @@ void Command::handle_MODE() {
     if (paramsVec.size() < 2)
         throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
     if (paramsVec[0][0] != '#')
-        throw CommandException(ERR_NOSUCHCHANNEL(paramsVec[0]));
+        // throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), paramsVec[0]));
+        throw CommandException();
 
     // Check that the client is in the channel and is a channel operator for this channel
     Channel *chan = _client.getCM().getChannel(paramsVec[0]);
     if (chan == NULL)
-        throw CommandException(ERR_NOSUCHCHANNEL(paramsVec[0]));
+        throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), paramsVec[0]));
     if (!chan->checkIfClientInChannel(&_client))
         throw CommandException(ERR_NOTONCHANNEL(paramsVec[0]));
     if (!chan->checkIfClientIsOp(&_client))
@@ -387,8 +388,11 @@ void Command::handle_PART() {
             throw CommandException(ERR_NOTONCHANNEL(params[0]));
         }
     } else {
-        throw CommandException(ERR_NOSUCHCHANNEL(params[0]));
+        throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), params[0]));
     }
+    std::string message = _client.getPrefix() + " PART :" + chan->getName() + "\r\n";
+    _client.send_message(message);
+    chan->forwardMessage(message, &_client);
     cm.removeEmptyChannels();
 }
 
@@ -456,12 +460,12 @@ void Command::handle_PRIVMSG() {
             if (chan->checkIfClientInChannel(&_client)) {
                 chan->forwardMessage(message, &_client);
             } else {
-                throw CommandException(ERR_CANNOTSENDTOCHAN(recipeints));
+                throw CommandException(ERR_CANNOTSENDTOCHAN(_client.getNickname(), recipeints));
             }
         } else {
             // Channel does not exist
             std::cout << "Channel does not exist" << std::endl;
-            throw CommandException(ERR_CANNOTSENDTOCHAN(recipeints));
+            throw CommandException(ERR_CANNOTSENDTOCHAN(_client.getNickname(), recipeints));
         }
     } else {
         // User
