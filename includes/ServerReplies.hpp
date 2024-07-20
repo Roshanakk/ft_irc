@@ -39,7 +39,15 @@
 #define ERR_BANNEDFROMCHAN(channel) (channel + " :Cannot join channel (+b)\r\n")
 #define ERR_BADCHANNELKEY(user, channel) (":ft_irc 475 " + user + " " + channel + " :Cannot join channel (incorrect channel key)\r\n")
 #define ERR_NOPRIVILEGES() (":Permission Denied- You're not an IRC operator\r\n")
-#define ERR_CHANOPRIVSNEEDED(nick, channel) (":ft_irc 482 " + nick + " " + channel + " :You must have channel operator status to set or unset channel mode i\r\n")
+// freenode uses multiple 482 responses, so we will use the same format
+// Also note that if we include the nick in the response before the channel, we will kick the user from the channel.
+#define ERR_CHANOPRIVSNEEDED_gen(nick, channel) (":ft_irc 482 " + channel + " :You must have channel operator status to set or unset channel mode\r\n")
+#define ERR_CHANOPRIVSNEEDED_i(nick, channel) (":ft_irc 482 " + channel + " :You must have channel operator status to set or unset channel mode i\r\n")
+#define ERR_CHANOPRIVSNEEDED_t(nick, channel) (":ft_irc 482 " + channel + " :You do not have access to change the topic on this channel\r\n")
+#define ERR_CHANOPRIVSNEEDED_kick(nick, channel) (":ft_irc 482 " + channel + " :You do not have the right to kick users\r\n")
+// fix for part not making irssi leave the channel
+#define ERR_CHANOPRIVSNEEDED_part(nick, channel) (":ft_irc 482 " + nick + " " + channel + " :part\r\n")
+
 #define ERR_CANTKILLSERVER() (":You cant kill a server!\r\n")
 #define ERR_NOOPERHOST() (":No O-lines for your host\r\n")
 #define ERR_UMODEUNKNOWNFLAG() (":Unknown MODE flag\r\n")

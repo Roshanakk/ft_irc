@@ -214,6 +214,11 @@ Client * Channel::getTopicSetter(void) const
 }
 
 
+bool Channel::getOnlyOperTopic(void) const {
+    return (_onlyOperTopic);
+};
+
+
 /**********************************************************/
 /*                        SETTERS                         */
 /**********************************************************/
@@ -248,3 +253,7 @@ void Channel::setTopicSetter(Client * topicSetter)
 {
     _topicSetter = topicSetter;
 }
+
+void Channel::setOnlyOperTopic(bool operTopic) {
+    _onlyOperTopic = operTopic;
+};

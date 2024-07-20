@@ -55,7 +55,7 @@ class Channel {
 		bool getInviteOnly(void);
 		std::string getTopic() const;
 		std::string getClientNicknames(void);
-
+		bool getOnlyOperTopic(void) const;
 		Client * getTopicSetter(void) const;
 
 		// Setters //
@@ -63,8 +63,8 @@ class Channel {
 		void setInviteOnly(bool inviteOnly);
 		void setTopic(std::string topic);
 		void setKey(std::string newKey);
-
 		void setTopicSetter(Client * topicSetter);
+		void setOnlyOperTopic(bool operTopic);
 
 
 	private:

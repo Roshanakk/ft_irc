@@ -263,7 +263,7 @@ void Command::handle_KICK()
 		paramChannel = getMatchingChannel(paramChannelNames[i], channels);
 
 		if (!paramChannel->checkIfClientOperator(&_client))
-			throw(CommandException(ERR_CHANOPRIVSNEEDED(_client.getNickname(), paramChannel->getName())));
+			throw(CommandException(ERR_CHANOPRIVSNEEDED_kick(_client.getNickname(), paramChannel->getName())));
 		if (!paramChannel->checkIfClientInChannel(paramUser))
 			throw(CommandException(ERR_USERNOTINCHANNEL(paramUsername, paramChannel->getName())));
 
@@ -309,8 +309,8 @@ void Command::handle_MODE() {
     if (!chan->checkIfClientInChannel(&_client))
         throw CommandException(ERR_NOTONCHANNEL(paramsVec[0]));
     if (!chan->checkIfClientIsOp(&_client))
-        // throw CommandException(ERR_CHANOPRIVSNEEDED(_client.getNickname(), paramsVec[0]));
-        throw CommandException(ERR_CHANOPRIVSNEEDED(_client.getNickname(), paramsVec[0]));
+        // throw CommandException(ERR_CHANOPRIVSNEEDED_gen(_client.getNickname(), paramsVec[0]));
+        throw CommandException(ERR_CHANOPRIVSNEEDED_gen(_client.getNickname(), paramsVec[0]));
 
     // Check the mode and perform the appropriate action
     // come in the form of +il-k for example. The positives first as a group, then the negatives
@@ -492,6 +492,7 @@ void Command::handle_PART() {
     }
     std::string message = _client.getPrefix() + " PART :" + chan->getName() + "\r\n";
     _client.send_message(message);
+    _client.send_message(ERR_CHANOPRIVSNEEDED_part(_client.getNickname(), chan->getName()));
     chan->forwardCommand(message, &_client);
     cm.removeEmptyChannels();
 }
@@ -617,8 +618,10 @@ void Command::handle_TOPIC()
 		if (!channel->checkIfClientInChannel(&_client))
 			throw(CommandException(ERR_NOTONCHANNEL(channel->getName())));
 
-		if (channel->onlyOperCanChangeTopic() && !channel->checkIfClientOperator(&_client))
-			throw(CommandException(ERR_CHANOPRIVSNEEDED(_client.getNickname(), channel->getName())));
+		if (channel->getOnlyOperTopic()
+            || (channel->onlyOperCanChangeTopic() && !channel->checkIfClientOperator(&_client)))
+            // I dont know why but when we add the channel, irssi will kick the user. We just want to inform the user.
+			throw(CommandException(ERR_CHANOPRIVSNEEDED_t(_client.getNickname(), channel->getName())));
 		else
 		{
 			channel->setTopic(topic);
@@ -701,7 +704,13 @@ bool Command::handle_MODE_i(bool posFlag, Channel *chan) {
 bool Command::handle_MODE_t(bool posFlag, Channel *chan) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "t" << std::endl;
-    (void)chan;
+    if (!chan)
+        // error check for channel address.
+        return false;
+    if (chan->getOnlyOperTopic() != posFlag) {
+        chan->setOnlyOperTopic(posFlag);
+        return true;
+    }
     return false;
 };
 
