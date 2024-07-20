@@ -741,10 +741,6 @@ bool Command::handle_MODE_l(bool posFlag, Channel *chan, std::string arg) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "l " << arg << std::endl;
 
-    // should check if there is already a limit on the number of users.
-    // then should check that the new limit is not equal to the old limit.
-    // then should check if the limit is a valid number.
-
     if (!posFlag && chan->getMaxClients() != -1) {
         chan->setMaxClients(-1);
         return true;
