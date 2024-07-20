@@ -145,7 +145,7 @@ void Command::handle_JOIN() {
                     std::cout << "User is invited" << std::endl;
                 } else {
                     std::cout << "User is not invited" << std::endl;
-                    throw CommandException(ERR_INVITEONLYCHAN());
+                    throw CommandException(ERR_INVITEONLYCHAN(_client.getNickname(), chan->getName()));
                 }
             }
             // check that the channel is not full
@@ -263,7 +263,7 @@ void Command::handle_KICK()
 		paramChannel = getMatchingChannel(paramChannelNames[i], channels);
 
 		if (!paramChannel->checkIfClientOperator(&_client))
-			throw(CommandException(ERR_CHANOPRIVSNEEDED(paramChannel->getName())));
+			throw(CommandException(ERR_CHANOPRIVSNEEDED(_client.getNickname(), paramChannel->getName())));
 		if (!paramChannel->checkIfClientInChannel(paramUser))
 			throw(CommandException(ERR_USERNOTINCHANNEL(paramUsername, paramChannel->getName())));
 
@@ -309,7 +309,8 @@ void Command::handle_MODE() {
     if (!chan->checkIfClientInChannel(&_client))
         throw CommandException(ERR_NOTONCHANNEL(paramsVec[0]));
     if (!chan->checkIfClientIsOp(&_client))
-        throw CommandException(ERR_CHANOPRIVSNEEDED(paramsVec[0]));
+        // throw CommandException(ERR_CHANOPRIVSNEEDED(_client.getNickname(), paramsVec[0]));
+        throw CommandException(ERR_CHANOPRIVSNEEDED(_client.getNickname(), ""));
 
     // Check the mode and perform the appropriate action
     // come in the form of +il-k for example. The positives first as a group, then the negatives
@@ -319,7 +320,7 @@ void Command::handle_MODE() {
     // finish the commands in the same manner as the positives
     bool positive = true;
     size_t argNum = 2;
-    std::string channelModeIsStr = ":" + _client.getNickname() + "!~" + _client.getUsername() + "@" + _client.getHostname() + " MODE " + chan->getName() + " ";
+    std::string channelModeIsStr = ":" + _client.getNickname() + "!~" + _client.getUsername() + "@" + _client.getHostname() + " MODE " + chan->getName() + " :";
     size_t strSize = channelModeIsStr.size();
     std::string modeArgs = " ";
     for (size_t i = 0; i < paramsVec[1].size(); ++i) {
@@ -379,6 +380,7 @@ void Command::handle_MODE() {
         channelModeIsStr += modeArgs;
         channelModeIsStr += "\r\n";
         _client.send_message(channelModeIsStr + modeArgs);
+        chan->forwardCommand(channelModeIsStr, &_client);
     }
 }
 
@@ -611,7 +613,7 @@ void Command::handle_TOPIC()
 			throw(CommandException(ERR_NOTONCHANNEL(channel->getName())));
 
 		if (channel->onlyOperCanChangeTopic() && !channel->checkIfClientOperator(&_client))
-			throw(CommandException(ERR_CHANOPRIVSNEEDED(channel->getName())));
+			throw(CommandException(ERR_CHANOPRIVSNEEDED(_client.getNickname(), channel->getName())));
 		else
 		{
 			channel->setTopic(topic);
