@@ -677,7 +677,17 @@ Yowzaa!!! \n\
     _client.send_message(RPL_VERSION(version, "ft_irc", comments));
 }
 
-void Command::handle_WHO() {}
+void Command::handle_WHO() {
+    // << WHO #heythereguys$
+    // >> :*.freenode.net 329 yo1 #heythereguys :1721559632$
+    // --> event 329$
+    // >> :*.freenode.net 352 yo1 #heythereguys ~dpentlan freenode-26o.s40.6vib9m.IP *.freenode.net yo1 H :0 Drew PENTLAND$
+    // --> silent event who$
+    // >> :*.freenode.net 352 yo1 #heythereguys ~dpentlan freenode-26o.s40.6vib9m.IP *.freenode.net yo3__ H@ :0 Drew PENTLAND$
+    // --> silent event who$
+    // >> :*.freenode.net 315 yo1 #heythereguys :End of /WHO list.$
+    // --> chanquery who end$
+}
 
 void Command::handle_WHOIS() {}
 void Command::handle_WHOWAS() {}
