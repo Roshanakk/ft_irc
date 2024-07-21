@@ -262,13 +262,14 @@ void Command::handle_MODE() {
     //   k: Set/remove the channel key (password)
     //   o: Give/take channel operator privilege
     //   l: Set/remove the user limit to channel
+    //   b: Not in subject, but adding so we can communicate with irssi.
 
     // Need to check if there are parameters. If not, throw an exception.
     if (_parameters.size() <= 1)
         throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
 
     // basic parsing so get the channel or user we're modifying.
-        // after split there should be at least 2 elements. 
+        // after split there should be at least 1 element.
         // First should be the channel or user, and the second should be the mode.
     std::vector<std::string> paramsVec = Utilities::split(_parameters, ' ');
     if (paramsVec.size() < 1)
@@ -285,8 +286,15 @@ void Command::handle_MODE() {
         throw CommandException(RPL_CHANNELMODEIS(_client.getNickname(), chan->getName(), chan->getMode()));
     if (!chan->checkIfClientInChannel(&_client))
         throw CommandException(ERR_NOTONCHANNEL(paramsVec[0]));
+    
+    // Check if the mode is a ban mode request (we only repond to irssi during join)
+    size_t pos = paramsVec[1].find('b');
+    if (pos != std::string::npos && pos == 0 && paramsVec[1].size() == 1) {
+        handle_MODE_b(chan);
+        return ;
+    }
+
     if (!chan->checkIfClientIsOp(&_client))
-        // throw CommandException(ERR_CHANOPRIVSNEEDED_gen(_client.getNickname(), paramsVec[0]));
         throw CommandException(ERR_CHANOPRIVSNEEDED_gen(_client.getNickname(), paramsVec[0]));
 
     // Check the mode and perform the appropriate action
@@ -342,6 +350,8 @@ void Command::handle_MODE() {
                         modeArgs += (paramsVec[argNum - 1] + " ");
                 }
                 break;
+            case 'b':
+                break ;
             default:
                 // inform client that the mode is not recognized
                 _client.send_message(ERR_UNKNOWNMODE(_client.getNickname(), paramsVec[1][i]));
@@ -678,20 +688,35 @@ Yowzaa!!! \n\
 }
 
 void Command::handle_WHO() {
-    // << WHO #heythereguys$
-    // >> :*.freenode.net 329 yo1 #heythereguys :1721559632$
-    // --> event 329$
-    // >> :*.freenode.net 352 yo1 #heythereguys ~dpentlan freenode-26o.s40.6vib9m.IP *.freenode.net yo1 H :0 Drew PENTLAND$
-    // --> silent event who$
-    // >> :*.freenode.net 352 yo1 #heythereguys ~dpentlan freenode-26o.s40.6vib9m.IP *.freenode.net yo3__ H@ :0 Drew PENTLAND$
-    // --> silent event who$
-    // >> :*.freenode.net 315 yo1 #heythereguys :End of /WHO list.$
-    // --> chanquery who end$
+    // input error checking (need parameters, and should be a channel, and user should be on the channel)
+    if (_parameters.size() <= 1)
+        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+    Channel *chan = _client.getCM().getChannel(_parameters);
+    if (chan == NULL)
+        throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), _parameters));
+    if (!chan->checkIfClientInChannel(&_client))
+        throw CommandException(ERR_NOTONCHANNEL(_parameters));
+
+    // 329 creation time of the channel in unix
+    // 352 RPL_WHOREPLY
+    // loop for all users in channel
+    // 315 RPL_ENDOFWHO
+    for (std::map<Client*, bool>::iterator it = chan->getClients().begin(); it != chan->getClients().end(); ++it) {
+        _client.send_message(RPL_WHOREPLY(  it->first->getNickname(), 
+                                            chan->getName(), 
+                                            it->first->getUsername(), 
+                                            it->first->getHostname(), 
+                                            "ft_irc", 
+                                            ((it->second) ? "H@" : "H"), 
+                                            "0", 
+                                            it->first->getRealname()
+                                        ));
+    }
+    _client.send_message(RPL_ENDOFWHO(_client.getNickname(), chan->getName()));
 }
 
 void Command::handle_WHOIS() {}
 void Command::handle_WHOWAS() {}
-
 
 // Mode flags
 
@@ -784,5 +809,11 @@ bool Command::handle_MODE_l(bool posFlag, Channel *chan, std::string arg) {
             return true;
         }
     }
+    return false;
+};
+
+bool Command::handle_MODE_b(Channel *chan) {
+    std::cout << "Mode b " << std::endl;
+    _client.send_message(RPL_ENDOFBANLIST(_client.getNickname(), chan->getName()));
     return false;
 };
