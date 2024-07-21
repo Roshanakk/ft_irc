@@ -6,9 +6,8 @@
 #include <algorithm>
 
 #include "Client.hpp"
-
+#include "Channel.hpp"
 #include "CommandException.hpp"
-
 #include "Utilities.hpp"
 
 class Client;
@@ -77,6 +76,13 @@ class Command
 		void handle_WHO();
 		void handle_WHOIS();
 		void handle_WHOWAS();
+
+		// Commands specific to MODE
+		bool handle_MODE_i(bool posFlag, Channel *chan);
+		bool handle_MODE_t(bool posFlag, Channel *chan);
+		bool handle_MODE_k(bool posFlag, Channel *chan, std::string arg);
+		bool handle_MODE_o(bool posFlag, Channel *chan, std::string arg);
+		bool handle_MODE_l(bool posFlag, Channel *chan, std::string arg);
 
 		Client * getMatchingClient(std::string & username) const;
 		Channel * getMatchingChannel(std::string & username, std::set<Channel *> & channels) const;

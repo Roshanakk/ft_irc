@@ -25,13 +25,13 @@ class Channel {
 		// Client methods
 		void addClient(Client *client);
 		void removeClient(Client *client);
-		void promoteClient(Client *client);
 		bool checkCanAddMoreClients(void);
 		bool shouldDelete(void);
 		bool checkIfClientInChannel(Client *client);
 		bool checkIfClientIsOp(Client *client);
 		// Message methods
 		void forwardMessage(std::string message, Client *sender);
+		void forwardCommand(std::string message, Client *sender);
 		// Key methods
 		bool checkKey(std::string& key_val);
 		bool requiresKey(void);
@@ -54,15 +54,18 @@ class Channel {
 		bool getInviteOnly(void);
 		std::string getTopic() const;
 		std::string getClientNicknames(void);
-
+		bool getOnlyOperTopic(void) const;
 		Client * getTopicSetter(void) const;
+		int getMaxClients(void) const;
 
 		// Setters //
 		void setMaxClients(int maxClients);
 		void setInviteOnly(bool inviteOnly);
 		void setTopic(std::string topic);
-
+		void setKey(std::string newKey);
 		void setTopicSetter(Client * topicSetter);
+		void setOnlyOperTopic(bool operTopic);
+		void setOperStatus(Client *client, bool status);
 
 
 	private:

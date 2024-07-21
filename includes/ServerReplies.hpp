@@ -1,8 +1,8 @@
 // Error Replies (Section 6.1 of RFC 1459)
 #define ERR_NOSUCHNICK(nick) (nick + " :No such nick/channel\r\n")
 #define ERR_NOSUCHSERVER(servername) (servername + " :No such server\r\n")
-#define ERR_NOSUCHCHANNEL(channel) (channel + " :No such channel\r\n")
-#define ERR_CANNOTSENDTOCHAN(channel) (channel + " :Cannot send to channel\r\n")
+#define ERR_NOSUCHCHANNEL(nick, channel) (":ft_irc 403 " + nick + " " + channel + " :No such channel\r\n")
+#define ERR_CANNOTSENDTOCHAN(nick, channel) (":ft_irc 404 " + nick + " " + channel + " :Cannot send to channel\r\n")
 #define ERR_TOOMANYCHANNELS(channel) (channel + " :You have joined too many channels\r\n")
 #define ERR_WASNOSUCHNICK(nick) (nick + " :There was no such nickname\r\n")
 #define ERR_TOOMANYTARGETS(target) (target + " :Duplicate recipients. No message delivered\r\n")
@@ -33,18 +33,25 @@
 #define ERR_PASSWDMISMATCH() (":Password incorrect\r\n")
 #define ERR_YOUREBANNEDCREEP() (":You are banned from this server\r\n")
 #define ERR_KEYSET(channel) (channel + " :Channel key already set\r\n")
-#define ERR_CHANNELISFULL(channel) (channel + " :Cannot join channel (+l)\r\n")
-#define ERR_UNKNOWNMODE(mode) (mode + " :is unknown mode char to me\r\n")
-#define ERR_INVITEONLYCHAN(channel) (channel + " :Cannot join channel (+i)\r\n")
+#define ERR_CHANNELISFULL(nick, channel) (":ft_irc 471 " + nick + " " + channel + " :Cannot join channel (+l)\r\n")
+#define ERR_UNKNOWNMODE(nick, mode) (":ft_irc 472 " + nick + " " + mode + " :is not a recognised channel mode.\r\n")
+#define ERR_INVITEONLYCHAN(nick, channel) (":ft_irc 473 " + nick + " " + channel + " :Cannot join channel (+i)\r\n")
 #define ERR_BANNEDFROMCHAN(channel) (channel + " :Cannot join channel (+b)\r\n")
-#define ERR_BADCHANNELKEY(channel) (channel + " :Cannot join channel (+k)\r\n")
+#define ERR_BADCHANNELKEY(user, channel) (":ft_irc 475 " + user + " " + channel + " :Cannot join channel (incorrect channel key)\r\n")
 #define ERR_NOPRIVILEGES() (":Permission Denied- You're not an IRC operator\r\n")
-#define ERR_CHANOPRIVSNEEDED(channel) (channel + " :You're not channel operator\r\n")
+// freenode uses multiple 482 responses, so we will use the same format
+// Also note that if we include the nick in the response before the channel, we will kick the user from the channel.
+#define ERR_CHANOPRIVSNEEDED_gen(nick, channel) (":ft_irc 482 " + channel + " :You must have channel operator status to set or unset channel mode\r\n")
+#define ERR_CHANOPRIVSNEEDED_i(nick, channel) (":ft_irc 482 " + channel + " :You must have channel operator status to set or unset channel mode i\r\n")
+#define ERR_CHANOPRIVSNEEDED_t(nick, channel) (":ft_irc 482 " + channel + " :You do not have access to change the topic on this channel\r\n")
+#define ERR_CHANOPRIVSNEEDED_kick(nick, channel) (":ft_irc 482 " + channel + " :You do not have the right to kick users\r\n")
+// fix for part not making irssi leave the channel
+#define ERR_CHANOPRIVSNEEDED_part(nick, channel) (":ft_irc 482 " + nick + " " + channel + " :part\r\n")
+
 #define ERR_CANTKILLSERVER() (":You cant kill a server!\r\n")
 #define ERR_NOOPERHOST() (":No O-lines for your host\r\n")
 #define ERR_UMODEUNKNOWNFLAG() (":Unknown MODE flag\r\n")
 #define ERR_USERSDONTMATCH() (":Cant change mode for other users\r\n")
-
 #define ERR_RESTRICTED() (":Your connection is restricted!")
 // Command Responses (Section 6.2 of RFC 1459)
 // Responses can be variable, not defining right now. 

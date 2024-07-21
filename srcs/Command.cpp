@@ -145,13 +145,13 @@ void Command::handle_JOIN() {
                     std::cout << "User is invited" << std::endl;
                 } else {
                     std::cout << "User is not invited" << std::endl;
-                    throw CommandException(ERR_INVITEONLYCHAN());
+                    throw CommandException(ERR_INVITEONLYCHAN(_client.getNickname(), chan->getName()));
                 }
             }
             // check that the channel is not full
             if (!chan->checkCanAddMoreClients()) {
                 std::cout << "Channel is full" << std::endl;
-                throw CommandException(ERR_CHANNELISFULL());
+                throw CommandException(ERR_CHANNELISFULL(_client.getNickname(), chan->getName()));
             }
             // check that the channel mask is good
                 // This is in the protocol for ops only. Not required by the subject.
@@ -164,7 +164,7 @@ void Command::handle_JOIN() {
                     chan->addClient(&_client);
                 } else {
                     std::cout << "Password is incorrect" << std::endl;
-                    throw CommandException(ERR_PASSWDMISMATCH());
+                    throw CommandException(ERR_BADCHANNELKEY(_client.getNickname(), chan->getName()));
                 }
             } else {
                 // Channel does not require a password
@@ -263,7 +263,7 @@ void Command::handle_KICK()
 		paramChannel = getMatchingChannel(paramChannelNames[i], channels);
 
 		if (!paramChannel->checkIfClientOperator(&_client))
-			throw(CommandException(ERR_CHANOPRIVSNEEDED(paramChannel->getName())));
+			throw(CommandException(ERR_CHANOPRIVSNEEDED_kick(_client.getNickname(), paramChannel->getName())));
 		if (!paramChannel->checkIfClientInChannel(paramUser))
 			throw(CommandException(ERR_USERNOTINCHANNEL(paramUsername, paramChannel->getName())));
 
@@ -277,18 +277,129 @@ void Command::handle_KICK()
 void Command::handle_KILL() {}
 
 void Command::handle_MODE() {
-	// Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>]
-		//    o - give/take channel operator privileges;
-		//    p - private channel flag;
-		//    s - secret channel flag;
-		//    i - invite-only channel flag;
-		//    t - topic settable by channel operator only flag;
-		//    n - no messages to channel from clients on the outside;
-		//    m - moderated channel;
-		//    l - set the user limit to channel;
-		//    b - set a ban mask to keep users out;
-		//    v - give/take the ability to speak on a moderated channel;
-		//    k - set a channel key (password).
+    // NOTE: Normally the mode command can be used on users, but in our implementation and according to the subject,
+    // we only need to implement it for channels.
+    //
+    // Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>]
+    // MODE - Change the channel’s mode:
+    //   i: Set/remove Invite-only channel
+    //   t: Set/remove the restrictions of the TOPIC command to channel operators
+    //   k: Set/remove the channel key (password)
+    //   o: Give/take channel operator privilege
+    //   l: Set/remove the user limit to channel
+
+    // Need to check if there are parameters. If not, throw an exception.
+    if (_parameters.size() <= 1)
+        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+
+    // basic parsing so get the channel or user we're modifying.
+        // after split there should be at least 2 elements. 
+        // First should be the channel or user, and the second should be the mode.
+    std::vector<std::string> paramsVec = Utilities::split(_parameters, ' ');
+    if (paramsVec.size() < 2)
+        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+    if (paramsVec[0][0] != '#')
+        // throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), paramsVec[0]));
+        throw CommandException();
+
+    // Check that the client is in the channel and is a channel operator for this channel
+    Channel *chan = _client.getCM().getChannel(paramsVec[0]);
+    if (chan == NULL)
+        throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), paramsVec[0]));
+    if (!chan->checkIfClientInChannel(&_client))
+        throw CommandException(ERR_NOTONCHANNEL(paramsVec[0]));
+    if (!chan->checkIfClientIsOp(&_client))
+        // throw CommandException(ERR_CHANOPRIVSNEEDED_gen(_client.getNickname(), paramsVec[0]));
+        throw CommandException(ERR_CHANOPRIVSNEEDED_gen(_client.getNickname(), paramsVec[0]));
+
+    // Check the mode and perform the appropriate action
+    // come in the form of +il-k for example. The positives first as a group, then the negatives
+    // first check if the first character is a + or a -
+    // then check if the character is in our list of commands (freenode throws an error if it's not)
+    // Do each command, while checking if there is a - because then we will switch the command mode
+    // finish the commands in the same manner as the positives
+    bool positive = true;
+    size_t argNum = 2;
+    std::string channelModeIsStr = ":" + _client.getNickname() + "!~" + _client.getUsername() + "@" + _client.getHostname() + " MODE " + chan->getName() + " :";
+    size_t strSize = channelModeIsStr.size();
+    std::string modeArgs = "";
+    for (size_t i = 0; i < paramsVec[1].size(); ++i) {
+        switch (paramsVec[1][i]) {
+            case '+':
+                positive = true;
+                channelModeIsStr += "+";
+                break;
+            case '-':
+                positive = false;
+                channelModeIsStr += "-";
+                break;
+            case 'i':
+                if (handle_MODE_i(positive, chan)) {
+                    channelModeIsStr += "i";
+                }
+                break;
+            case 't':
+                if (handle_MODE_t(positive, chan)) {
+                    channelModeIsStr += "t";
+                }
+                break;
+            case 'k':
+                if (handle_MODE_k(positive, chan,
+                    (positive && argNum < paramsVec.size() 
+                    ? paramsVec[argNum++] : ""))) {
+                    channelModeIsStr += "k";
+                    if (positive)
+                        modeArgs += (paramsVec[argNum - 1] + " ");
+                }
+                break;
+            case 'o':
+                if (handle_MODE_o(positive, chan,
+                    (argNum < paramsVec.size() 
+                    ? paramsVec[argNum++] : "") )) {
+                    channelModeIsStr += "o";
+                    modeArgs += (paramsVec[argNum - 1] + " ");
+                }
+                break;
+            case 'l':
+                if (handle_MODE_l(positive, chan,
+                    (positive && argNum < paramsVec.size() 
+                    ? paramsVec[argNum++] : "") )) {
+                    channelModeIsStr += "l";
+                    if (positive)
+                        modeArgs += (paramsVec[argNum - 1] + " ");
+                }
+                break;
+            default:
+                // inform client that the mode is not recognized
+                _client.send_message(ERR_UNKNOWNMODE(_client.getNickname(), paramsVec[1][i]));
+                break;
+        }
+    }
+    // check that the mode is not only + or - or that a - isnt added as the last character
+    while (channelModeIsStr[channelModeIsStr.size() - 1] == '+' || channelModeIsStr[channelModeIsStr.size() - 1] == '-')
+        channelModeIsStr.erase(channelModeIsStr.size() - 1);
+    // make sure there are no '+-' or '-+' in the string. If so, remove.
+    bool found = true;
+    while (found) {
+        found = false;
+        std::string::size_type pos = channelModeIsStr.find("+-");
+
+        if (pos != std::string::npos) {
+            channelModeIsStr.erase(pos, 1);
+            found = true;
+        }
+        pos = channelModeIsStr.find("-+");
+        if (pos != std::string::npos) {
+            channelModeIsStr.erase(pos, 1);
+            found = true;
+        }
+    }
+    // if the ending size is greater than the starting size, then we have a valid mode change
+    if (channelModeIsStr.size() > strSize) {
+        std::string message = channelModeIsStr + (modeArgs.size() > 1 ? (" " + modeArgs) : "") + "\r\n";
+        _client.send_message(message);
+        chan->forwardCommand(message, &_client);
+    }
 }
 
 void Command::handle_NAMES() {}
@@ -383,16 +494,20 @@ void Command::handle_PART() {
 	ChannelManager& cm = _client.getCM();
 	Channel *chan = cm.getChannel(params[0]);
 
-	if (chan != NULL) {
-		if (chan->checkIfClientInChannel(&_client)) {
-			chan->removeClient(&_client);
-		} else {
-			throw CommandException(ERR_NOTONCHANNEL(params[0]));
-		}
-	} else {
-		throw CommandException(ERR_NOSUCHCHANNEL(params[0]));
-	}
-	cm.removeEmptyChannels();
+    if (chan != NULL) {
+        if (chan->checkIfClientInChannel(&_client)) {
+            chan->removeClient(&_client);
+        } else {
+            throw CommandException(ERR_NOTONCHANNEL(params[0]));
+        }
+    } else {
+        throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), params[0]));
+    }
+    std::string message = _client.getPrefix() + " PART :" + chan->getName() + "\r\n";
+    _client.send_message(message);
+    _client.send_message(ERR_CHANOPRIVSNEEDED_part(_client.getNickname(), chan->getName()));
+    chan->forwardCommand(message, &_client);
+    cm.removeEmptyChannels();
 }
 
 void Command::handle_PASS()
@@ -458,12 +573,12 @@ void Command::handle_PRIVMSG() {
             if (chan->checkIfClientInChannel(&_client)) {
                 chan->forwardMessage(message, &_client);
             } else {
-                throw CommandException(ERR_CANNOTSENDTOCHAN(recipeints));
+                throw CommandException(ERR_CANNOTSENDTOCHAN(_client.getNickname(), recipeints));
             }
         } else {
             // Channel does not exist
             std::cout << "Channel does not exist" << std::endl;
-            throw CommandException(ERR_CANNOTSENDTOCHAN(recipeints));
+            throw CommandException(ERR_CANNOTSENDTOCHAN(_client.getNickname(), recipeints));
         }
     } else {
         // User
@@ -499,7 +614,7 @@ void Command::handle_TOPIC()
 	Channel * channel = getMatchingChannel(channelName, channels);
 
 	if (channel == NULL)
-		throw(CommandException(ERR_NOSUCHCHANNEL(channelName)));
+		throw(CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), channelName)));
 
 	if (topic.empty()) //if there is no topic parameter
 	{
@@ -516,8 +631,10 @@ void Command::handle_TOPIC()
 		if (!channel->checkIfClientInChannel(&_client))
 			throw(CommandException(ERR_NOTONCHANNEL(channel->getName())));
 
-		if (channel->onlyOperCanChangeTopic() && !channel->checkIfClientOperator(&_client))
-			throw(CommandException(ERR_CHANOPRIVSNEEDED(channel->getName())));
+		if (channel->getOnlyOperTopic()
+            || (channel->onlyOperCanChangeTopic() && !channel->checkIfClientOperator(&_client)))
+            // I dont know why but when we add the channel, irssi will kick the user. We just want to inform the user.
+			throw(CommandException(ERR_CHANOPRIVSNEEDED_t(_client.getNickname(), channel->getName())));
 		else
 		{
 			channel->setTopic(topic);
@@ -578,56 +695,104 @@ void Command::handle_USER()
 void Command::handle_VERSION() {}
 
 void Command::handle_WHO() {}
+void Command::handle_WHOIS() {}
+void Command::handle_WHOWAS() {}
 
 
-void Command::handle_WHOIS()
-{
-	// Parameters: [ <target> ] <mask> *( "," <mask> )
+// Mode flags
 
+bool Command::handle_MODE_i(bool posFlag, Channel *chan) {
+    std::cout << "Mode " << (posFlag ? "+" : "-") 
+              << "i" << std::endl;
+    if (!chan)
+        // error check for channel address.
+        return false;
+    if (chan->getInviteOnly() != posFlag) {
+        chan->setInviteOnly(posFlag);
+        return true;
+    }
+    return false;
+};
 
-}
+bool Command::handle_MODE_t(bool posFlag, Channel *chan) {
+    std::cout << "Mode " << (posFlag ? "+" : "-") 
+              << "t" << std::endl;
+    if (!chan)
+        // error check for channel address.
+        return false;
+    if (chan->getOnlyOperTopic() != posFlag) {
+        chan->setOnlyOperTopic(posFlag);
+        return true;
+    }
+    return false;
+};
 
+bool Command::handle_MODE_k(bool posFlag, Channel *chan, std::string arg) {
+    std::cout << "Mode " << (posFlag ? "+" : "-") 
+              << "k " << arg << std::endl;
+    if (!chan->requiresKey() && posFlag && arg.size() > 0) {
+        std::cout << "Setting key" << std::endl;
+        chan->setKey(arg);
+        return true;
+    } else if (posFlag == false) {
+        chan->setKey("");
+        return true;
+    }
+    return false;
+};
 
-void Command::handle_WHOWAS()
-{
-// 	// Parameters: <nickname> *( "," <nickname> ) [ <count> [ <target> ] ]
+bool Command::handle_MODE_o(bool posFlag, Channel *chan, std::string arg) {
+    // NOTE: Freenode only lets you enter one single user at a time, so we'll do the same
+    std::cout << "Mode " << (posFlag ? "+" : "-") 
+              << "o " << arg << std::endl;
+    // make sure the argument is not empty
+    if (arg.empty())
+        return false;
+    // Check if the argument is a valid user in the channel
+    std::map<Client*, bool> &clients= chan->getClients();
+    for (std::map<Client*, bool>::iterator it = clients.begin(); it != clients.end(); ++it) {
+        if (it->first->getNickname() == arg && it->second != posFlag) {
+            // setOperStatus to the posFlag
+            chan->setOperStatus(it->first, posFlag);
+            //it->second = posFlag;
+            return true;
+        }
+    }
+    return false;
+};
 
-// 	historyMap history = _client.getHistoryMap();
+bool Command::handle_MODE_l(bool posFlag, Channel *chan, std::string arg) {
+    std::cout << "Mode " << (posFlag ? "+" : "-") 
+              << "l " << arg << std::endl;
 
-// 	// std::cout << _parameters << std::endl;
-// 	if (_parameters.empty())
-// 		throw(CommandException(ERR_NONICKNAMEGIVEN()));
-	
+    if (!posFlag && chan->getMaxClients() != -1) {
+        chan->setMaxClients(-1);
+        return true;
+    } else if (!posFlag) {
+        return false;
+    }
 
-// 	int spacePos = _parameters.find(' ');
-// 	std::string nickStr = _parameters.substr(0, spacePos);
+    // Check if arg is a positive integer
+    for (std::string::const_iterator it = arg.begin(); it != arg.end(); ++it) {
+        if (!std::isdigit(*it))
+            return false;
+    }
+    int newLimit = 0;
+    std::istringstream iss(arg);
+    iss >> newLimit;
+    if (newLimit <= 0) {
+        std::cout << "Invalid limit" << std::endl;
+        return false;
+    }
 
-// 	std::vector<std::string> nickVec = Utilities::split(nickStr, ',');
-
-
-// 	for (size_t i = 0; i < nickVec.size(); ++i)
-// 	{
-// 		std::string nickname = nickVec[i];
-
-// 		if (history.find(nickname) == history.end())
-// 			throw(CommandException(ERR_WASNOSUCHNICK(nickname)));
-		
-// 		// for (size_t i = 0; i < history[nickname].size(); ++i)
-// 		// 	std::cout << history[nickname][i]->getHostname() << std::endl;
-		
-// 		_client.send_message(RPL_WHOWASUSER(_client.getNickname(),
-// 											nickname,
-// 											history[nickname][i]->getHostname(),
-// 											history[nickname][i]->getRealname()));
-
-// 		// _client.send_message(RPL_WHOWASUSER(history[nickname][i]->getNickname(),
-// 		// 									history[nickname][i]->getUsername(),
-// 		// 									history[nickname][i]->getHostname(),
-// 		// 									history[nickname][i]->getRealname()));
-	
-// 		_client.send_message(RPL_ENDOFWHOWAS(history[nickname][i]->getNickname()));
-// 	}
-
-
-
-}
+    // Now you can use newLimit as a positive integer for further logic
+    // Example: Check and set the new limit on the channel
+    if (posFlag) {
+        // Assuming a method exists in Channel to check and set user limit
+        if (chan->getMaxClients() != newLimit) {
+            chan->setMaxClients(newLimit);
+            return true;
+        }
+    }
+    return false;
+};
