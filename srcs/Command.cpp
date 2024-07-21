@@ -40,31 +40,6 @@ Command::~Command()
 /*                GENERAL MANAGING               */
 /*************************************************/
 
-// void Commands::doNICK(std::string & nickname, AUser * user)
-// {
-//     user->setNickname(nickname);
-// }
-
-// static int isCmd(std::string line)
-// {
-
-// }
-
-// int Command::whatCmd(std::string & line)
-// {
-//     std::string::size_type spacePos = line.find(' ');
-//     std::string firstWord = line.substr(0, spacePos);
-
-//     for (int i = 0; i < NB_CMDS; ++i)
-//     {
-//         if (firstWord == _listCmds[i])
-//             return (i);
-//     }
-
-//     (void) _client;
-//     return (-1);
-// }
-
 void Command::doCmd(std::string & line)
 {
 	size_t firstSpacePos = line.find(' ');
@@ -100,7 +75,6 @@ void Command::doCmd(std::string & line)
     }
     
 }
-
 
 /*****************************************/
 /*                COMMANDS               */
@@ -298,7 +272,10 @@ void Command::handle_MODE() {
         // First should be the channel or user, and the second should be the mode.
     std::vector<std::string> paramsVec = Utilities::split(_parameters, ' ');
     if (paramsVec.size() < 2)
-        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+        return ;
+        // irssi will respond with MODE by itself to enter a data exchange mode.
+        // We just return so that we dont enter this mode.
+        //throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
     if (paramsVec[0][0] != '#')
         // throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), paramsVec[0]));
         throw CommandException();
@@ -315,10 +292,6 @@ void Command::handle_MODE() {
 
     // Check the mode and perform the appropriate action
     // come in the form of +il-k for example. The positives first as a group, then the negatives
-    // first check if the first character is a + or a -
-    // then check if the character is in our list of commands (freenode throws an error if it's not)
-    // Do each command, while checking if there is a - because then we will switch the command mode
-    // finish the commands in the same manner as the positives
     bool positive = true;
     size_t argNum = 2;
     std::string channelModeIsStr = ":" + _client.getNickname() + "!~" + _client.getUsername() + "@" + _client.getHostname() + " MODE " + chan->getName() + " :";
@@ -706,6 +679,7 @@ Yowzaa!!! \n\
 }
 
 void Command::handle_WHO() {}
+
 void Command::handle_WHOIS() {}
 void Command::handle_WHOWAS() {}
 
@@ -763,9 +737,7 @@ bool Command::handle_MODE_o(bool posFlag, Channel *chan, std::string arg) {
     std::map<Client*, bool> &clients= chan->getClients();
     for (std::map<Client*, bool>::iterator it = clients.begin(); it != clients.end(); ++it) {
         if (it->first->getNickname() == arg && it->second != posFlag) {
-            // setOperStatus to the posFlag
             chan->setOperStatus(it->first, posFlag);
-            //it->second = posFlag;
             return true;
         }
     }
@@ -796,8 +768,6 @@ bool Command::handle_MODE_l(bool posFlag, Channel *chan, std::string arg) {
         return false;
     }
 
-    // Now you can use newLimit as a positive integer for further logic
-    // Example: Check and set the new limit on the channel
     if (posFlag) {
         // Assuming a method exists in Channel to check and set user limit
         if (chan->getMaxClients() != newLimit) {

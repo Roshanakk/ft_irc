@@ -33,6 +33,10 @@ Channel & Channel::operator=(const Channel & src)
 
 // Client methods
 
+// >> :yo1!~dpentlan@freenode-26o.s40.6vib9m.IP JOIN :#heythereguys$
+
+
+
 void Channel::addClient(Client *client) {
     if (client == NULL)
         return ;
@@ -49,7 +53,8 @@ void Channel::addClient(Client *client) {
     } else {
         client->send_message(RPL_NOTOPIC(this->getName()));
     }
-    client->send_message(RPL_NAMREPLY(_name, this->getClientNicknames()));
+    client->send_message(RPL_NAMREPLY(client->getNickname(), _name, this->getClientNicknames()));
+    client->send_message(RPL_ENDOFNAMES(client->getNickname(), _name));
 };
 
 void Channel::removeClient(Client *client) {
@@ -190,6 +195,8 @@ std::string Channel::getClientNicknames(void) {
     for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
         if (it != _clients.begin())
             ss << ", ";
+        if (it->second)
+            ss << "@";
         ss << it->first->getNickname();
     }
     return ss.str();

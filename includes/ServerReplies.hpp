@@ -68,7 +68,8 @@
 // JOIN replies (Section 4.2.1 of RFC 1459)
 #define RPL_TOPIC(prefix, channel, topic) (prefix + " TOPIC " + channel + " :" + topic + "\r\n")
 #define RPL_NOTOPIC(channel) (":ft_irc 331 " + channel + " :No topic is set\r\n")
-#define RPL_NAMREPLY(channel, nick) (channel + " :" + nick + "\r\n")
+// >> :*.freenode.net 353 yo1 = #heythereguys :yo1 @yo3__$
+#define RPL_NAMREPLY(nick, channel, listNicks) (":ft_irc 353 " + nick + " = " + channel + " :" + listNicks + "\r\n")
 // #define RPL_YOURHOST() "002 :Your host is <servername>, running version <ver>"
 // #define RPL_CREATED() "003 This server was created <date>"
 // #define RPL_MYINFO() "004 RPL_MYINFO <servername> <version> <available user modes> <available channel modes>"NB_CMDS
@@ -77,3 +78,5 @@
 #define RPL_WHOWASUSER(nickname, whowasNick, whowasHost, realname) ("ft_irc: 314 " + nickname + " " + whowasNick + " " + whowasHost + " :" + realname + "\r\n")
 #define RPL_ENDOFWHOWAS(nickname) (nickname + " :End of WHOWAS\r\n")
 #define RPL_VERSION(version, hostname, comments) (":ft_irc 351 " + version + " " + hostname + " :" + comments + "\r\n")
+// >> :*.freenode.net 366 yo1 #heythereguys :End of /NAMES list.$
+#define RPL_ENDOFNAMES(nick, channel) (":ft_irc 366 " + nick + " " + channel + " :End of /NAMES list.\r\n")
