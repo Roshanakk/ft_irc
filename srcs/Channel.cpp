@@ -33,15 +33,11 @@ Channel & Channel::operator=(const Channel & src)
 
 // Client methods
 
-// >> :yo1!~dpentlan@freenode-26o.s40.6vib9m.IP JOIN :#heythereguys$
-
-
-
 void Channel::addClient(Client *client) {
     if (client == NULL)
         return ;
 
-    if (_clients.size() != true)
+    if (_clients.size() == 0)
         // add the client as a channel operator
         _clients.insert(std::make_pair(client, true));
     else
@@ -101,8 +97,7 @@ void Channel::forwardMessage(std::string message, Client *sender) {
     for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
         if (it->first != sender) {
             std::cout << "Sending message to client: " << it->first->getSocket() << std::endl;
-            it->first->send_message(":" \
-                + sender->getNickname() + " PRIVMSG " + _name + " :" \
+            it->first->send_message(sender->getPrefix() + " PRIVMSG " + _name + " :" \
                 + message + "\r\n");
         }
     }
@@ -194,7 +189,7 @@ std::string Channel::getClientNicknames(void) {
     std::ostringstream ss;
     for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
         if (it != _clients.begin())
-            ss << ", ";
+            ss << " ";
         if (it->second)
             ss << "@";
         ss << it->first->getNickname();
