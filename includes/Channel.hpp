@@ -57,6 +57,7 @@ class Channel {
 		bool getOnlyOperTopic(void) const;
 		Client * getTopicSetter(void) const;
 		int getMaxClients(void) const;
+		std::string getMode() const;
 
 		// Setters //
 		void setMaxClients(int maxClients);

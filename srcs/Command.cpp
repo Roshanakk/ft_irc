@@ -11,7 +11,7 @@ Command::Command(Client & client, std::set<Client *>& clients)
     std::string listCmds[23] = {"CAP", "INFO", "INVITE", "JOIN", "LIST", "KICK",
                 "KILL", "MODE", "NAMES", "NICK", "NOTICE", 
                 "PART", "PASS", "PING", "PRIVMSG", "QUIT", "TOPIC", "USER",
-                "VERSION", "WHO", "WHOIS", "WHOWAS", "NB_CMDS" };
+                "version", "WHO", "WHOIS", "WHOWAS", "NB_CMDS" };
 
     void  (Command::*fctCmds[23])() = {&Command::handle_CAP, &Command::handle_INFO, &Command::handle_INVITE,
                                 &Command::handle_JOIN, &Command::handle_LIST, &Command::handle_KICK, &Command::handle_KILL, 
@@ -40,31 +40,6 @@ Command::~Command()
 /*                GENERAL MANAGING               */
 /*************************************************/
 
-// void Commands::doNICK(std::string & nickname, AUser * user)
-// {
-//     user->setNickname(nickname);
-// }
-
-// static int isCmd(std::string line)
-// {
-
-// }
-
-// int Command::whatCmd(std::string & line)
-// {
-//     std::string::size_type spacePos = line.find(' ');
-//     std::string firstWord = line.substr(0, spacePos);
-
-//     for (int i = 0; i < NB_CMDS; ++i)
-//     {
-//         if (firstWord == _listCmds[i])
-//             return (i);
-//     }
-
-//     (void) _client;
-//     return (-1);
-// }
-
 void Command::doCmd(std::string & line)
 {
 	size_t firstSpacePos = line.find(' ');
@@ -76,6 +51,7 @@ void Command::doCmd(std::string & line)
 
 	_parameters.erase(std::remove(_parameters.begin(), _parameters.end(), '\n'), _parameters.end());
 	_parameters.erase(std::remove(_parameters.begin(), _parameters.end(), '\r'), _parameters.end());
+	_cmd.erase(std::remove(_cmd.begin(), _cmd.end(), '\r'), _cmd.end());
 
 	try
 	{
@@ -99,7 +75,6 @@ void Command::doCmd(std::string & line)
     }
     
 }
-
 
 /*****************************************/
 /*                COMMANDS               */
@@ -296,7 +271,7 @@ void Command::handle_MODE() {
         // after split there should be at least 2 elements. 
         // First should be the channel or user, and the second should be the mode.
     std::vector<std::string> paramsVec = Utilities::split(_parameters, ' ');
-    if (paramsVec.size() < 2)
+    if (paramsVec.size() < 1)
         throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
     if (paramsVec[0][0] != '#')
         // throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), paramsVec[0]));
@@ -306,6 +281,8 @@ void Command::handle_MODE() {
     Channel *chan = _client.getCM().getChannel(paramsVec[0]);
     if (chan == NULL)
         throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), paramsVec[0]));
+    if (paramsVec.size() < 2)
+        throw CommandException(RPL_CHANNELMODEIS(_client.getNickname(), chan->getName(), chan->getMode()));
     if (!chan->checkIfClientInChannel(&_client))
         throw CommandException(ERR_NOTONCHANNEL(paramsVec[0]));
     if (!chan->checkIfClientIsOp(&_client))
@@ -314,10 +291,6 @@ void Command::handle_MODE() {
 
     // Check the mode and perform the appropriate action
     // come in the form of +il-k for example. The positives first as a group, then the negatives
-    // first check if the first character is a + or a -
-    // then check if the character is in our list of commands (freenode throws an error if it's not)
-    // Do each command, while checking if there is a - because then we will switch the command mode
-    // finish the commands in the same manner as the positives
     bool positive = true;
     size_t argNum = 2;
     std::string channelModeIsStr = ":" + _client.getNickname() + "!~" + _client.getUsername() + "@" + _client.getHostname() + " MODE " + chan->getName() + " :";
@@ -692,9 +665,30 @@ void Command::handle_USER()
 
 }
 
-void Command::handle_VERSION() {}
+void Command::handle_VERSION() {
+    // check params. if params does not match the server name (ft_irc), throw an error.
+    if (_parameters.size() > 0 && _parameters != "ft_irc")
+        throw CommandException(ERR_NOSUCHSERVER(_client.getNickname(), _parameters));
+    std::string version = "1.0";
+    std::string comments = "\n\nRoxane and Drew's amazing ft_irc server version 1.0 \n\
+Ready to rock and roll!! \n\
+Yowzaa!!! \n\
+\n";
+    _client.send_message(RPL_VERSION(version, "ft_irc", comments));
+}
 
-void Command::handle_WHO() {}
+void Command::handle_WHO() {
+    // << WHO #heythereguys$
+    // >> :*.freenode.net 329 yo1 #heythereguys :1721559632$
+    // --> event 329$
+    // >> :*.freenode.net 352 yo1 #heythereguys ~dpentlan freenode-26o.s40.6vib9m.IP *.freenode.net yo1 H :0 Drew PENTLAND$
+    // --> silent event who$
+    // >> :*.freenode.net 352 yo1 #heythereguys ~dpentlan freenode-26o.s40.6vib9m.IP *.freenode.net yo3__ H@ :0 Drew PENTLAND$
+    // --> silent event who$
+    // >> :*.freenode.net 315 yo1 #heythereguys :End of /WHO list.$
+    // --> chanquery who end$
+}
+
 void Command::handle_WHOIS() {}
 void Command::handle_WHOWAS() {}
 
@@ -752,9 +746,7 @@ bool Command::handle_MODE_o(bool posFlag, Channel *chan, std::string arg) {
     std::map<Client*, bool> &clients= chan->getClients();
     for (std::map<Client*, bool>::iterator it = clients.begin(); it != clients.end(); ++it) {
         if (it->first->getNickname() == arg && it->second != posFlag) {
-            // setOperStatus to the posFlag
             chan->setOperStatus(it->first, posFlag);
-            //it->second = posFlag;
             return true;
         }
     }
@@ -785,8 +777,6 @@ bool Command::handle_MODE_l(bool posFlag, Channel *chan, std::string arg) {
         return false;
     }
 
-    // Now you can use newLimit as a positive integer for further logic
-    // Example: Check and set the new limit on the channel
     if (posFlag) {
         // Assuming a method exists in Channel to check and set user limit
         if (chan->getMaxClients() != newLimit) {
