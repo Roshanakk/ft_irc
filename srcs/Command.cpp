@@ -698,7 +698,10 @@ void Command::handle_VERSION() {
     if (_parameters.size() > 0 && _parameters != "ft_irc")
         throw CommandException(ERR_NOSUCHSERVER(_client.getNickname(), _parameters));
     std::string version = "1.0";
-    std::string comments = "ft_irc server version 1.0";
+    std::string comments = "\n\nRoxane and Drew's amazing ft_irc server version 1.0 \n\
+Ready to rock and roll!! \n\
+Yowzaa!!! \n\
+\n";
     _client.send_message(RPL_VERSION(version, "ft_irc", comments));
 }
 
