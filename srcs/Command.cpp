@@ -734,6 +734,18 @@ bool Command::handle_MODE_o(bool posFlag, Channel *chan, std::string arg) {
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "o " << arg << std::endl;
     (void)chan;
+
+    // o flag will add or remove operator status from a user
+    // o flag should always have an argument
+    // o flag can have multiple arguments or users.
+
+    // Check if the argument is a valid user in the channel
+    // first split by , to get all the users
+    // for loop over the users
+    // check if the user is in the channel
+        // if not, throw an error
+    
+
     return false;
 };
 
@@ -748,6 +760,7 @@ bool Command::handle_MODE_l(bool posFlag, Channel *chan, std::string arg) {
         return false;
     }
 
+    // Check if arg is a positive integer
     for (std::string::const_iterator it = arg.begin(); it != arg.end(); ++it) {
         if (!std::isdigit(*it))
             return false;

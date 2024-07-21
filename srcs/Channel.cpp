@@ -56,13 +56,6 @@ void Channel::removeClient(Client *client) {
     _clients.erase(client);
 };
 
-void Channel::promoteClient(Client *client) {
-    std::map<Client*, bool>::iterator it = _clients.find(client);
-    if (it != _clients.end()) {
-        it->second = true;
-    }
-};
-
 bool Channel::checkCanAddMoreClients(void) {
     // Answers the question: Can we add more clients to the channel?
     if (_maxClients == -1)
@@ -260,4 +253,17 @@ void Channel::setTopicSetter(Client * topicSetter)
 
 void Channel::setOnlyOperTopic(bool operTopic) {
     _onlyOperTopic = operTopic;
+};
+
+void Channel::setOperStatus(Client *client, bool status) {
+    // Check null
+    if (client == NULL)
+        return ;
+    // look for the client in the channel
+    if (_clients.find(client) != _clients.end())
+        _clients[client] = status;
+    else {
+        // if not found, just return
+        return ;
+    }
 };

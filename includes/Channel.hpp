@@ -25,7 +25,6 @@ class Channel {
 		// Client methods
 		void addClient(Client *client);
 		void removeClient(Client *client);
-		void promoteClient(Client *client);
 		bool checkCanAddMoreClients(void);
 		bool shouldDelete(void);
 		bool checkIfClientInChannel(Client *client);
@@ -66,6 +65,7 @@ class Channel {
 		void setKey(std::string newKey);
 		void setTopicSetter(Client * topicSetter);
 		void setOnlyOperTopic(bool operTopic);
+		void setOperStatus(Client *client, bool status);
 
 
 	private:
