@@ -289,7 +289,7 @@ void Command::handle_MODE() {
     
     // Check if the mode is a ban mode request (we only repond to irssi during join)
     size_t pos = paramsVec[1].find('b');
-    if (pos != std::string::npos && pos == 0) {
+    if (pos != std::string::npos && pos == 0 && paramsVec[1].size() == 1) {
         handle_MODE_b(chan);
         return ;
     }
@@ -688,16 +688,6 @@ Yowzaa!!! \n\
 }
 
 void Command::handle_WHO() {
-    // << WHO #heythereguys$
-    // >> :*.freenode.net 329 yo1 #heythereguys :1721559632$
-    // --> event 329$
-    // >> :*.freenode.net 352 yo1 #heythereguys ~dpentlan freenode-26o.s40.6vib9m.IP *.freenode.net yo1 H :0 Drew PENTLAND$
-    // --> silent event who$
-    // >> :*.freenode.net 352 yo1 #heythereguys ~dpentlan freenode-26o.s40.6vib9m.IP *.freenode.net yo3__ H@ :0 Drew PENTLAND$
-    // --> silent event who$
-    // >> :*.freenode.net 315 yo1 #heythereguys :End of /WHO list.$
-    // --> chanquery who end$
-
     // input error checking (need parameters, and should be a channel, and user should be on the channel)
     if (_parameters.size() <= 1)
         throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
@@ -727,7 +717,6 @@ void Command::handle_WHO() {
 
 void Command::handle_WHOIS() {}
 void Command::handle_WHOWAS() {}
-
 
 // Mode flags
 
