@@ -386,8 +386,9 @@ void Command::handle_MODE() {
     }
     // if the ending size is greater than the starting size, then we have a valid mode change
     if (channelModeIsStr.size() > strSize) {
-        _client.send_message(channelModeIsStr + (modeArgs.size() > 1 ? (" " + modeArgs) : "") + "\r\n");
-        chan->forwardCommand(channelModeIsStr, &_client);
+        std::string message = channelModeIsStr + (modeArgs.size() > 1 ? (" " + modeArgs) : "") + "\r\n";
+        _client.send_message(message);
+        chan->forwardCommand(message, &_client);
     }
 }
 
@@ -731,21 +732,22 @@ bool Command::handle_MODE_k(bool posFlag, Channel *chan, std::string arg) {
 };
 
 bool Command::handle_MODE_o(bool posFlag, Channel *chan, std::string arg) {
+    // NOTE: Freenode only lets you enter one single user at a time, so we'll do the same
     std::cout << "Mode " << (posFlag ? "+" : "-") 
               << "o " << arg << std::endl;
-    (void)chan;
-
-    // o flag will add or remove operator status from a user
-    // o flag should always have an argument
-    // o flag can have multiple arguments or users.
-
+    // make sure the argument is not empty
+    if (arg.empty())
+        return false;
     // Check if the argument is a valid user in the channel
-    // first split by , to get all the users
-    // for loop over the users
-    // check if the user is in the channel
-        // if not, throw an error
-    
-
+    std::map<Client*, bool> &clients= chan->getClients();
+    for (std::map<Client*, bool>::iterator it = clients.begin(); it != clients.end(); ++it) {
+        if (it->first->getNickname() == arg && it->second != posFlag) {
+            // setOperStatus to the posFlag
+            chan->setOperStatus(it->first, posFlag);
+            //it->second = posFlag;
+            return true;
+        }
+    }
     return false;
 };
 
