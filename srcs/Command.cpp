@@ -375,14 +375,24 @@ void Command::handle_MODE() {
                 break;
         }
     }
-    // check that the mode is not empty and is not only + or - or that a - isnt added as the last character
-    if (channelModeIsStr[channelModeIsStr.size() - 1] == '+' || channelModeIsStr[channelModeIsStr.size() - 1] == '-')
+    // check that the mode is not only + or - or that a - isnt added as the last character
+    while (channelModeIsStr[channelModeIsStr.size() - 1] == '+' || channelModeIsStr[channelModeIsStr.size() - 1] == '-')
         channelModeIsStr.erase(channelModeIsStr.size() - 1);
     // make sure there are no '+-' or '-+' in the string. If so, remove.
-    std::string::size_type pos = 0;
-    while ((pos = channelModeIsStr.find("+-", pos)) != std::string::npos || 
-        (pos = channelModeIsStr.find("-+", pos)) != std::string::npos) {
-        channelModeIsStr.erase(pos, 1);
+    bool found = true;
+    while (found) {
+        found = false;
+        std::string::size_type pos = channelModeIsStr.find("+-");
+
+        if (pos != std::string::npos) {
+            channelModeIsStr.erase(pos, 1);
+            found = true;
+        }
+        pos = channelModeIsStr.find("-+");
+        if (pos != std::string::npos) {
+            channelModeIsStr.erase(pos, 1);
+            found = true;
+        }
     }
     // if the ending size is greater than the starting size, then we have a valid mode change
     if (channelModeIsStr.size() > strSize) {
