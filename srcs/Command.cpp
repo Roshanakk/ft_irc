@@ -11,7 +11,7 @@ Command::Command(Client & client, std::set<Client *>& clients)
     std::string listCmds[23] = {"CAP", "INFO", "INVITE", "JOIN", "LIST", "KICK",
                 "KILL", "MODE", "NAMES", "NICK", "NOTICE", 
                 "PART", "PASS", "PING", "PRIVMSG", "QUIT", "TOPIC", "USER",
-                "VERSION", "WHO", "WHOIS", "WHOWAS", "NB_CMDS" };
+                "version", "WHO", "WHOIS", "WHOWAS", "NB_CMDS" };
 
     void  (Command::*fctCmds[23])() = {&Command::handle_CAP, &Command::handle_INFO, &Command::handle_INVITE,
                                 &Command::handle_JOIN, &Command::handle_LIST, &Command::handle_KICK, &Command::handle_KILL, 
@@ -76,6 +76,7 @@ void Command::doCmd(std::string & line)
 
 	_parameters.erase(std::remove(_parameters.begin(), _parameters.end(), '\n'), _parameters.end());
 	_parameters.erase(std::remove(_parameters.begin(), _parameters.end(), '\r'), _parameters.end());
+	_cmd.erase(std::remove(_cmd.begin(), _cmd.end(), '\r'), _cmd.end());
 
 	try
 	{
@@ -692,7 +693,14 @@ void Command::handle_USER()
 
 }
 
-void Command::handle_VERSION() {}
+void Command::handle_VERSION() {
+    // check params. if params does not match the server name (ft_irc), throw an error.
+    if (_parameters.size() > 0 && _parameters != "ft_irc")
+        throw CommandException(ERR_NOSUCHSERVER(_client.getNickname(), _parameters));
+    std::string version = "1.0";
+    std::string comments = "ft_irc server version 1.0";
+    _client.send_message(RPL_VERSION(version, "ft_irc", comments));
+}
 
 void Command::handle_WHO() {}
 void Command::handle_WHOIS() {}

@@ -1,6 +1,8 @@
+/************************************************/
 // Error Replies (Section 6.1 of RFC 1459)
+/************************************************/
 #define ERR_NOSUCHNICK(nick) (nick + " :No such nick/channel\r\n")
-#define ERR_NOSUCHSERVER(servername) (servername + " :No such server\r\n")
+#define ERR_NOSUCHSERVER(nick, servername) (":ft_irc 402 " + nick + " " + servername + " :No such server\r\n")
 #define ERR_NOSUCHCHANNEL(nick, channel) (":ft_irc 403 " + nick + " " + channel + " :No such channel\r\n")
 #define ERR_CANNOTSENDTOCHAN(nick, channel) (":ft_irc 404 " + nick + " " + channel + " :Cannot send to channel\r\n")
 #define ERR_TOOMANYCHANNELS(channel) (channel + " :You have joined too many channels\r\n")
@@ -31,6 +33,7 @@
 #define ERR_ALREADYREGISTRED() (":You may not reregister\r\n")
 #define ERR_NOPERMFORHOST() (":Your host isn't among the privileged\r\n")
 #define ERR_PASSWDMISMATCH() (":Password incorrect\r\n")
+#define ERR_PASSWDNEEDED() ("Password needed\r\n")
 #define ERR_YOUREBANNEDCREEP() (":You are banned from this server\r\n")
 #define ERR_KEYSET(channel) (channel + " :Channel key already set\r\n")
 #define ERR_CHANNELISFULL(nick, channel) (":ft_irc 471 " + nick + " " + channel + " :Cannot join channel (+l)\r\n")
@@ -53,25 +56,24 @@
 #define ERR_UMODEUNKNOWNFLAG() (":Unknown MODE flag\r\n")
 #define ERR_USERSDONTMATCH() (":Cant change mode for other users\r\n")
 #define ERR_RESTRICTED() (":Your connection is restricted!")
+
+/****************************************************************/
 // Command Responses (Section 6.2 of RFC 1459)
 // Responses can be variable, not defining right now. 
 // This may not be as straightforward as the error replies.
+/****************************************************************/
 
 // Connection Confirmation (Not in RFC 1459)
 #define RPL_WELCOME(hostname, nick, prefix) (":" + hostname + " 001 " + nick + " :Welcome to the Internet Relay Network " + prefix + "\r\n")
 // JOIN replies (Section 4.2.1 of RFC 1459)
 #define RPL_TOPIC(prefix, channel, topic) (prefix + " TOPIC " + channel + " :" + topic + "\r\n")
-#define RPL_NOTOPIC(channel) (": 331 " + channel + " :No topic is set\r\n")
+#define RPL_NOTOPIC(channel) (":ft_irc 331 " + channel + " :No topic is set\r\n")
 #define RPL_NAMREPLY(channel, nick) (channel + " :" + nick + "\r\n")
 // #define RPL_YOURHOST() "002 :Your host is <servername>, running version <ver>"
 // #define RPL_CREATED() "003 This server was created <date>"
 // #define RPL_MYINFO() "004 RPL_MYINFO <servername> <version> <available user modes> <available channel modes>"NB_CMDS
-
 #define RPL_NICK(prefix, nickname) (prefix + " NICK " + nickname + "\r\n")
-#define ERR_PASSWDNEEDED() ("Password needed\r\n")
-
 #define RPL_KICK(user_prefix, channel, kicked, reason) (user_prefix + " KICK " + channel + " " + kicked + " " + reason + "\r\n")
-
 #define RPL_WHOWASUSER(nickname, whowasNick, whowasHost, realname) ("ft_irc: 314 " + nickname + " " + whowasNick + " " + whowasHost + " :" + realname + "\r\n")
-
 #define RPL_ENDOFWHOWAS(nickname) (nickname + " :End of WHOWAS\r\n")
+#define RPL_VERSION(version, hostname, comments) (":ft_irc 351 " + version + " " + hostname + " :" + comments + "\r\n")
