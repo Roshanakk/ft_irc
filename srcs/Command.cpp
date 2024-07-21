@@ -459,6 +459,7 @@ void Command::handle_NICK()
 		{
 			_client.setStatus(PASS_REGISTERED);
 			_client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
+            funWelcomeMessage();
 		}
 	}
 
@@ -518,6 +519,7 @@ void Command::handle_PASS()
 		_client.setPassAuth();
 		if (_client.isAuth())
 			_client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
+            funWelcomeMessage();
 	}
 
 
@@ -816,4 +818,35 @@ bool Command::handle_MODE_b(Channel *chan) {
     std::cout << "Mode b " << std::endl;
     _client.send_message(RPL_ENDOFBANLIST(_client.getNickname(), chan->getName()));
     return false;
+};
+
+void Command::funWelcomeMessage() const {
+
+    std::string welcomeMessage = "\
+###########################################\n\
+ \n\
+Welcome to Roxane and Drew's ft_irc server!\n\
+ \n\
+_____________________________________ \n\
+|    .___.___.    ._. .__   __      |\n\
+|    [__   |       |  [__) /  `     |\n\
+|    |     |      _|_ |  \\ \\__.     |\n\
+|___________________________________|\n\
+ \n\
+This server is capable of handling the following commands:\n\
+CAP, INFO, INVITE, JOIN, LIST, KICK, KILL, MODE, NAMES, NICK, NOTICE, PART, PASS, PING, PRIVMSG, QUIT, TOPIC, USER, VERSION, WHO\n\
+ \n\
+The server is also capable of handling the following modes:\n\
+i, t, k, o, l, b\n\
+ \n\
+Have fun chatting!\n\
+ \n\
+##########################################\n\
+\n\
+";
+
+    std::vector<std::string> welcomeMessageVec = Utilities::split(welcomeMessage, '\n');
+    for (std::vector<std::string>::iterator it = welcomeMessageVec.begin(); it != welcomeMessageVec.end(); ++it) {
+        _client.send_message(*it + "\r\n");
+    }
 };
