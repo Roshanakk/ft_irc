@@ -271,11 +271,8 @@ void Command::handle_MODE() {
         // after split there should be at least 2 elements. 
         // First should be the channel or user, and the second should be the mode.
     std::vector<std::string> paramsVec = Utilities::split(_parameters, ' ');
-    if (paramsVec.size() < 2)
-        return ;
-        // irssi will respond with MODE by itself to enter a data exchange mode.
-        // We just return so that we dont enter this mode.
-        //throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+    if (paramsVec.size() < 1)
+        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
     if (paramsVec[0][0] != '#')
         // throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), paramsVec[0]));
         throw CommandException();
@@ -284,6 +281,8 @@ void Command::handle_MODE() {
     Channel *chan = _client.getCM().getChannel(paramsVec[0]);
     if (chan == NULL)
         throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), paramsVec[0]));
+    if (paramsVec.size() < 2)
+        throw CommandException(RPL_CHANNELMODEIS(_client.getNickname(), chan->getName(), chan->getMode()));
     if (!chan->checkIfClientInChannel(&_client))
         throw CommandException(ERR_NOTONCHANNEL(paramsVec[0]));
     if (!chan->checkIfClientIsOp(&_client))

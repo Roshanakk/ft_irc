@@ -222,6 +222,20 @@ int Channel::getMaxClients(void) const {
     return (_maxClients);
 };
 
+std::string Channel::getMode() const {
+    std::string mode = "";
+    if (_inviteOnly)
+        mode += "i";
+    if (_onlyOperTopic)
+        mode += "t";
+    if (_key.size() > 0)
+        mode += "k";
+    if (_maxClients != -1)
+        mode += "l";
+    if (mode.size() > 0)
+        mode = "+" + mode;
+    return mode;
+};
 
 /**********************************************************/
 /*                        SETTERS                         */
