@@ -83,6 +83,7 @@ class Command
 		bool handle_MODE_k(bool posFlag, Channel *chan, std::string arg);
 		bool handle_MODE_o(bool posFlag, Channel *chan, std::string arg);
 		bool handle_MODE_l(bool posFlag, Channel *chan, std::string arg);
+		bool handle_MODE_b(Channel *chan);
 
 		Client * getMatchingClient(std::string & username) const;
 		Channel * getMatchingChannel(std::string & username, std::set<Channel *> & channels) const;

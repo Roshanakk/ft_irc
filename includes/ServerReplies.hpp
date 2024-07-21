@@ -79,3 +79,6 @@
 #define RPL_ENDOFNAMES(nick, channel) (":ft_irc 366 " + nick + " " + channel + " :End of /NAMES list.\r\n")
 // >> :*.freenode.net 324 yo1 #heythereguys :+nt$
 #define RPL_CHANNELMODEIS(nick, channel, mode) (":ft_irc 324 " + nick + " " + channel + " :" + mode + "\r\n")
+#define RPL_WHOREPLY(nick, channel, user, host, server, mode, hopCount, realName) (":ft_irc 352 " + nick + " " + channel + " " + user + " " + host + " " + server + " " + nick + " " + mode + " " + hopCount + " :" + realName + "\r\n")
+#define RPL_ENDOFWHO(nick, channel) (":ft_irc 315 " + nick + " " + channel + " :End of /WHO list.\r\n")
+#define RPL_ENDOFBANLIST(nick, channel) (":ft_irc 368 " + nick + " " + channel + " :End of channel ban list\r\n")
