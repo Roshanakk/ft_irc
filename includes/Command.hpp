@@ -85,6 +85,8 @@ class Command
 		bool handle_MODE_l(bool posFlag, Channel *chan, std::string arg);
 		bool handle_MODE_b(Channel *chan);
 
+		void funWelcomeMessage() const;
+
 		Client * getMatchingClient(std::string & username) const;
 		Channel * getMatchingChannel(std::string & username, std::set<Channel *> & channels) const;
 
