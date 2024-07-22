@@ -735,10 +735,6 @@ void Command::handle_WHO() {
     if (!chan->checkIfClientInChannel(&_client))
         throw CommandException(ERR_NOTONCHANNEL(_parameters));
 
-    // 329 creation time of the channel in unix
-    // 352 RPL_WHOREPLY
-    // loop for all users in channel
-    // 315 RPL_ENDOFWHO
     for (std::map<Client*, bool>::iterator it = chan->getClients().begin(); it != chan->getClients().end(); ++it) {
         _client.send_message(RPL_WHOREPLY(  it->first->getNickname(), 
                                             chan->getName(), 

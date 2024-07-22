@@ -2,7 +2,7 @@
 
 // Constructors //
 Dispatch::Dispatch(std::string password)
-: _sigint_received(false), _epollfd(epoll_create1(0)), _serverPassword(password) {
+: _epollfd(epoll_create1(0)), _serverPassword(password) {
   if (_epollfd == -1) {
     throw ServerException("Error: failed to create epoll instance.");
   }
@@ -37,8 +37,7 @@ void Dispatch::remove(const AIO_Event& event) {
 void Dispatch::run(void) {
   int nfds = epoll_wait(_epollfd, _events, MAX_EVENTS, -1);
   if (nfds == -1) {
-    _sigint_received = true;
-    // throw ServerException("Error: failed to wait for events.");
+    // catches signals, but not set here. set in signal handlers
   }
   for (int i = 0; i < nfds; ++i) {
     AIO_Event *event = static_cast<AIO_Event *>(_events[i].data.ptr);
@@ -66,12 +65,16 @@ int Dispatch::get_sigint_received(void) {
 
 // Signal handler //
 
+bool Dispatch::_sigint_received = false;
+
 void Dispatch::recv_signal(int signal) {
-  if (signal == SIGINT) {}
+  if (signal == SIGINT) {
+    _sigint_received = true;
+  }
 }
 
 void Dispatch::setAsSignalHandler() {
-  if (signal(SIGINT, recv_signal) == SIG_ERR)
+  if (signal(SIGINT, Dispatch::recv_signal) == SIG_ERR)
   {
     perror("signal");
     return ;
