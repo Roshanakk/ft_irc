@@ -68,3 +68,22 @@
 #define RPL_WHOWASUSER(nickname, whowasNick, whowasHost, realname) ("ft_irc: 314 " + nickname + " " + whowasNick + " " + whowasHost + " :" + realname + "\r\n")
 
 #define RPL_ENDOFWHOWAS(nickname) (nickname + " :End of WHOWAS\r\n")
+
+// #define RPL_INVITE(userPrefix, userToInvite, channel) (userPrefix + " INVITE " + userToInvite + " " + channel + "\r\n")
+// #define RPL_INVITING(hostname, user, channel, userToInvite) (":" + hostname + " 341 " + user + " " + userToInvite + " " + channel + "\r\n")
+
+
+// #define RPL_INVITE(userPrefix, userToInvite, channel) (userPrefix + " INVITE " + userToInvite + " :" + channel + "\r\n")
+// #define RPL_INVITING(hostname, user, channel, userToInvite) (":" + hostname + " 341 " + user + " " + userToInvite + " :" + channel + "\r\n")
+
+//inviter : nini
+//invited : jojo
+
+// >> :*.freenode.net 341 nini jojo :#disney
+// :hostname 341 inviter invited :channel
+
+// >> :nini!~rraffi-k@freenode-3dg.s40.6vib9m.IP INVITE jojo :#disney
+// prefox INVITE invited :channel
+
+// #define RPL_INVITE(userPrefix, userToInvite, channel) (userPrefix + " INVITE " + channel + " :" + userToInvite + "\r\n")
+#define RPL_INVITING(userPrefix, user, userToInvite, channel) (userPrefix + " 341 " + user + " " + channel + " " + userToInvite + "\r\n")
