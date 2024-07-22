@@ -100,9 +100,6 @@
 #define RPL_INVITING(user, userToInvite, channel) (":ft_irc 341 " + user + " " + userToInvite + " " + channel + "\r\n")
 #define RPL_INVITE(userPrefix, userToInvite, channel) (userPrefix + " INVITE " + userToInvite + " " + channel + "\r\n")
 
-
-
-
 #define RPL_ENDOFWHOWAS(nickname) (nickname + " :End of WHOWAS\r\n")
 #define RPL_VERSION(version, hostname, comments) (":ft_irc 351 " + version + " " + hostname + " :" + comments + "\r\n")
 #define RPL_ENDOFNAMES(nick, channel) (":ft_irc 366 " + nick + " " + channel + " :End of /NAMES list.\r\n")
@@ -111,3 +108,7 @@
 #define RPL_WHOREPLY(nick, channel, user, host, server, mode, hopCount, realName) (":ft_irc 352 " + nick + " " + channel + " " + user + " " + host + " " + server + " " + nick + " " + mode + " :" + hopCount + " " + realName + "\r\n")
 #define RPL_ENDOFWHO(nick, channel) (":ft_irc 315 " + nick + " " + channel + " :End of /WHO list.\r\n")
 #define RPL_ENDOFBANLIST(nick, channel) (":ft_irc 368 " + nick + " " + channel + " :End of channel ban list\r\n")
+
+#define RPL_MOTDSTART(nick) (":ft_irc 375 " + nick + " :- ft_irc Message of the day - \r\n")
+#define RPL_MOTD(nick, text) (":ft_irc 372 " + nick + " :- " + text + "\r\n")
+#define RPL_ENDOFMOTD(nick) (":ft_irc 376 " + nick + " :End of message of the day.\r\n")
