@@ -107,7 +107,7 @@ void Channel::forwardCommand(std::string message, Client *sender) {
     for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
         if (it->first != sender) {
             std::cout << "Sending command to client: " << it->first->getSocket() << std::endl;
-            it->first->send_message(message + "\r\n");
+            it->first->send_message(message);
         }
     }
 };

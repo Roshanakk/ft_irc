@@ -30,7 +30,7 @@
 #define ERR_SUMMONDISABLED() (":SUMMON has been disabled\r\n")
 #define ERR_USERSDISABLED() (":USERS has been disabled\r\n")
 #define ERR_NOTREGISTERED() (":You have not registered\r\n")
-#define ERR_NEEDMOREPARAMS(command) (command + " :Not enough parameters\r\n")
+#define ERR_NEEDMOREPARAMS(nick, command) (":ft_irc 461 " + nick + " " + command + " :Not enough parameters\r\n")
 #define ERR_ALREADYREGISTRED() (":You may not reregister\r\n")
 #define ERR_NOPERMFORHOST() (":Your host isn't among the privileged\r\n")
 #define ERR_PASSWDMISMATCH() (":Password incorrect\r\n")
@@ -82,7 +82,7 @@
 
 #define RPL_USERHOST(nickname, takenNick) (":ft_irc 312 " + nickname + " " + takenNick + " ft_irc :ft_irc\r\n")
 #define RPL_ENDOFWHOIS(nickname, takenNick) (":ft_irc 318 " + nickname + " " + takenNick + " :End of /WHOIS list.\r\n")
-
+#define RPL_TOPICUSAGE(nick) (":ft_irc 650 " + nick + " TOPIC :<channel> [:<topic>]\r\n")
 
 // #define RPL_INVITE(userPrefix, userToInvite, channel) (userPrefix + " INVITE " + userToInvite + " " + channel + "\r\n")
 // #define RPL_INVITING(hostname, user, channel, userToInvite) (":" + hostname + " 341 " + user + " " + userToInvite + " " + channel + "\r\n")
