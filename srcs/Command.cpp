@@ -822,7 +822,8 @@ bool Command::handle_MODE_b(Channel *chan) {
 
 void Command::funWelcomeMessage() const {
 
-    std::string welcomeMessage = "\
+    std::stringstream ss;
+    ss << "\
 ###########################################\n\
  \n\
 Welcome to Roxane and Drew's ft_irc server!\n\
@@ -832,6 +833,20 @@ _____________________________________ \n\
 |    [__   |       |  [__) /  `     |\n\
 |    |     |      _|_ |  \\ \\__.     |\n\
 |___________________________________|\n\
+ \n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << RED << "OOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << BLUE << "@" << WHITE << "OOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << RED << "OOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << BLUE << "@" << WHITE << "OOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << RED << "OOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << BLUE << "@" << WHITE << "OOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << WHITE << "*" << BLUE << "@" << RED << "OOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << WHITE << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << RED << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << WHITE << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << RED << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << WHITE << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
+|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << RED << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n\
  \n\
 This server is capable of handling the following commands:\n\
 CAP, INFO, INVITE, JOIN, LIST, KICK, KILL, MODE, NAMES, NICK, NOTICE, PART, PASS, PING, PRIVMSG, QUIT, TOPIC, USER, VERSION, WHO\n\
@@ -844,6 +859,8 @@ Have fun chatting!\n\
 ##########################################\n\
 \n\
 ";
+
+    std::string welcomeMessage = ss.str();
 
     std::vector<std::string> welcomeMessageVec = Utilities::split(welcomeMessage, '\n');
     for (std::vector<std::string>::iterator it = welcomeMessageVec.begin(); it != welcomeMessageVec.end(); ++it) {
