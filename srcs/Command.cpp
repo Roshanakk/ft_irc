@@ -735,10 +735,6 @@ void Command::handle_WHO() {
     if (!chan->checkIfClientInChannel(&_client))
         throw CommandException(ERR_NOTONCHANNEL(_parameters));
 
-    // 329 creation time of the channel in unix
-    // 352 RPL_WHOREPLY
-    // loop for all users in channel
-    // 315 RPL_ENDOFWHO
     for (std::map<Client*, bool>::iterator it = chan->getClients().begin(); it != chan->getClients().end(); ++it) {
         _client.send_message(RPL_WHOREPLY(  it->first->getNickname(), 
                                             chan->getName(), 
@@ -887,7 +883,7 @@ ss << "|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "
 |" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << RED << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n \n";
 #endif
     ss << "This server is capable of handling the following commands:\n\
-CAP, INFO, INVITE, JOIN, LIST, KICK, KILL, MODE, NAMES, NICK, NOTICE, PART, PASS, PING, PRIVMSG, QUIT, TOPIC, USER, VERSION, WHO\n\
+CAP, JOIN, KICK, MODE, NAMES, NICK, NOTICE, PART, PASS, PING, PRIVMSG, QUIT, TOPIC, USER, VERSION, WHO\n\
  \n\
 The server is also capable of handling the following modes:\n\
 i, t, k, o, l, b\n\
