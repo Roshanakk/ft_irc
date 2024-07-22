@@ -42,7 +42,7 @@ class Channel {
 		//Operator methods
 		bool checkIfClientOperator(Client *client);
 		//Ban Methods
-		void banUser(Client *client);
+		// void banUser(Client *client);
 		// bool isBanned(Client *client);
 
 		bool onlyOperCanChangeTopic(void) const; 
@@ -77,7 +77,7 @@ class Channel {
 		int _maxClients;
 		std::set<Client *> _invites;
 
-		std::set<Client *> _bannedClients;
+		// std::set<Client *> _bannedClients;
 
 		Client * _topicSetter;
 		// Mode flags

@@ -26,7 +26,6 @@ SRCS = 	main.cpp \
 		ArgParse.cpp \
 		Utilities.cpp \
 		Command.cpp \
-		ClientHistory.cpp \
 
 OBJS := $(patsubst %.cpp,$(OBJ_DIR)%.o,$(SRCS))
 

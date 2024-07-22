@@ -146,11 +146,11 @@ bool Channel::checkIfClientOperator(Client *client)
 
 //Ban methods
 
-void Channel::banUser(Client *client)
-{
-    _bannedClients.insert(client);
-    removeClient(client);
-}
+// void Channel::banUser(Client *client)
+// {
+//     _bannedClients.insert(client);
+//     removeClient(client);
+// }
 
 // bool Channel::isBanned(Client *client)
 // {

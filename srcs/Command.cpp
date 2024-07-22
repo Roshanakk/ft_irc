@@ -283,7 +283,7 @@ void Command::handle_KICK()
 		if (!paramChannel->checkIfClientInChannel(paramUser))
 			throw(CommandException(ERR_USERNOTINCHANNEL(paramUsername, paramChannel->getName())));
 
-		paramChannel->banUser(paramUser);
+		// paramChannel->banUser(paramUser);
 		_client.send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
 		(*paramUser).send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
 	}
@@ -449,6 +449,7 @@ bool isAValidNickname(std::string str)
 void Command::handle_NICK() 
 {
 	// Parameters: <nickname>
+		// _client.send_message(_client.getNickname() + "\r\n");
 
 	std::vector<std::string> params = Utilities::split(_parameters, ' ');
 	std::string oldPrefix;
@@ -459,7 +460,7 @@ void Command::handle_NICK()
 	if (_client.getNickname().empty() && params.size() < 1)
 		throw(CommandException(ERR_NONICKNAMEGIVEN()));
 	else if (params.size() < 1)
-		_client.send_message(_client.getNickname() + "\r\n");
+        _client.send_message(RPL_NICK(oldPrefix, _client.getNickname()));
 	else if (params.size() == 1)
 	{
 		std::string nickname = params[0];
@@ -473,13 +474,15 @@ void Command::handle_NICK()
 		while (it != allClients.end() && nickname != (*it)->getNickname())
 			++it;
 
+
 		if (it != allClients.end())
 		{
 			// if it is the first connection (first NICK call)
-			if (_client.getNickname() == "default")
-				_client.setNickname(nickname + "_");
-			else                                    // if the user tries to change his nickname (user already connected)
-				throw(CommandException(ERR_NICKNAMEINUSE(nickname)));
+			// if (_client.getNickname() == "")
+			// 	_client.setNickname(nickname + "_");
+			// else
+            std::cout << "nickname already in use. this should print" << std::endl;
+            throw(CommandException(ERR_NICKNAMEINUSE(nickname)));
 		}
 		else
 		{
@@ -487,8 +490,8 @@ void Command::handle_NICK()
 			_client.setNickname(nickname);
 		}
 	}
-
-	if (!_client.isAuth())
+	
+    if (!_client.isAuth())
 	{
 		_client.setNickAuth();
 		if (_client.isAuth())
@@ -555,7 +558,7 @@ void Command::handle_PASS()
 		_client.setPassAuth();
 		if (_client.isAuth())
 			_client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
-            funWelcomeMessage();
+
 	}
 
 
@@ -707,7 +710,8 @@ void Command::handle_USER()
 		{
 			_client.setStatus(PASS_REGISTERED);
 			_client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
-		}
+		    funWelcomeMessage();
+        }
 	}
 
 
@@ -753,7 +757,28 @@ void Command::handle_WHO() {
     _client.send_message(RPL_ENDOFWHO(_client.getNickname(), chan->getName()));
 }
 
-void Command::handle_WHOIS() {}
+void Command::handle_WHOIS() 
+{
+    std::vector<std::string> params = Utilities::split(_parameters, ' ');
+
+    if (params.empty())
+        throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
+
+    Client * userToCheck = getMatchingClient(params[0]);
+
+    if (userToCheck == NULL)
+        throw(CommandException(ERR_NOSUCHNICK(params[0])));
+
+    _client.send_message(RPL_WHOIS(_client.getNickname(), 
+                                params[0],
+                                userToCheck->getUsername(), 
+                                userToCheck->getHostname(), 
+                                userToCheck->getRealname()));
+
+    _client.send_message(RPL_USERHOST(_client.getNickname(), params[0]));
+    _client.send_message(RPL_ENDOFWHOIS(_client.getNickname(), params[0]));
+}
+
 void Command::handle_WHOWAS() {}
 
 // Mode flags
