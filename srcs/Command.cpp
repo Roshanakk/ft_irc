@@ -82,9 +82,50 @@ void Command::doCmd(std::string & line)
 
 void Command::handle_CAP() {}
 
-void Command::handle_INFO() {}
+// void Command::handle_INFO() {}
 
-void Command::handle_INVITE() {}
+void Command::handle_INVITE()
+{
+	// Parameters: <nickname> <channel>
+
+	if (_parameters.empty())
+		throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
+	
+	int spacePos = _parameters.find(' ');
+	std::string userToInviteName = _parameters.substr(0, spacePos);
+	
+	Client * userToInvite = getMatchingClient(userToInviteName);
+
+	if (userToInvite == NULL)
+		throw(CommandException(ERR_NOSUCHNICK(userToInviteName)));
+	
+	std::string channelName = _parameters.substr(spacePos + 1);
+
+	if (channelName.empty())
+		throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
+	
+	
+	ChannelManager & cm = _client.getCM();
+	std::set<Channel *> channels = cm.getChannels();
+
+	Channel * channel = getMatchingChannel(channelName, channels); 
+
+	if (channel == NULL)
+		throw(CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), channelName)));
+	
+	if (!channel->checkIfClientInChannel(&_client))
+		throw(CommandException(ERR_NOTONCHANNEL(channelName)));
+	
+	if (!channel->checkIfClientOperator(&_client))
+		throw(CommandException(ERR_CHANOPRIVSNEEDED(_client.getPrefix(), channelName)));
+	
+	if (channel->checkIfClientInChannel(userToInvite))
+		throw(CommandException(ERR_USERONCHANNEL(userToInviteName, channelName)));
+
+	_client.send_message(RPL_INVITING(_client.getNickname(), userToInviteName, channelName));
+	userToInvite->send_message(RPL_INVITE(_client.getPrefix(), userToInviteName, channelName));
+
+}
 
 void Command::handle_JOIN() {
 	// Need to check if there are parameters. If not, throw an exception.
@@ -154,7 +195,7 @@ void Command::handle_JOIN() {
     }
 }
 
-void Command::handle_LIST() {}
+// void Command::handle_LIST() {}
 
 
 Client * Command::getMatchingClient(std::string & username) const
@@ -249,7 +290,7 @@ void Command::handle_KICK()
 
 }
 
-void Command::handle_KILL() {}
+// void Command::handle_KILL() {}
 
 void Command::handle_MODE() {
     // NOTE: Normally the mode command can be used on users, but in our implementation and according to the subject,
@@ -385,7 +426,7 @@ void Command::handle_MODE() {
     }
 }
 
-void Command::handle_NAMES() {}
+// void Command::handle_NAMES() {}
 
 
 bool isAValidNickname(std::string str)
@@ -409,12 +450,8 @@ void Command::handle_NICK()
 {
 	// Parameters: <nickname>
 
-
 	std::vector<std::string> params = Utilities::split(_parameters, ' ');
 	std::string oldPrefix;
-
-	//if user mode is +r
-	//throw(CommandException(ERR_RESTRICTED()))
 
 	if (_client.getStatus() == PASS_NEEDED)
 		throw(CommandException(ERR_PASSWDNEEDED()));
@@ -449,7 +486,6 @@ void Command::handle_NICK()
 			oldPrefix = _client.getPrefix();
 			_client.setNickname(nickname);
 		}
-		
 	}
 
 	if (!_client.isAuth())
@@ -467,7 +503,7 @@ void Command::handle_NICK()
 
 }
 
-void Command::handle_NOTICE() {}
+// void Command::handle_NOTICE() {}
 
 void Command::handle_PART() {
 	if (_parameters.size() <= 1)
@@ -850,3 +886,10 @@ Have fun chatting!\n\
         _client.send_message(*it + "\r\n");
     }
 };
+
+
+void Command::handle_LIST() {}
+void Command::handle_KILL() {}
+void Command::handle_NAMES() {}
+void Command::handle_NOTICE() {}
+void Command::handle_INFO() {}
