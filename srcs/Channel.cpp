@@ -37,7 +37,7 @@ void Channel::addClient(Client *client) {
     if (client == NULL)
         return ;
 
-    if (_clients.size() == false)
+    if (_clients.size() == 0)
         // add the client as a channel operator
         _clients.insert(std::make_pair(client, true));
     else
@@ -49,18 +49,12 @@ void Channel::addClient(Client *client) {
     } else {
         client->send_message(RPL_NOTOPIC(this->getName()));
     }
-    client->send_message(RPL_NAMREPLY(_name, this->getClientNicknames()));
+    client->send_message(RPL_NAMREPLY(client->getNickname(), _name, this->getClientNicknames()));
+    client->send_message(RPL_ENDOFNAMES(client->getNickname(), _name));
 };
 
 void Channel::removeClient(Client *client) {
     _clients.erase(client);
-};
-
-void Channel::promoteClient(Client *client) {
-    std::map<Client*, bool>::iterator it = _clients.find(client);
-    if (it != _clients.end()) {
-        it->second = true;
-    }
 };
 
 bool Channel::checkCanAddMoreClients(void) {
@@ -80,10 +74,20 @@ bool Channel::checkIfClientInChannel(Client *client) {
 };
 
 bool Channel::checkIfClientIsOp(Client *client) {
+    // Check null
+    if (client == NULL) {
+        return (false);
+    }
     std::map<Client*, bool>::iterator it = _clients.find(client);
+    // Check if client is in the channel
+    if (it == _clients.end()) {
+        return (false);
+    }
+    // Only return true if the client is an operator
     if (it != _clients.end()) {
         return (it->second);
     }
+    // catchall
     return (false);
 };
 
@@ -93,9 +97,17 @@ void Channel::forwardMessage(std::string message, Client *sender) {
     for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
         if (it->first != sender) {
             std::cout << "Sending message to client: " << it->first->getSocket() << std::endl;
-            it->first->send_message(":" \
-                + sender->getNickname() + " PRIVMSG " + _name + " :" \
+            it->first->send_message(sender->getPrefix() + " PRIVMSG " + _name + " :" \
                 + message + "\r\n");
+        }
+    }
+};
+
+void Channel::forwardCommand(std::string message, Client *sender) {
+    for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
+        if (it->first != sender) {
+            std::cout << "Sending command to client: " << it->first->getSocket() << std::endl;
+            it->first->send_message(message + "\r\n");
         }
     }
 };
@@ -177,7 +189,9 @@ std::string Channel::getClientNicknames(void) {
     std::ostringstream ss;
     for (std::map<Client*, bool>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
         if (it != _clients.begin())
-            ss << ", ";
+            ss << " ";
+        if (it->second)
+            ss << "@";
         ss << it->first->getNickname();
     }
     return ss.str();
@@ -194,6 +208,29 @@ Client * Channel::getTopicSetter(void) const
     return (_topicSetter);
 }
 
+
+bool Channel::getOnlyOperTopic(void) const {
+    return (_onlyOperTopic);
+};
+
+int Channel::getMaxClients(void) const {
+    return (_maxClients);
+};
+
+std::string Channel::getMode() const {
+    std::string mode = "";
+    if (_inviteOnly)
+        mode += "i";
+    if (_onlyOperTopic)
+        mode += "t";
+    if (_key.size() > 0)
+        mode += "k";
+    if (_maxClients != -1)
+        mode += "l";
+    if (mode.size() > 0)
+        mode = "+" + mode;
+    return mode;
+};
 
 /**********************************************************/
 /*                        SETTERS                         */
@@ -222,7 +259,27 @@ void Channel::setTopic(std::string topic) {
     _topic = topic;
 };
 
+void Channel::setKey(std::string newKey) {
+    _key = newKey;
+};
 void Channel::setTopicSetter(Client * topicSetter)
 {
     _topicSetter = topicSetter;
 }
+
+void Channel::setOnlyOperTopic(bool operTopic) {
+    _onlyOperTopic = operTopic;
+};
+
+void Channel::setOperStatus(Client *client, bool status) {
+    // Check null
+    if (client == NULL)
+        return ;
+    // look for the client in the channel
+    if (_clients.find(client) != _clients.end())
+        _clients[client] = status;
+    else {
+        // if not found, just return
+        return ;
+    }
+};

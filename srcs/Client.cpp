@@ -20,7 +20,8 @@ Client::~Client(void) {
     std::cout << "Client destructor called" << std::endl;
 
 
-    _history[_nickname].push_back(new ClientHistory(_hostname, _username, _realname, _nickname));
+    // Causes a leak. we need to delete the history objects.
+    // _history[_nickname].push_back(new ClientHistory(_hostname, _username, _realname, _nickname));
 
 
     _cm.removeClientFromAllChannels(this);
