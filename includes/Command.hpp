@@ -9,6 +9,7 @@
 #include "Channel.hpp"
 #include "CommandException.hpp"
 #include "Utilities.hpp"
+#include "Colors.hpp"
 
 class Client;
 class Channel;

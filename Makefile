@@ -1,4 +1,5 @@
 NAME = ircserv
+FUN = ircserv
 
 ### SETTINGS ###
 CXX := g++
@@ -6,6 +7,7 @@ SRC_DIR := srcs/
 OBJ_DIR := objs/
 H_DIR := includes/
 FLAGS := -g -std=c++98 -Wall -Wextra -Werror
+F_FLAGS :=
 
 ### PRETTY COLORS ###
 RED:=\033[31;1;4m
@@ -35,13 +37,13 @@ OBJS := $(patsubst %.cpp,$(OBJ_DIR)%.o,$(SRCS))
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CXX) $(FLAGS) $(OBJS) -o $@
+	$(CXX) $(FLAGS) $(F_FLAGS) $(OBJS) -o $@
 	@printf "$(GREEN)|=:=:=:=:=:=:=:=:= DONE =:=:=:=:=:=:=:=:=|$(NOCOLOR)\n"
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 	@printf "$(BLUE)|=:=:=:=:=:=:=:= BUILDING =:=:=:=:=:=:=:=|$(NOCOLOR)\n"
 	@mkdir -p $(dir $@)
-	$(CXX) $(FLAGS) -c $(addprefix -I,$(H_DIR)) $< -o $@
+	$(CXX) $(FLAGS) $(F_FLAGS) -c $(addprefix -I,$(H_DIR)) $< -o $@
 
 clean:
 	@printf "$(RED)|=:=:=:=:=:=:=:= CLEANING =:=:=:=:=:=:=:=|$(NOCOLOR)\n"
@@ -52,5 +54,9 @@ fclean: clean
 	rm -rf $(OBJ_DIR)
 
 re: fclean all
+
+# Adds define for fun printing.
+fun: F_FLAGS += -DFUN_FLAGS
+fun: fclean all
 
 .PHONY: all clean fclean re
