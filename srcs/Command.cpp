@@ -96,8 +96,6 @@ void Command::handle_INVITE()
 	
 	Client * userToInvite = getMatchingClient(userToInviteName);
 
-	std::cout << "HIS NAME IIIIIIIS " << userToInvite->getPrefix() << std::endl;
-
 	if (userToInvite == NULL)
 		throw(CommandException(ERR_NOSUCHNICK(userToInviteName)));
 	
@@ -106,37 +104,26 @@ void Command::handle_INVITE()
 	if (channelName.empty())
 		throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
 	
-
+	
 	ChannelManager & cm = _client.getCM();
 	std::set<Channel *> channels = cm.getChannels();
 
 	Channel * channel = getMatchingChannel(channelName, channels); 
 
 	if (channel == NULL)
-		throw(CommandException(ERR_NOSUCHCHANNEL(channelName)));
-	
-	if (channel->checkIfClientInChannel(userToInvite))
-		throw(CommandException(ERR_USERONCHANNEL(userToInviteName, channelName)));
+		throw(CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), channelName)));
 	
 	if (!channel->checkIfClientInChannel(&_client))
 		throw(CommandException(ERR_NOTONCHANNEL(channelName)));
 	
 	if (!channel->checkIfClientOperator(&_client))
-		throw(CommandException(ERR_CHANOPRIVSNEEDED(channelName)));
+		throw(CommandException(ERR_CHANOPRIVSNEEDED(_client.getPrefix(), channelName)));
 	
+	if (channel->checkIfClientInChannel(userToInvite))
+		throw(CommandException(ERR_USERONCHANNEL(userToInviteName, channelName)));
 
-	std::cout << "PREFIX = " << _client.getPrefix() << "$" << std::endl;
-	std::cout << "NICKNA = " << _client.getNickname() << "$" << std::endl;
-	std::cout << "USERTO = " << userToInviteName << "$" << std::endl;
-	std::cout << "CHANNE = " << channelName << "$" << std::endl;
-
-	_client.send_message(RPL_INVITING(_client.getPrefix(), _client.getNickname(), userToInviteName, channelName));
-	// _client.send_message(RPL_INVITE(_client.getPrefix(), userToInviteName, channelName));
-
-	// _client.send_message(RPL_AWAY(userToInvite->getPrefix(), userToInviteName, channelName));
-
-	
-
+	_client.send_message(RPL_INVITING(_client.getNickname(), userToInviteName, channelName));
+	userToInvite->send_message(RPL_INVITE(_client.getPrefix(), userToInviteName, channelName));
 
 }
 
@@ -726,17 +713,6 @@ void Command::handle_USER()
 
 }
 
-<<<<<<< HEAD
-void Command::handle_VERSION() {}
-void Command::handle_INFO() {}
-void Command::handle_NOTICE() {}
-void Command::handle_NAMES() {}
-void Command::handle_WHO() {}
-void Command::handle_WHOWAS() {}
-void Command::handle_WHOIS() {}
-void Command::handle_KILL() {}
-void Command::handle_LIST() {}
-=======
 void Command::handle_VERSION() {
     // check params. if params does not match the server name (ft_irc), throw an error.
     if (_parameters.size() > 0 && _parameters != "ft_irc")
@@ -910,4 +886,10 @@ Have fun chatting!\n\
         _client.send_message(*it + "\r\n");
     }
 };
->>>>>>> main
+
+
+void Command::handle_LIST() {}
+void Command::handle_KILL() {}
+void Command::handle_NAMES() {}
+void Command::handle_NOTICE() {}
+void Command::handle_INFO() {}

@@ -51,6 +51,8 @@
 // fix for part not making irssi leave the channel
 #define ERR_CHANOPRIVSNEEDED_part(nick, channel) (":ft_irc 482 " + nick + " " + channel + " :part\r\n")
 
+#define ERR_CHANOPRIVSNEEDED(nick, channel) (":ft_irc 482 " + nick + " " + channel + " :You're not channel operator\r\n")
+
 #define ERR_CANTKILLSERVER() (":You cant kill a server!\r\n")
 #define ERR_NOOPERHOST() (":No O-lines for your host\r\n")
 #define ERR_UMODEUNKNOWNFLAG() (":Unknown MODE flag\r\n")
@@ -92,8 +94,15 @@
 // >> :nini!~rraffi-k@freenode-3dg.s40.6vib9m.IP INVITE jojo :#disney
 // prefox INVITE invited :channel
 
-// #define RPL_INVITE(userPrefix, userToInvite, channel) (userPrefix + " INVITE " + channel + " :" + userToInvite + "\r\n")
-#define RPL_INVITING(userPrefix, user, userToInvite, channel) (userPrefix + " 341 " + user + " " + channel + " " + userToInvite + "\r\n")
+// #define RPL_INVITING(userPrefix, user, userToInvite, channel) (userPrefix + " 341 " + user + " " + userToInvite + " " + channel + "\r\n")
+// #define RPL_INVITE(channel, userToInvite) (":ft_irc 341 " + userToInvite + "\r\n")
+
+#define RPL_INVITING(user, userToInvite, channel) (":ft_irc 341 " + user + " " + userToInvite + " " + channel + "\r\n")
+#define RPL_INVITE(userPrefix, userToInvite, channel) (userPrefix + " INVITE " + userToInvite + " " + channel + "\r\n")
+
+
+
+
 #define RPL_ENDOFWHOWAS(nickname) (nickname + " :End of WHOWAS\r\n")
 #define RPL_VERSION(version, hostname, comments) (":ft_irc 351 " + version + " " + hostname + " :" + comments + "\r\n")
 #define RPL_ENDOFNAMES(nick, channel) (":ft_irc 366 " + nick + " " + channel + " :End of /NAMES list.\r\n")
