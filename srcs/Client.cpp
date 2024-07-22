@@ -6,10 +6,10 @@
 
 
 Client::Client(int sock_val, Dispatch& d,
-    std::set<Client *> & clients, ChannelManager& cm, historyMap & history)
+    std::set<Client *> & clients, ChannelManager& cm)
     : _socket(sock_val), _d(d), _clients(clients), _cm(cm), _nickname(""),
         _shouldDelete(false), _passAuth(false), _nickAuth(false), _userAuth(false), 
-        _status(PASS_NEEDED), _history(history) {
+        _status(PASS_NEEDED) {
     if (_socket == -1) {
         throw ServerException("Error creating client socket");
     }
@@ -152,12 +152,6 @@ Dispatch& Client::getDispatch() const
 {
     return (_d);
 }
-
-historyMap Client::getHistoryMap(void) const
-{
-    return (_history);
-}
-
 
 /*************************************/
 /*                SETTERS            */

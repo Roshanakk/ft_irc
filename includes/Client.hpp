@@ -14,12 +14,9 @@
 #include "Utilities.hpp"
 #include "ChannelManager.hpp"
 #include "Command.hpp"
-#include "ClientHistory.hpp"
 
 class Dispatch;
 class ChannelManager;
-
-typedef std::map<std::string, std::vector<ClientHistory *> > historyMap;
 
 typedef enum e_status
 {
@@ -33,7 +30,7 @@ class Client : public AIO_Event
 	public:
 		// CONSTRUCTORS & DESTRUCTOR
 		Client(int sock_val, Dispatch& d,
-			std::set<Client *>& clients, ChannelManager& cm, historyMap & history);
+			std::set<Client *>& clients, ChannelManager& cm);
 		~Client(void);
 
 		// METHODS
@@ -51,8 +48,6 @@ class Client : public AIO_Event
 		std::string getRealname(void) const;
 		std::string getNickname(void) const;
 		e_status getStatus(void) const;
-
-		historyMap getHistoryMap(void) const;
 
 		bool isAuth(void) const;
 
@@ -98,6 +93,4 @@ class Client : public AIO_Event
 		bool _userAuth;
 
 		e_status _status;
-
-		historyMap & _history;
 };

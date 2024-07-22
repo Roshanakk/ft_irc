@@ -8,8 +8,8 @@
 
 
 Server::Server(Dispatch& d, int port, 
-    std::set<Client *> & clients, ChannelManager & cm, historyMap & history)
-    : _port(port), _d(d), _clients(clients), _cm(cm), _shouldDelete(false), _history(history)
+    std::set<Client *> & clients, ChannelManager & cm)
+    : _port(port), _d(d), _clients(clients), _cm(cm), _shouldDelete(false)
 {
     //Creating server socket
     _socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -71,7 +71,7 @@ void Server::receive_message(void)
     int sockfd = accept(_socket, (struct sockaddr *)&remoteaddr, &addrlen);
 
     //Creating the client class and adding it to Dispatch '_d'
-    Client *newClient = new Client(sockfd, _d, _clients, _cm, _history);
+    Client *newClient = new Client(sockfd, _d, _clients, _cm);
     _clients.insert(newClient);
     _d.add(*newClient);
     std::cout << "New client connected: (" << sockfd << ")" << std::endl;
