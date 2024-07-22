@@ -681,6 +681,8 @@ void Command::handle_USER()
 
 	//Splitting the parameters string into a vector of strings,
 	//in order to extract username, hostname and realname
+	if (_client.getStatus() == PASS_NEEDED)
+		throw(CommandException(ERR_PASSWDNEEDED()));
 
 	if (_client.isAuth())
 		throw(CommandException(ERR_ALREADYREGISTRED()));
