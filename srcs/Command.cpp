@@ -556,9 +556,10 @@ void Command::handle_PASS()
 	if (!_client.isAuth())
 	{
 		_client.setPassAuth();
-		if (_client.isAuth())
-			_client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
+		if (_client.isAuth()) {
 
+        }
+			_client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
 	}
 
 
@@ -718,8 +719,8 @@ void Command::handle_USER()
 		{
 			_client.setStatus(PASS_REGISTERED);
 			_client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
-		    funWelcomeMessage();
-        }
+            funWelcomeMessage();
+		}
 	}
 
 
@@ -929,10 +930,12 @@ Have fun chatting!\n\
 
     std::string welcomeMessage = ss.str();
 
+    _client.send_message(RPL_MOTDSTART(_client.getNickname()));
     std::vector<std::string> welcomeMessageVec = Utilities::split(welcomeMessage, '\n');
     for (std::vector<std::string>::iterator it = welcomeMessageVec.begin(); it != welcomeMessageVec.end(); ++it) {
-        _client.send_message(*it + "\r\n");
+        _client.send_message(RPL_MOTD(_client.getNickname(), *it));
     }
+    _client.send_message(RPL_ENDOFMOTD(_client.getNickname()));
 };
 
 
