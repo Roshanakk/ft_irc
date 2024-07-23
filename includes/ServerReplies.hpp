@@ -28,7 +28,7 @@
 #define ERR_SUMMONDISABLED()                (":SUMMON has been disabled\r\n")
 #define ERR_USERSDISABLED()                 (":USERS has been disabled\r\n")
 #define ERR_NOTREGISTERED()                 (":You have not registered\r\n")
-#define ERR_NEEDMOREPARAMS(command)         (command + " :Not enough parameters\r\n")
+#define ERR_NEEDMOREPARAMS(nick, command)   (":ft_irc 461 " + nick + " " + command + " :Not enough parameters\r\n")
 #define ERR_ALREADYREGISTRED()              (":You may not reregister\r\n")
 #define ERR_NOPERMFORHOST()                 (":Your host isn't among the privileged\r\n")
 #define ERR_PASSWDMISMATCH()                (":Password incorrect\r\n")
