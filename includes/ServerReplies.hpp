@@ -19,7 +19,7 @@
 #define ERR_FILEERROR(nick, fileop, file)         (":ft_irc 424 " + nick + " :File error doing " + fileop + " on " + file + "\r\n")
 #define ERR_NONICKNAMEGIVEN(nick)                 (":ft_irc 431 " + nick + " :No nickname given\r\n")
 #define ERR_ERRONEUSNICKNAME(nick, nick2)         (":ft_irc 432 " + nick + " " + nick2 + " :Erroneus nickname\r\n")
-#define ERR_NICKNAMEINUSE(nick)                   (":ft_irc 433 " + nick + " :Nickname is already in use\r\n")
+#define ERR_NICKNAMEINUSE(nick, nick2)            (":ft_irc 433 " + nick + " " + nick2 + " :Nickname is already in use\r\n")
 #define ERR_NICKCOLLISION(nick, nick2)            (":ft_irc 436 " + nick + " " + nick2 + " :Nickname collision KILL\r\n")
 #define ERR_USERNOTINCHANNEL(nick, nick2, channel)(":ft_irc 441 " + nick + " " + nick2 + " " + channel + " :They aren't on that channel\r\n")
 #define ERR_NOTONCHANNEL(nick, channel)           (":ft_irc 442 " + nick + " " + channel + " :You're not on that channel\r\n")

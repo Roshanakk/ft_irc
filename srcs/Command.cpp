@@ -482,7 +482,7 @@ void Command::handle_NICK()
 			// 	_client.setNickname(nickname + "_");
 			// else
             std::cout << "nickname already in use. this should print" << std::endl;
-            throw(CommandException(ERR_NICKNAMEINUSE(nickname)));
+            throw(CommandException(ERR_NICKNAMEINUSE(_client.getNickname(), nickname)));
 		}
 		else
 		{
