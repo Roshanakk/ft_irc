@@ -19,7 +19,8 @@
 #define ERR_FILEERROR(fileop, file) (":File error doing " + fileop + " on " + file + "\r\n")
 #define ERR_NONICKNAMEGIVEN() (":No nickname given\r\n")
 #define ERR_ERRONEUSNICKNAME(nick) (nick + " :Erroneus nickname\r\n")
-#define ERR_NICKNAMEINUSE(nick) (nick + " :Nickname is already in use\r\n")
+#define ERR_NICKNAMEINUSE(nick) (":ft_irc 433 * " + nick + " :Nickname is already in use.\r\n")
+
 #define ERR_NICKCOLLISION(nick) (nick + " :Nickname collision KILL\r\n")
 
 #define ERR_USERNOTINCHANNEL(nick, channel) (nick + " " + channel + " :They aren't on that channel\r\n")
@@ -29,7 +30,7 @@
 #define ERR_SUMMONDISABLED() (":SUMMON has been disabled\r\n")
 #define ERR_USERSDISABLED() (":USERS has been disabled\r\n")
 #define ERR_NOTREGISTERED() (":You have not registered\r\n")
-#define ERR_NEEDMOREPARAMS(command) (command + " :Not enough parameters\r\n")
+#define ERR_NEEDMOREPARAMS(nick, command) (":ft_irc 461 " + nick + " " + command + " :Not enough parameters\r\n")
 #define ERR_ALREADYREGISTRED() (":You may not reregister\r\n")
 #define ERR_NOPERMFORHOST() (":Your host isn't among the privileged\r\n")
 #define ERR_PASSWDMISMATCH() (":Password incorrect\r\n")
@@ -77,6 +78,11 @@
 #define RPL_KICK(user_prefix, channel, kicked, reason) (user_prefix + " KICK " + channel + " " + kicked + " " + reason + "\r\n")
 #define RPL_WHOWASUSER(nickname, whowasNick, whowasHost, realname) ("ft_irc: 314 " + nickname + " " + whowasNick + " " + whowasHost + " :" + realname + "\r\n")
 
+#define RPL_WHOIS(nickname, takenNick, username, hostname, realname) (":ft_irc 311 " + nickname + " " + takenNick + " " + username + " " + hostname + " * :" + realname + "\r\n")
+
+#define RPL_USERHOST(nickname, takenNick) (":ft_irc 312 " + nickname + " " + takenNick + " ft_irc :ft_irc\r\n")
+#define RPL_ENDOFWHOIS(nickname, takenNick) (":ft_irc 318 " + nickname + " " + takenNick + " :End of /WHOIS list.\r\n")
+#define RPL_TOPICUSAGE(nick) (":ft_irc 650 " + nick + " TOPIC :<channel> [:<topic>]\r\n")
 
 // #define RPL_INVITE(userPrefix, userToInvite, channel) (userPrefix + " INVITE " + userToInvite + " " + channel + "\r\n")
 // #define RPL_INVITING(hostname, user, channel, userToInvite) (":" + hostname + " 341 " + user + " " + userToInvite + " " + channel + "\r\n")
@@ -111,3 +117,5 @@
 #define RPL_WHOREPLY(nick, channel, user, host, server, mode, hopCount, realName) (":ft_irc 352 " + nick + " " + channel + " " + user + " " + host + " " + server + " " + nick + " " + mode + " :" + hopCount + " " + realName + "\r\n")
 #define RPL_ENDOFWHO(nick, channel) (":ft_irc 315 " + nick + " " + channel + " :End of /WHO list.\r\n")
 #define RPL_ENDOFBANLIST(nick, channel) (":ft_irc 368 " + nick + " " + channel + " :End of channel ban list\r\n")
+
+#define ERR_

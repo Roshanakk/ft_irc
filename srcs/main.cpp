@@ -28,11 +28,9 @@ int main(int argc, char **argv) {
 
   ChannelManager cm = ChannelManager();
 
-  std::map<std::string, std::vector<ClientHistory *> > history;
-
   std::set<Client *> clients;
   Dispatch d(passStr);
-  Server s(d, port, clients, cm, history);
+  Server s(d, port, clients, cm);
 
 
   d.add(s);
