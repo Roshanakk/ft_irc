@@ -31,7 +31,7 @@ class Dispatch {
     std::string getPassword() const;
 
   private:
-    bool _sigint_received;
+    static bool _sigint_received;
     int _epollfd;
     struct epoll_event _events[MAX_EVENTS];
 
