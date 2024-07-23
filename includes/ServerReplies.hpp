@@ -69,6 +69,49 @@
 // #define RPL_YOURHOST() "002 :Your host is <servername>, running version <ver>"
 // #define RPL_CREATED() "003 This server was created <date>"
 // #define RPL_MYINFO() "004 RPL_MYINFO <servername> <version> <available user modes> <available channel modes>"NB_CMDS
+#define RPL_TOPIC(prefix, channel, topic) (prefix + " TOPIC " + channel + " :" + topic + "\r\n")
+#define RPL_NOTOPIC(channel) (":ft_irc 331 " + channel + " :No topic is set\r\n")
+#define RPL_NAMREPLY(nick, channel, listNicks) (":ft_irc 353 " + nick + " = " + channel + " :" + listNicks + "\r\n")
+#define RPL_NICK(prefix, nickname) (prefix + " NICK " + nickname + "\r\n")
+#define RPL_KICK(user_prefix, channel, kicked, reason) (user_prefix + " KICK " + channel + " " + kicked + " " + reason + "\r\n")
+#define RPL_WHOWASUSER(nickname, whowasNick, whowasHost, realname) ("ft_irc: 314 " + nickname + " " + whowasNick + " " + whowasHost + " :" + realname + "\r\n")
+
+#define RPL_WHOIS(nickname, takenNick, username, hostname, realname) (":ft_irc 311 " + nickname + " " + takenNick + " " + username + " " + hostname + " * :" + realname + "\r\n")
+
+#define RPL_USERHOST(nickname, takenNick) (":ft_irc 312 " + nickname + " " + takenNick + " ft_irc :ft_irc\r\n")
+#define RPL_ENDOFWHOIS(nickname, takenNick) (":ft_irc 318 " + nickname + " " + takenNick + " :End of /WHOIS list.\r\n")
+#define RPL_TOPICUSAGE(nick) (":ft_irc 650 " + nick + " TOPIC :<channel> [:<topic>]\r\n")
+
+// #define RPL_INVITE(userPrefix, userToInvite, channel) (userPrefix + " INVITE " + userToInvite + " " + channel + "\r\n")
+// #define RPL_INVITING(hostname, user, channel, userToInvite) (":" + hostname + " 341 " + user + " " + userToInvite + " " + channel + "\r\n")
+
+
+// #define RPL_INVITE(userPrefix, userToInvite, channel) (userPrefix + " INVITE " + userToInvite + " :" + channel + "\r\n")
+// #define RPL_INVITING(hostname, user, channel, userToInvite) (":" + hostname + " 341 " + user + " " + userToInvite + " :" + channel + "\r\n")
+
+//inviter : nini
+//invited : jojo
+
+// >> :*.freenode.net 341 nini jojo :#disney
+// :hostname 341 inviter invited :channel
+
+// >> :nini!~rraffi-k@freenode-3dg.s40.6vib9m.IP INVITE jojo :#disney
+// prefox INVITE invited :channel
+
+// #define RPL_INVITING(userPrefix, user, userToInvite, channel) (userPrefix + " 341 " + user + " " + userToInvite + " " + channel + "\r\n")
+// #define RPL_INVITE(channel, userToInvite) (":ft_irc 341 " + userToInvite + "\r\n")
+
+#define RPL_INVITING(user, userToInvite, channel) (":ft_irc 341 " + user + " " + userToInvite + " " + channel + "\r\n")
+#define RPL_INVITE(userPrefix, userToInvite, channel) (userPrefix + " INVITE " + userToInvite + " " + channel + "\r\n")
+
+
+
+
+#define RPL_ENDOFWHOWAS(nickname) (nickname + " :End of WHOWAS\r\n")
+#define RPL_VERSION(version, hostname, comments) (":ft_irc 351 " + version + " " + hostname + " :" + comments + "\r\n")
+#define RPL_ENDOFNAMES(nick, channel) (":ft_irc 366 " + nick + " " + channel + " :End of /NAMES list.\r\n")
+// >> :*.freenode.net 324 yo1 #heythereguys :+nt$
+#define RPL_CHANNELMODEIS(nick, channel, mode) (":ft_irc 324 " + nick + " " + channel + " :" + mode + "\r\n")
 #define RPL_TOPIC(prefix, channel, topic)                       (prefix + " TOPIC " + channel + " :" + topic + "\r\n")
 #define RPL_NOTOPIC(channel)                                    (":ft_irc 331 " + channel + " :No topic is set\r\n")
 #define RPL_NAMREPLY(nick, channel, listNicks)                  (":ft_irc 353 " + nick + " = " + channel + " :" + listNicks + "\r\n")

@@ -89,7 +89,7 @@ void Command::handle_INVITE()
 	// Parameters: <nickname> <channel>
 
 	if (_parameters.empty())
-		throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
+		throw(CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd)));
 	
 	int spacePos = _parameters.find(' ');
 	std::string userToInviteName = _parameters.substr(0, spacePos);
@@ -102,7 +102,7 @@ void Command::handle_INVITE()
 	std::string channelName = _parameters.substr(spacePos + 1);
 
 	if (channelName.empty())
-		throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
+		throw(CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd)));
 	
 	
 	ChannelManager & cm = _client.getCM();
@@ -130,7 +130,7 @@ void Command::handle_INVITE()
 void Command::handle_JOIN() {
 	// Need to check if there are parameters. If not, throw an exception.
 	if (_parameters.size() <= 1)
-		throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+		throw CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd));
 
     // Split parameters by space
     std::vector<std::string> paramsVec = Utilities::split(_parameters, ' ');
@@ -239,7 +239,7 @@ void Command::handle_KICK()
 
 	//Checking number and types of parameters 
 	if (_parameters.empty())
-		throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
+		throw(CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd)));
 	if (paramChannelNames.empty() || paramUsername.empty())
 		throw(CommandException(ERR_NOSUCHNICK(_parameters[0])));
 
@@ -283,7 +283,7 @@ void Command::handle_KICK()
 		if (!paramChannel->checkIfClientInChannel(paramUser))
 			throw(CommandException(ERR_USERNOTINCHANNEL(paramUsername, paramChannel->getName())));
 
-		paramChannel->banUser(paramUser);
+		// paramChannel->banUser(paramUser);
 		_client.send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
 		(*paramUser).send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
 	}
@@ -307,14 +307,14 @@ void Command::handle_MODE() {
 
     // Need to check if there are parameters. If not, throw an exception.
     if (_parameters.size() <= 1)
-        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+        throw CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd));
 
     // basic parsing so get the channel or user we're modifying.
         // after split there should be at least 1 element.
         // First should be the channel or user, and the second should be the mode.
     std::vector<std::string> paramsVec = Utilities::split(_parameters, ' ');
     if (paramsVec.size() < 1)
-        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+        throw CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd));
     if (paramsVec[0][0] != '#')
         // throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), paramsVec[0]));
         throw CommandException();
@@ -449,6 +449,7 @@ bool isAValidNickname(std::string str)
 void Command::handle_NICK() 
 {
 	// Parameters: <nickname>
+		// _client.send_message(_client.getNickname() + "\r\n");
 
 	std::vector<std::string> params = Utilities::split(_parameters, ' ');
 	std::string oldPrefix;
@@ -459,7 +460,7 @@ void Command::handle_NICK()
 	if (_client.getNickname().empty() && params.size() < 1)
 		throw(CommandException(ERR_NONICKNAMEGIVEN()));
 	else if (params.size() < 1)
-		_client.send_message(_client.getNickname() + "\r\n");
+        _client.send_message(RPL_NICK(oldPrefix, _client.getNickname()));
 	else if (params.size() == 1)
 	{
 		std::string nickname = params[0];
@@ -473,13 +474,15 @@ void Command::handle_NICK()
 		while (it != allClients.end() && nickname != (*it)->getNickname())
 			++it;
 
+
 		if (it != allClients.end())
 		{
 			// if it is the first connection (first NICK call)
-			if (_client.getNickname() == "default")
-				_client.setNickname(nickname + "_");
-			else                                    // if the user tries to change his nickname (user already connected)
-				throw(CommandException(ERR_NICKNAMEINUSE(nickname)));
+			// if (_client.getNickname() == "")
+			// 	_client.setNickname(nickname + "_");
+			// else
+            std::cout << "nickname already in use. this should print" << std::endl;
+            throw(CommandException(ERR_NICKNAMEINUSE(nickname)));
 		}
 		else
 		{
@@ -487,8 +490,8 @@ void Command::handle_NICK()
 			_client.setNickname(nickname);
 		}
 	}
-
-	if (!_client.isAuth())
+	
+    if (!_client.isAuth())
 	{
 		_client.setNickAuth();
 		if (_client.isAuth())
@@ -507,7 +510,7 @@ void Command::handle_NICK()
 
 void Command::handle_PART() {
 	if (_parameters.size() <= 1)
-		throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+		throw CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd));
 
 	std::vector<std::string> params = Utilities::split(_parameters, ' ');
 
@@ -538,7 +541,7 @@ void Command::handle_PASS()
 	std::vector<std::string> params = Utilities::split(_parameters, ' ');
 
 	if (params.size() < 1)
-		throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
+		throw(CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd)));
 	
 	std::string password = params[0];
 
@@ -571,7 +574,7 @@ void Command::handle_PING()
 void Command::handle_PRIVMSG() {
 	// Initial error checking
 	if (_parameters.size() <= 1)
-		throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+		throw CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd));
 
 	size_t firstSpacePos = _parameters.find(' ');
 	if (firstSpacePos == std::string::npos)
@@ -620,10 +623,12 @@ void Command::handle_TOPIC()
 {
 	// Parameters: <channel> [ <topic> ]
 
-	std::string topicCmd = "461 TOPIC TOPIC";
+	// std::string topicCmd = " TOPIC";
 
-	if (_parameters.empty())
-		throw(CommandException(ERR_NEEDMOREPARAMS(topicCmd)));
+	if (_parameters.empty()) {
+        _client.send_message(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd));
+		throw(CommandException(RPL_TOPICUSAGE(_client.getNickname())));
+    }
 
 	int firstSpacePos = _parameters.find(' ');
 	std::string channelName = _parameters.substr(0, firstSpacePos);
@@ -645,7 +650,9 @@ void Command::handle_TOPIC()
 		else
 		{
 			Client * topicSetter = channel->getTopicSetter();
-			_client.send_message(RPL_TOPIC(topicSetter->getPrefix(), channel->getName(), channel->getTopic()));
+            std::string message = RPL_TOPIC(topicSetter->getPrefix(), channel->getName(), channel->getTopic());
+			_client.send_message(message);
+            channel->forwardCommand(message, &_client);
 		}
 	}
 	else //if there is a topic parameter
@@ -661,7 +668,9 @@ void Command::handle_TOPIC()
 		{
 			channel->setTopic(topic);
 			channel->setTopicSetter(&_client);
-			_client.send_message(RPL_TOPIC(_client.getPrefix(), channel->getName(), channel->getTopic()));
+            std::string message = RPL_TOPIC(_client.getPrefix(), channel->getName(), channel->getTopic());
+			_client.send_message(message);
+            channel->forwardCommand(message, &_client);
 		}
 
 	}
@@ -673,6 +682,8 @@ void Command::handle_USER()
 
 	//Splitting the parameters string into a vector of strings,
 	//in order to extract username, hostname and realname
+	if (_client.getStatus() == PASS_NEEDED)
+		throw(CommandException(ERR_PASSWDNEEDED()));
 
 	if (_client.isAuth())
 		throw(CommandException(ERR_ALREADYREGISTRED()));
@@ -699,7 +710,7 @@ void Command::handle_USER()
 		_client.setRealname(params[3]);
 	}
 	else
-		throw(CommandException(ERR_NEEDMOREPARAMS(_cmd)));
+		throw(CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd)));
 
 	if (!_client.isAuth())
 	{
@@ -730,7 +741,7 @@ Yowzaa!!! \n\
 void Command::handle_WHO() {
     // input error checking (need parameters, and should be a channel, and user should be on the channel)
     if (_parameters.size() <= 1)
-        throw CommandException(ERR_NEEDMOREPARAMS(_cmd));
+        throw CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd));
     Channel *chan = _client.getCM().getChannel(_parameters);
     if (chan == NULL)
         throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), _parameters));
@@ -751,7 +762,28 @@ void Command::handle_WHO() {
     _client.send_message(RPL_ENDOFWHO(_client.getNickname(), chan->getName()));
 }
 
-void Command::handle_WHOIS() {}
+void Command::handle_WHOIS() 
+{
+    std::vector<std::string> params = Utilities::split(_parameters, ' ');
+
+    if (params.empty())
+        throw(CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd)));
+
+    Client * userToCheck = getMatchingClient(params[0]);
+
+    if (userToCheck == NULL)
+        throw(CommandException(ERR_NOSUCHNICK(params[0])));
+
+    _client.send_message(RPL_WHOIS(_client.getNickname(), 
+                                params[0],
+                                userToCheck->getUsername(), 
+                                userToCheck->getHostname(), 
+                                userToCheck->getRealname()));
+
+    _client.send_message(RPL_USERHOST(_client.getNickname(), params[0]));
+    _client.send_message(RPL_ENDOFWHOIS(_client.getNickname(), params[0]));
+}
+
 void Command::handle_WHOWAS() {}
 
 // Mode flags
