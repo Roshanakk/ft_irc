@@ -99,3 +99,5 @@
 #define RPL_MOTDSTART(nick)                                     (":ft_irc 375 " + nick + " :ft_irc Message of the day\r\n")
 #define RPL_MOTD(nick, text)                                    (":ft_irc 372 " + nick + " : " + text + "\r\n")
 #define RPL_ENDOFMOTD(nick)                                     (":ft_irc 376 " + nick + " :End of message of the day.\r\n")
+
+#define RPL_HOSTNAME(nick, host)                                (":ft_irc 396 " + nick + " " + host + " :is now your displayed host\r\n")

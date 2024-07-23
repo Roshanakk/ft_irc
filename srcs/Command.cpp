@@ -61,7 +61,7 @@ void Command::doCmd(std::string & line)
 
         if (i == NB_CMDS)
             throw(CommandException(ERR_UNKNOWNCOMMAND(_client.getNickname(), _client.getHostname(), _cmd)));
-        if (_client.getStatus() != PASS_REGISTERED && _cmd != "PASS" && _cmd != "NICK" && _cmd != "USER") {
+        if (_client.getStatus() != PASS_REGISTERED && _cmd != "PASS" && _cmd != "NICK" && _cmd != "USER" && _cmd != "CAP") {
             if (_client.getStatus() == PASS_NEEDED)
                 throw(CommandException(ERR_PASSWDNEEDED()));
             else
@@ -482,7 +482,9 @@ void Command::handle_NICK()
 			// 	_client.setNickname(nickname + "_");
 			// else
             std::cout << "nickname already in use. this should print" << std::endl;
-            throw(CommandException(ERR_NICKNAMEINUSE(_client.getNickname(), nickname)));
+            // std::string nick = ( _client.getNickname().empty() ? "" : _client.getNickname() + " " );
+            // std::string defaultt = "default ";
+            throw(CommandException(ERR_NICKNAMEINUSE(nickname, nickname)));
 		}
 		else
 		{
@@ -573,9 +575,8 @@ void Command::handle_PASS()
 	{
 		_client.setPassAuth();
 		if (_client.isAuth()) {
-
-        }
 			_client.send_message(RPL_WELCOME(_client.getNickname(), _client.getPrefix()));
+        }
 	}
 }
 
@@ -950,6 +951,7 @@ Have fun chatting!\n\
         _client.send_message(RPL_MOTD(_client.getNickname(), *it));
     }
     _client.send_message(RPL_ENDOFMOTD(_client.getNickname()));
+    _client.send_message(RPL_HOSTNAME(_client.getNickname(), _client.getHostname()));
 };
 
 
