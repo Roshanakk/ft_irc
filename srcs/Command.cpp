@@ -526,7 +526,23 @@ void Command::handle_PART() {
     } else {
         throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), params[0]));
     }
-    std::string message = _client.getPrefix() + " PART :" + chan->getName() + "\r\n";
+
+    if (params.size() >= 2 && params[1][0] == ':')
+        params[1].erase(0, 1);
+
+    std::string message = _client.getPrefix() + " PART " + chan->getName() + " ";
+
+    if (params.size() > 1) {
+        message += "\"";
+        for (size_t i = 1; i < params.size(); ++i) {
+            message += params[i];
+            if (i + 1 < params.size())
+                message += " ";
+        }
+        message += "\"";
+    }
+    message += "\r\n";
+
     _client.send_message(message);
     _client.send_message(ERR_CHANOPRIVSNEEDED_part(_client.getNickname(), chan->getName()));
     chan->forwardCommand(message, &_client);
