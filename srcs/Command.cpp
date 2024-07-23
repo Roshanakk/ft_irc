@@ -60,8 +60,8 @@ void Command::doCmd(std::string & line)
 			++i;
 
         if (i == NB_CMDS)
-            throw(CommandException(ERR_UNKNOWNCOMMAND(_client.getHostname(), _cmd)));
-        if (_client.getStatus() != PASS_REGISTERED && _cmd != "PASS" && _cmd != "NICK" && _cmd != "USER") {
+            throw(CommandException(ERR_UNKNOWNCOMMAND(_client.getNickname(), _client.getHostname(), _cmd)));
+        if (_client.getStatus() != PASS_REGISTERED && _cmd != "PASS" && _cmd != "NICK" && _cmd != "USER" && _cmd != "CAP") {
             if (_client.getStatus() == PASS_NEEDED)
                 throw(CommandException(ERR_PASSWDNEEDED()));
             else
@@ -114,13 +114,13 @@ void Command::handle_INVITE()
 		throw(CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), channelName)));
 	
 	if (!channel->checkIfClientInChannel(&_client))
-		throw(CommandException(ERR_NOTONCHANNEL(channelName)));
+		throw(CommandException(ERR_NOTONCHANNEL(_client.getNickname(), channelName)));
 	
 	if (!channel->checkIfClientOperator(&_client))
 		throw(CommandException(ERR_CHANOPRIVSNEEDED(_client.getPrefix(), channelName)));
 	
 	if (channel->checkIfClientInChannel(userToInvite))
-		throw(CommandException(ERR_USERONCHANNEL(userToInviteName, channelName)));
+		throw(CommandException(ERR_USERONCHANNEL(_client.getNickname(), userToInviteName, channelName)));
 
 	_client.send_message(RPL_INVITING(_client.getNickname(), userToInviteName, channelName));
 	userToInvite->send_message(RPL_INVITE(_client.getPrefix(), userToInviteName, channelName));
@@ -146,7 +146,7 @@ void Command::handle_JOIN() {
 
         // Check that user is not in too many channels
         if (cm.getClientChannelCount(&_client) >= cm.getMaxChannelsForClient()) {
-            throw CommandException(ERR_TOOMANYCHANNELS(channelsVec[i]));
+            throw CommandException(ERR_TOOMANYCHANNELS(_client.getNickname(), channelsVec[i]));
         }
 
         // Following checks are only required if the channel exists
@@ -241,7 +241,7 @@ void Command::handle_KICK()
 	if (_parameters.empty())
 		throw(CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd)));
 	if (paramChannelNames.empty() || paramUsername.empty())
-		throw(CommandException(ERR_NOSUCHNICK(_parameters[0])));
+		throw(CommandException(ERR_NOSUCHNICK(paramUsername)));
 
 
 	// Checking if ALL given channel names exist
@@ -281,7 +281,7 @@ void Command::handle_KICK()
 		if (!paramChannel->checkIfClientOperator(&_client))
 			throw(CommandException(ERR_CHANOPRIVSNEEDED_kick(_client.getNickname(), paramChannel->getName())));
 		if (!paramChannel->checkIfClientInChannel(paramUser))
-			throw(CommandException(ERR_USERNOTINCHANNEL(paramUsername, paramChannel->getName())));
+			throw(CommandException(ERR_USERNOTINCHANNEL(_client.getNickname(), paramUsername, paramChannel->getName())));
 
 		// paramChannel->banUser(paramUser);
 		_client.send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
@@ -326,7 +326,7 @@ void Command::handle_MODE() {
     if (paramsVec.size() < 2)
         throw CommandException(RPL_CHANNELMODEIS(_client.getNickname(), chan->getName(), chan->getMode()));
     if (!chan->checkIfClientInChannel(&_client))
-        throw CommandException(ERR_NOTONCHANNEL(paramsVec[0]));
+        throw CommandException(ERR_NOTONCHANNEL(_client.getNickname(), paramsVec[0]));
     
     // Check if the mode is a ban mode request (we only repond to irssi during join)
     size_t pos = paramsVec[1].find('b');
@@ -458,14 +458,14 @@ void Command::handle_NICK()
 		throw(CommandException(ERR_PASSWDNEEDED()));
 
 	if (_client.getNickname().empty() && params.size() < 1)
-		throw(CommandException(ERR_NONICKNAMEGIVEN()));
+		throw(CommandException(ERR_NONICKNAMEGIVEN(_client.getNickname())));
 	else if (params.size() < 1)
         _client.send_message(RPL_NICK(oldPrefix, _client.getNickname()));
 	else if (params.size() == 1)
 	{
 		std::string nickname = params[0];
 		if (!isAValidNickname(nickname))
-			throw(CommandException(ERR_ERRONEUSNICKNAME(nickname)));
+			throw(CommandException(ERR_ERRONEUSNICKNAME(_client.getNickname(), nickname)));
 
 		std::set<Client *> & allClients = _client.getClients();
 		std::set<Client *>::iterator it = allClients.begin();
@@ -482,7 +482,9 @@ void Command::handle_NICK()
 			// 	_client.setNickname(nickname + "_");
 			// else
             std::cout << "nickname already in use. this should print" << std::endl;
-            throw(CommandException(ERR_NICKNAMEINUSE(nickname)));
+            // std::string nick = ( _client.getNickname().empty() ? "" : _client.getNickname() + " " );
+            // std::string defaultt = "default ";
+            throw(CommandException(ERR_NICKNAMEINUSE(nickname, nickname)));
 		}
 		else
 		{
@@ -497,7 +499,7 @@ void Command::handle_NICK()
 		if (_client.isAuth())
 		{
 			_client.setStatus(PASS_REGISTERED);
-			_client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
+			_client.send_message(RPL_WELCOME(_client.getNickname(), _client.getPrefix()));
             funWelcomeMessage();
 		}
 	}
@@ -521,7 +523,7 @@ void Command::handle_PART() {
         if (chan->checkIfClientInChannel(&_client)) {
             chan->removeClient(&_client);
         } else {
-            throw CommandException(ERR_NOTONCHANNEL(params[0]));
+            throw CommandException(ERR_NOTONCHANNEL(_client.getNickname(), params[0]));
         }
     } else {
         throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), params[0]));
@@ -552,7 +554,7 @@ void Command::handle_PART() {
 void Command::handle_PASS()
 {
 	if (_client.isAuth())
-		throw(CommandException(ERR_ALREADYREGISTRED()));
+		throw(CommandException(ERR_ALREADYREGISTRED(_client.getNickname())));
 
 	std::vector<std::string> params = Utilities::split(_parameters, ' ');
 
@@ -573,9 +575,8 @@ void Command::handle_PASS()
 	{
 		_client.setPassAuth();
 		if (_client.isAuth()) {
-
+			_client.send_message(RPL_WELCOME(_client.getNickname(), _client.getPrefix()));
         }
-			_client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
 	}
 }
 
@@ -672,7 +673,7 @@ void Command::handle_TOPIC()
 	else //if there is a topic parameter
 	{
 		if (!channel->checkIfClientInChannel(&_client))
-			throw(CommandException(ERR_NOTONCHANNEL(channel->getName())));
+			throw(CommandException(ERR_NOTONCHANNEL(_client.getNickname(), channel->getName())));
 
 		if (channel->getOnlyOperTopic()
             || (channel->onlyOperCanChangeTopic() && !channel->checkIfClientOperator(&_client)))
@@ -700,7 +701,7 @@ void Command::handle_USER()
 		throw(CommandException(ERR_PASSWDNEEDED()));
 
 	if (_client.isAuth())
-		throw(CommandException(ERR_ALREADYREGISTRED()));
+		throw(CommandException(ERR_ALREADYREGISTRED(_client.getNickname())));
 
 	size_t colonPos = _parameters.find(':');
 	std::string tmpParams = _parameters.substr(0, colonPos);
@@ -732,7 +733,7 @@ void Command::handle_USER()
 		if (_client.isAuth())
 		{
 			_client.setStatus(PASS_REGISTERED);
-			_client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
+			_client.send_message(RPL_WELCOME(_client.getNickname(), _client.getPrefix()));
             funWelcomeMessage();
 		}
 	}
@@ -760,7 +761,7 @@ void Command::handle_WHO() {
     if (chan == NULL)
         throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), _parameters));
     if (!chan->checkIfClientInChannel(&_client))
-        throw CommandException(ERR_NOTONCHANNEL(_parameters));
+        throw CommandException(ERR_NOTONCHANNEL(_client.getNickname(), _parameters));
 
     for (std::map<Client*, bool>::iterator it = chan->getClients().begin(); it != chan->getClients().end(); ++it) {
         _client.send_message(RPL_WHOREPLY(  it->first->getNickname(), 
@@ -950,6 +951,7 @@ Have fun chatting!\n\
         _client.send_message(RPL_MOTD(_client.getNickname(), *it));
     }
     _client.send_message(RPL_ENDOFMOTD(_client.getNickname()));
+    _client.send_message(RPL_HOSTNAME(_client.getNickname(), _client.getHostname()));
 };
 
 
