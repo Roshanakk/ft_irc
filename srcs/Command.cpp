@@ -285,9 +285,9 @@ void Command::handle_KICK()
 
 		// paramChannel->banUser(paramUser);
 		_client.send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
-		(*paramUser).send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
+		// (*paramUser).send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
+        paramChannel->forwardCommand(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason), &_client);
 	}
-
 }
 
 // void Command::handle_KILL() {}
@@ -526,7 +526,23 @@ void Command::handle_PART() {
     } else {
         throw CommandException(ERR_NOSUCHCHANNEL(_client.getNickname(), params[0]));
     }
-    std::string message = _client.getPrefix() + " PART :" + chan->getName() + "\r\n";
+
+    if (params.size() >= 2 && params[1][0] == ':')
+        params[1].erase(0, 1);
+
+    std::string message = _client.getPrefix() + " PART " + chan->getName() + " ";
+
+    if (params.size() > 1) {
+        message += "\"";
+        for (size_t i = 1; i < params.size(); ++i) {
+            message += params[i];
+            if (i + 1 < params.size())
+                message += " ";
+        }
+        message += "\"";
+    }
+    message += "\r\n";
+
     _client.send_message(message);
     _client.send_message(ERR_CHANOPRIVSNEEDED_part(_client.getNickname(), chan->getName()));
     chan->forwardCommand(message, &_client);
@@ -561,8 +577,6 @@ void Command::handle_PASS()
         }
 			_client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
 	}
-
-
 }
 
 void Command::handle_PING()
