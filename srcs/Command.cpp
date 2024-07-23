@@ -285,9 +285,9 @@ void Command::handle_KICK()
 
 		// paramChannel->banUser(paramUser);
 		_client.send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
-		(*paramUser).send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
+		// (*paramUser).send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
+        paramChannel->forwardCommand(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason), &_client);
 	}
-
 }
 
 // void Command::handle_KILL() {}
@@ -561,8 +561,6 @@ void Command::handle_PASS()
         }
 			_client.send_message(RPL_WELCOME(_client.getHostname(), _client.getNickname(), _client.getPrefix()));
 	}
-
-
 }
 
 void Command::handle_PING()
