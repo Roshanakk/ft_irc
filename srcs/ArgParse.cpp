@@ -34,5 +34,10 @@ std::string ArgParse::parsePass(char *pass) {
   if (passStr.size() < 1) {
     throw ServerException("Password must be at least 1 character long.");
   }
+  for (size_t i = 0; i < passStr.size(); i++ ) {
+    if (!std::isalnum(passStr[i])) {
+      throw ServerException("Password must be alphanumeric only.");
+    }
+  }
   return passStr;
 }

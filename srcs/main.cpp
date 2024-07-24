@@ -28,19 +28,23 @@ int main(int argc, char **argv) {
 
   ChannelManager cm = ChannelManager();
 
-  std::set<Client *> clients;
-  Dispatch d(passStr);
-  Server s(d, port, clients, cm);
+  try {
+    std::set<Client *> clients;
+    Dispatch d(passStr);
+    Server s(d, port, clients, cm);
 
+    d.add(s);
 
-  d.add(s);
-
-  while (!d.get_sigint_received()) {
-    try {
-      d.run();
-    } catch (const ServerException& e) {
-      std::cerr << e.what() << std::endl;
+    while (!d.get_sigint_received()) {
+      try {
+        d.run();
+      } catch (const ServerException& e) {
+        std::cerr << e.what() << std::endl;
+      }
     }
+  } catch (const ServerException& e) {
+    std::cerr << e.what() << std::endl;
+    return 1;
   }
 
   return 0;

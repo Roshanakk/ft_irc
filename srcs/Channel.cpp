@@ -51,7 +51,7 @@ void Channel::addClient(Client *client) {
     }
     client->send_message(RPL_NAMREPLY(client->getNickname(), _name, this->getClientNicknames()));
     client->send_message(RPL_ENDOFNAMES(client->getNickname(), _name));
-    this->forwardCommand(":" + client->getPrefix() + " JOIN " + _name + "\r\n", client);
+    this->forwardCommand(client->getPrefix() + " JOIN " + _name + "\r\n", client);
 };
 
 void Channel::removeClient(Client *client) {

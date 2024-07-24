@@ -1,7 +1,7 @@
 /************************************************/
 // Error Replies (Section 6.1 of RFC 1459)
 /************************************************/
-#define ERR_NOSUCHNICK(nick)                      (":ft_irc 401 " + nick + " :No such nick/channel\r\n")
+#define ERR_NOSUCHNICK(nick, nick2)               (":ft_irc 401 " + nick + " " + nick2 + " :No such nick/channel\r\n")
 #define ERR_NOSUCHSERVER(nick, servername)        (":ft_irc 402 " + nick + " " + servername + " :No such server\r\n")
 #define ERR_NOSUCHCHANNEL(nick, channel)          (":ft_irc 403 " + nick + " " + channel + " :No such channel\r\n")
 #define ERR_CANNOTSENDTOCHAN(nick, channel)       (":ft_irc 404 " + nick + " " + channel + " :Cannot send to channel\r\n")
