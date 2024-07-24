@@ -478,13 +478,6 @@ void Command::handle_NICK()
 
 		if (it != allClients.end())
 		{
-			// if it is the first connection (first NICK call)
-			// if (_client.getNickname() == "")
-			// 	_client.setNickname(nickname + "_");
-			// else
-            std::cout << "nickname already in use. this should print" << std::endl;
-            // std::string nick = ( _client.getNickname().empty() ? "" : _client.getNickname() + " " );
-            // std::string defaultt = "default ";
             throw(CommandException(ERR_NICKNAMEINUSE(nickname, nickname)));
 		}
 		else
@@ -506,7 +499,14 @@ void Command::handle_NICK()
 	}
 
 	_client.send_message(RPL_NICK(oldPrefix, _client.getNickname()));
-
+    // send the name change to everyone in every channel the user is in.
+	ChannelManager& cm = _client.getCM();
+    std::set<Channel *> channels = cm.getChannels();
+    for (std::set<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it) {
+        if ((*it)->checkIfClientInChannel(&_client)) {
+            (*it)->forwardCommand(RPL_NICK(oldPrefix, _client.getNickname()), &_client);
+        }
+    }
 }
 
 // void Command::handle_NOTICE() {}
@@ -685,7 +685,7 @@ void Command::handle_TOPIC()
 		{
 			channel->setTopic(topic);
 			channel->setTopicSetter(&_client);
-            std::string message = RPL_TOPIC(_client.getPrefix(), channel->getName(), channel->getTopic());
+            std::string message = RPL_TOPIC_UPDATE(_client.getPrefix(), channel->getName(), channel->getTopic()));
 			_client.send_message(message);
             channel->forwardCommand(message, &_client);
 		}
