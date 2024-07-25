@@ -937,7 +937,7 @@ ss << "|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "
 CAP, INVITE, JOIN, KICK, MODE, NICK, PART, PASS, PING, PRIVMSG, QUIT, TOPIC, USER, VERSION, WHO, WHOIS\n\
  \n\
 The server is also capable of handling the following modes:\n\
-i, t, k, o, l, b\n\
+i, t, k, o, l\n\
  \n\
 Have fun chatting!\n\
  \n\
