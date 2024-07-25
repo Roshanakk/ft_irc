@@ -934,7 +934,7 @@ ss << "|" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "
 |" << BLUE << "OOOOOOOOOOOOOOO" << WHITE << "OOOOOOOOOOOOOOO" << RED << "OOOOOOOOOOOOOOO" << RESET << "| |" << RED << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << RESET << "|\n \n";
 #endif
     ss << "This server is capable of handling the following commands:\n\
-CAP, JOIN, KICK, MODE, NAMES, NICK, NOTICE, PART, PASS, PING, PRIVMSG, QUIT, TOPIC, USER, VERSION, WHO\n\
+CAP, INVITE, JOIN, KICK, MODE, NICK, PART, PASS, PING, PRIVMSG, QUIT, TOPIC, USER, VERSION, WHO, WHOIS\n\
  \n\
 The server is also capable of handling the following modes:\n\
 i, t, k, o, l, b\n\
