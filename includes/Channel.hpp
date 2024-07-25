@@ -58,6 +58,7 @@ class Channel {
 		Client * getTopicSetter(void) const;
 		int getMaxClients(void) const;
 		std::string getMode() const;
+		std::string getTopicTime();
 
 		// Setters //
 		void setMaxClients(int maxClients);
@@ -76,6 +77,7 @@ class Channel {
 		std::map<Client *, bool> _clients;
 		int _maxClients;
 		std::set<Client *> _invites;
+		long _topicTime;
 
 		// std::set<Client *> _bannedClients;
 

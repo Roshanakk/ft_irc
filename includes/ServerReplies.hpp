@@ -1,7 +1,7 @@
 /************************************************/
 // Error Replies (Section 6.1 of RFC 1459)
 /************************************************/
-#define ERR_NOSUCHNICK(nick)                      (":ft_irc 401 " + nick + " :No such nick/channel\r\n")
+#define ERR_NOSUCHNICK(nick, nick2)               (":ft_irc 401 " + nick + " " + nick2 + " :No such nick/channel\r\n")
 #define ERR_NOSUCHSERVER(nick, servername)        (":ft_irc 402 " + nick + " " + servername + " :No such server\r\n")
 #define ERR_NOSUCHCHANNEL(nick, channel)          (":ft_irc 403 " + nick + " " + channel + " :No such channel\r\n")
 #define ERR_CANNOTSENDTOCHAN(nick, channel)       (":ft_irc 404 " + nick + " " + channel + " :Cannot send to channel\r\n")
@@ -65,8 +65,6 @@
 // #define RPL_YOURHOST() "002 :Your host is <servername>, running version <ver>"
 // #define RPL_CREATED() "003 This server was created <date>"
 // #define RPL_MYINFO() "004 RPL_MYINFO <servername> <version> <available user modes> <available channel modes>"NB_CMDS
-#define RPL_TOPIC(prefix, channel, topic)                       (prefix + " TOPIC " + channel + " :" + topic + "\r\n")
-#define RPL_NOTOPIC(channel)                                    (":ft_irc 331 " + channel + " :No topic is set\r\n")
 #define RPL_NAMREPLY(nick, channel, listNicks)                  (":ft_irc 353 " + nick + " = " + channel + " :" + listNicks + "\r\n")
 #define RPL_NICK(prefix, nickname)                              (prefix + " NICK " + nickname + "\r\n")
 #define RPL_KICK(user_prefix, channel, kicked, reason)          (user_prefix + " KICK " + channel + " " + kicked + " " + reason + "\r\n")
@@ -81,8 +79,10 @@
 #define RPL_VERSION(version, hostname, comments)                (":ft_irc 351 " + version + " " + hostname + " :" + comments + "\r\n")
 #define RPL_ENDOFNAMES(nick, channel)                           (":ft_irc 366 " + nick + " " + channel + " :End of /NAMES list.\r\n")
 #define RPL_CHANNELMODEIS(nick, channel, mode)                  (":ft_irc 324 " + nick + " " + channel + " :" + mode + "\r\n")
-#define RPL_TOPIC(prefix, channel, topic)                       (prefix + " TOPIC " + channel + " :" + topic + "\r\n")
 #define RPL_NOTOPIC(channel)                                    (":ft_irc 331 " + channel + " :No topic is set\r\n")
+#define RPL_TOPIC(nick, channel, topic)                         (":ft_irc 332 " + nick + " " + channel + " :" + topic + "\r\n")
+#define RPL_TOPIC_SETTER(nick, channel, prefixOfSetter, topicTime)  (":ft_irc 333 " + nick + " " + channel + " " + prefixOfSetter + " :" + topicTime + "\r\n")
+#define RPL_TOPIC_UPDATE(prefix, channel, topic)                (prefix + " TOPIC " + channel + " :" + topic + "\r\n"
 #define RPL_NAMREPLY(nick, channel, listNicks)                  (":ft_irc 353 " + nick + " = " + channel + " :" + listNicks + "\r\n")
 #define RPL_NICK(prefix, nickname)                              (prefix + " NICK " + nickname + "\r\n")
 #define RPL_KICK(user_prefix, channel, kicked, reason)          (user_prefix + " KICK " + channel + " " + kicked + " " + reason + "\r\n")

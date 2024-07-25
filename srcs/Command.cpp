@@ -97,7 +97,7 @@ void Command::handle_INVITE()
 	Client * userToInvite = getMatchingClient(userToInviteName);
 
 	if (userToInvite == NULL)
-		throw(CommandException(ERR_NOSUCHNICK(userToInviteName)));
+		throw(CommandException(ERR_NOSUCHNICK(_client.getNickname(), userToInviteName)));
 	
 	std::string channelName = _parameters.substr(spacePos + 1);
 
@@ -124,7 +124,7 @@ void Command::handle_INVITE()
 
 	_client.send_message(RPL_INVITING(_client.getNickname(), userToInviteName, channelName));
 	userToInvite->send_message(RPL_INVITE(_client.getPrefix(), userToInviteName, channelName));
-
+    channel->addInvite(userToInvite);
 }
 
 void Command::handle_JOIN() {
@@ -241,7 +241,7 @@ void Command::handle_KICK()
 	if (_parameters.empty())
 		throw(CommandException(ERR_NEEDMOREPARAMS(_client.getNickname(), _cmd)));
 	if (paramChannelNames.empty() || paramUsername.empty())
-		throw(CommandException(ERR_NOSUCHNICK(paramUsername)));
+		throw(CommandException(ERR_NOSUCHNICK(_client.getNickname(), paramUsername)));
 
 
 	// Checking if ALL given channel names exist
@@ -255,7 +255,7 @@ void Command::handle_KICK()
 		while (it2 != channels.end() && *it != (*it2)->getName())
 			++it2;
 		if (it2 == channels.end()) 
-			throw(CommandException(ERR_NOSUCHNICK(*it)));
+			throw(CommandException(ERR_NOSUCHNICK(_client.getNickname(), *it)));
 	}
 
 
@@ -266,7 +266,7 @@ void Command::handle_KICK()
 	while (it2 != allUsers.end() && paramUsername != (*it2)->getNickname())
 		++it2;
 	if (it2 == allUsers.end()) 
-		throw(CommandException(ERR_NOSUCHNICK(paramUsername)));
+		throw(CommandException(ERR_NOSUCHNICK(_client.getNickname(), paramUsername)));
 	
 
 
@@ -287,6 +287,7 @@ void Command::handle_KICK()
 		_client.send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
 		// (*paramUser).send_message(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason));
         paramChannel->forwardCommand(RPL_KICK(_client.getPrefix(), paramChannel->getName(), paramUser->getNickname(),reason), &_client);
+        paramChannel->removeClient(paramUser);
 	}
 }
 
@@ -477,13 +478,6 @@ void Command::handle_NICK()
 
 		if (it != allClients.end())
 		{
-			// if it is the first connection (first NICK call)
-			// if (_client.getNickname() == "")
-			// 	_client.setNickname(nickname + "_");
-			// else
-            std::cout << "nickname already in use. this should print" << std::endl;
-            // std::string nick = ( _client.getNickname().empty() ? "" : _client.getNickname() + " " );
-            // std::string defaultt = "default ";
             throw(CommandException(ERR_NICKNAMEINUSE(nickname, nickname)));
 		}
 		else
@@ -505,7 +499,14 @@ void Command::handle_NICK()
 	}
 
 	_client.send_message(RPL_NICK(oldPrefix, _client.getNickname()));
-
+    // send the name change to everyone in every channel the user is in.
+	ChannelManager& cm = _client.getCM();
+    std::set<Channel *> channels = cm.getChannels();
+    for (std::set<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it) {
+        if ((*it)->checkIfClientInChannel(&_client)) {
+            (*it)->forwardCommand(RPL_NICK(oldPrefix, _client.getNickname()), &_client);
+        }
+    }
 }
 
 // void Command::handle_NOTICE() {}
@@ -621,9 +622,11 @@ void Command::handle_PRIVMSG() {
             throw CommandException(ERR_CANNOTSENDTOCHAN(_client.getNickname(), recipeints));
         }
     } else {
-        // User
         // Send message to user
-        // _client.forwardMessage(_cmdLine[1], &_client);
+        Client *recipient = getMatchingClient(recipeints);
+        if (recipient == NULL)
+            throw CommandException(ERR_NOSUCHNICK(_client.getNickname(), recipeints));
+        recipient->send_message(_client.getPrefix() + " PRIVMSG " + recipeints + " :" + message + "\r\n");
     }
 }
 
@@ -675,15 +678,14 @@ void Command::handle_TOPIC()
 		if (!channel->checkIfClientInChannel(&_client))
 			throw(CommandException(ERR_NOTONCHANNEL(_client.getNickname(), channel->getName())));
 
-		if (channel->getOnlyOperTopic()
-            || (channel->onlyOperCanChangeTopic() && !channel->checkIfClientOperator(&_client)))
+		if (channel->onlyOperCanChangeTopic() && !channel->checkIfClientOperator(&_client))
             // I dont know why but when we add the channel, irssi will kick the user. We just want to inform the user.
 			throw(CommandException(ERR_CHANOPRIVSNEEDED_t(_client.getNickname(), channel->getName())));
 		else
 		{
 			channel->setTopic(topic);
 			channel->setTopicSetter(&_client);
-            std::string message = RPL_TOPIC(_client.getPrefix(), channel->getName(), channel->getTopic());
+            std::string message = RPL_TOPIC_UPDATE(_client.getPrefix(), channel->getName(), channel->getTopic()));
 			_client.send_message(message);
             channel->forwardCommand(message, &_client);
 		}
@@ -787,7 +789,7 @@ void Command::handle_WHOIS()
     Client * userToCheck = getMatchingClient(params[0]);
 
     if (userToCheck == NULL)
-        throw(CommandException(ERR_NOSUCHNICK(params[0])));
+        throw(CommandException(ERR_NOSUCHNICK(_client.getNickname(), params[0])));
 
     _client.send_message(RPL_WHOIS(_client.getNickname(), 
                                 params[0],

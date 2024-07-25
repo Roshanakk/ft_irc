@@ -2,7 +2,7 @@ NAME = ircserv
 FUN = ircserv
 
 ### SETTINGS ###
-CXX := g++
+CXX := c++
 SRC_DIR := srcs/
 OBJ_DIR := objs/
 H_DIR := includes/
