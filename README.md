@@ -20,7 +20,7 @@ ft_irc is a Internet Relay Chat (IRC) server implementation, a protocol for real
 
 ## Run the project
 
-```
+```bash
 git clone <repository_url>
 cd ft_irc
 make
@@ -33,6 +33,6 @@ make
 To connect to the IRC server, use any IRC client such as irssi.
 Open the IRC client, then connect using the command:
 
-```
+```bash
 /connect localhost <port> <password>
 ```
