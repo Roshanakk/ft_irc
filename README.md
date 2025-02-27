@@ -1,6 +1,6 @@
 # ft_irc
 
-ft_irc is a Internet Relay Chat (IRC) server implementation, a protocol for real-time messaging and communication in a distributed network environment.
+ft_irc is an Internet Relay Chat (IRC) server implementation, a protocol for real-time messaging and communication in a distributed network environment.
 
 
 ## Features
